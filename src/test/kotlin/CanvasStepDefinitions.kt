@@ -2,6 +2,7 @@
 import Tuple.Companion.color
 import TupleStepDefinitions.Companion.tuples
 import assertk.assertThat
+import assertk.assertions.endsWith
 import assertk.assertions.isEqualTo
 import io.cucumber.java8.En
 
@@ -18,6 +19,10 @@ class CanvasStepDefinitions: En {
 
         When("write_pixel\\(c, {int}, {int}, {var})") { x: Int, y: Int, v: String -> c.setPixel(x, y, tuples[v]!!) }
 
+        When("every pixel of c is set to color\\({real}, {real}, {real})") { r: Double, g: Double, b: Double ->
+            c.fill(color(r, g, b))
+        }
+
         Then("c.width = {int}") { e: Int -> assertThat(c.width).isEqualTo(e) }
         Then("c.height = {int}") { e: Int -> assertThat(c.height).isEqualTo(e) }
 
@@ -32,6 +37,10 @@ class CanvasStepDefinitions: En {
             val lines = ppm.lines().slice(IntRange(start - 1, end - 1))
                 .joinToString("\n")
             assertThat(lines).isEqualTo(expected)
+        }
+
+        Then("ppm ends with a newline character") {
+            assertThat(ppm).endsWith("\n")
         }
     }
 }

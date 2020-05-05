@@ -80,8 +80,8 @@ data class Tuple (val x: Double, val y: Double, val z: Double, val w: Double) {
             x * their.y - y * their.x)
     }
 
-    fun toIntPPM(): String {
-        return "${floatToClampedInt(r)} ${floatToClampedInt(g)} ${floatToClampedInt(b)}"
+    fun toInts(): Array<Int> {
+        return arrayOf(floatToClampedInt(r), floatToClampedInt(g), floatToClampedInt(b), floatToClampedInt(a))
     }
 
     fun floatToClampedInt(f: Double): Int {

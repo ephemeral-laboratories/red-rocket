@@ -16,20 +16,44 @@ class Canvas(val width: Int, val height: Int) {
         return Tuple(buffer.get(), buffer.get(), buffer.get(), buffer.get())
     }
 
-    fun setPixel(x: Int, y: Int, v: Tuple) {
+    fun setPixel(x: Int, y: Int, color: Tuple) {
         pixelPosition(x, y)
-        buffer.put(v.r).put(v.g).put(v.b).put(v.a)
+        buffer.put(color.r).put(color.g).put(color.b).put(color.a)
+    }
+
+    fun fill(color: Tuple) {
+        buffer.clear()
+        buffer.position(0)
+        while (buffer.remaining() > 0) {
+            buffer.put(color.r).put(color.g).put(color.b).put(color.a)
+        }
     }
 
     fun toPPM(): String {
+        val maximumLineLength: Int = 70
         val builder = StringBuilder()
+        val lineBuffer = StringBuilder(80)
         builder.append("P3\n")
-        builder.append("${width} ${height}\n")
+        builder.append(width).append(' ').append(height).append('\n')
         builder.append("255\n")
         IntRange(0, height - 1).forEach { y: Int ->
-            builder.append(IntRange(0, width - 1)
-                .map { x: Int -> getPixel(x, y).toIntPPM() }
-                .joinToString(separator = " ", postfix = "\n"))
+            lineBuffer.clear()
+            IntRange(0, width - 1).forEach { x: Int ->
+                getPixel(x, y).toInts().sliceArray(IntRange(0, 2)).forEach { i: Int ->
+                    val nextValue = i.toString()
+                    if (lineBuffer.length + 1 + nextValue.length >= maximumLineLength) {
+                        builder.append(lineBuffer).append('\n')
+                        lineBuffer.clear()
+                    }
+                    if (lineBuffer.length > 0) {
+                        lineBuffer.append(' ')
+                    }
+                    lineBuffer.append(nextValue)
+                }
+            }
+            if (lineBuffer.length > 0) {
+                builder.append(lineBuffer).append('\n')
+            }
         }
         return builder.toString()
     }
