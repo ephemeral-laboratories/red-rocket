@@ -1,7 +1,15 @@
-data class Tuple(val x: Double, val y: Double, val z: Double, val w: Double) {
+data class Tuple (val x: Double, val y: Double, val z: Double, val w: Double) {
     val point:      Boolean get() = w == 1.0
     val vector:     Boolean get() = w == 0.0
     val magnitude:  Double  get() = Math.sqrt(x * x + y * y + z * z + w * w)
+    val red:        Double  get() = x
+    val green:      Double  get() = y
+    val blue:       Double  get() = z
+    val alpha:      Double  get() = w
+    val r:          Double  get() = x
+    val g:          Double  get() = y
+    val b:          Double  get() = z
+    val a:          Double  get() = w
 
     companion object {
         val zero: Tuple = Tuple(0.0, 0.0, 0.0, 0.0)
@@ -12,6 +20,10 @@ data class Tuple(val x: Double, val y: Double, val z: Double, val w: Double) {
 
         fun vector(x: Double, y: Double, z: Double) : Tuple {
             return Tuple(x, y, z, 0.0)
+        }
+
+        fun color(r: Double, g: Double, b: Double, a: Double = 0.0) : Tuple {
+            return Tuple(r, g, b, a)
         }
     }
 
@@ -31,8 +43,16 @@ data class Tuple(val x: Double, val y: Double, val z: Double, val w: Double) {
         return Tuple(x * scalar, y * scalar, z * scalar, w * scalar)
     }
 
+    operator fun times(their: Tuple): Tuple {
+        return Tuple(x * their.x, y * their.y, z * their.z, w * their.w)
+    }
+
     operator fun div(scalar: Double): Tuple {
         return Tuple(x / scalar, y / scalar, z / scalar, w / scalar)
+    }
+
+    operator fun div(their: Tuple): Tuple {
+        return Tuple(x / their.x, y / their.y, z / their.z, w / their.w)
     }
 
     fun normalize(): Tuple {
@@ -59,4 +79,5 @@ data class Tuple(val x: Double, val y: Double, val z: Double, val w: Double) {
             z * their.x - x * their.z,
             x * their.y - y * their.x)
     }
+
 }

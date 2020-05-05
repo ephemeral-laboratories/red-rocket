@@ -1,9 +1,13 @@
 
+import Tuple.Companion.color
 import Tuple.Companion.point
 import Tuple.Companion.vector
 import assertk.Assert
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.isCloseTo
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
+import assertk.assertions.matchesPredicate
 import io.cucumber.java8.En
 
 
@@ -49,6 +53,10 @@ class TupleStepDefinitions: En {
             tuples[v] = vector(x, y, z)
         }
 
+        Given("{word} ← color\\({real}, {real}, {real})") { v: String, x: Double, y: Double, z: Double ->
+            tuples[v] = color(x, y, z)
+        }
+
         When("{word} ← normalize\\({word})") { v1: String, v2: String ->
             tuples[v1] = tuples[v2]!!.normalize();
         }
@@ -66,79 +74,97 @@ class TupleStepDefinitions: En {
         Then("{word} = tuple\\({real}, {real}, {real}, {real})") {
                 v: String, x: Double, y: Double, z: Double, w: Double ->
 
-            assertThat(tuples[v]!!).isEqualTo(Tuple(x, y, z, w))
+            assertThat(tuples[v]!!).isCloseTo(Tuple(x, y, z, w), epsilon)
         }
 
         Then("{word} + {word} = tuple\\({real}, {real}, {real}, {real})") {
                 v1: String, v2: String, x: Double, y: Double, z: Double, w: Double ->
 
-            assertThat(tuples[v1]!! + tuples[v2]!!).isEqualTo(Tuple(x, y, z, w))
+            assertThat(tuples[v1]!! + tuples[v2]!!).isCloseTo(Tuple(x, y, z, w), epsilon)
         }
 
         Then("{word} - {word} = tuple\\({real}, {real}, {real}, {real})") {
                 v1: String, v2: String, x: Double, y: Double, z: Double, w: Double ->
 
-            assertThat(tuples[v1]!! - tuples[v2]!!).isEqualTo(Tuple(x, y, z, w))
+            assertThat(tuples[v1]!! - tuples[v2]!!).isCloseTo(Tuple(x, y, z, w), epsilon)
         }
 
         Then("{word} - {word} = point\\({real}, {real}, {real})") {
                 v1: String, v2: String, x: Double, y: Double, z: Double ->
 
-            assertThat(tuples[v1]!! - tuples[v2]!!).isEqualTo(point(x, y, z))
+            assertThat(tuples[v1]!! - tuples[v2]!!).isCloseTo(point(x, y, z), epsilon)
         }
 
         Then("{word} - {word} = vector\\({real}, {real}, {real})") {
                 v1: String, v2: String, x: Double, y: Double, z: Double ->
 
-            assertThat(tuples[v1]!! - tuples[v2]!!).isEqualTo(vector(x, y, z))
+            assertThat(tuples[v1]!! - tuples[v2]!!).isCloseTo(vector(x, y, z), epsilon)
         }
 
         Then("-{word} = tuple\\({real}, {real}, {real}, {real})") {
                 v: String, x: Double, y: Double, z: Double, w: Double ->
-            assertThat(-tuples[v]!!).isEqualTo(Tuple(x, y, z, w))
+            assertThat(-tuples[v]!!).isCloseTo(Tuple(x, y, z, w), epsilon)
         }
 
         Then("-{word} = vector\\({real}, {real}, {real})") {
                 v: String, x: Double, y: Double, z: Double ->
 
-            assertThat(-tuples[v]!!).isEqualTo(vector(x, y, z))
+            assertThat(-tuples[v]!!).isCloseTo(vector(x, y, z), epsilon)
         }
 
         Then("{word} * {real} = tuple\\({real}, {real}, {real}, {real})") {
                 v: String, s: Double, x: Double, y: Double, z: Double, w: Double ->
 
-            assertThat(tuples[v]!! * s).isEqualTo(Tuple(x, y, z, w))
+            assertThat(tuples[v]!! * s).isCloseTo(Tuple(x, y, z, w), epsilon)
         }
 
         Then("{word} / {real} = tuple\\({real}, {real}, {real}, {real})") {
                 v: String, s: Double, x: Double, y: Double, z: Double, w: Double ->
 
-            assertThat(tuples[v]!! / s).isEqualTo(Tuple(x, y, z, w))
+            assertThat(tuples[v]!! / s).isCloseTo(Tuple(x, y, z, w), epsilon)
         }
 
         Then("magnitude\\({word}) = {real}") { v: String, e: Double ->
             assertThat(tuples[v]!!.magnitude).isCloseTo(e, epsilon)
         }
 
-        Then("normalize\\({word}) = approximately vector\\({real}, {real}, {real})") {
+        Then("normalize\\({word}) =( approximately) vector\\({real}, {real}, {real})") {
                 v: String, x: Double, y: Double, z: Double ->
 
             assertThat(tuples[v]!!.normalize()).isCloseTo(vector(x, y, z), epsilon);
         }
 
-        Then("normalize\\({word}) = vector\\({real}, {real}, {real})") {
-                v: String, x: Double, y: Double, z: Double ->
-
-            assertThat(tuples[v]!!.normalize()).isEqualTo(vector(x, y, z));
-        }
-
         Then("dot\\({word}, {word}) = {real}") { v1: String, v2: String, e: Double ->
-            assertThat(tuples[v1]!!.dot(tuples[v2]!!)).isEqualTo(e)
+            assertThat(tuples[v1]!!.dot(tuples[v2]!!)).isCloseTo(e, epsilon)
         }
 
         Then("cross\\({word}, {word}) = vector\\({real}, {real}, {real})") {
                 v1: String, v2: String, x: Double, y: Double, z: Double ->
-            assertThat(tuples[v1]!!.cross(tuples[v2]!!)).isEqualTo(vector(x, y, z))
+            assertThat(tuples[v1]!!.cross(tuples[v2]!!)).isCloseTo(vector(x, y, z), epsilon)
+        }
+
+        Then("{word}.red = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.r).isCloseTo(e, epsilon) }
+        Then("{word}.green = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.g).isCloseTo(e, epsilon) }
+        Then("{word}.blue = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.b).isCloseTo(e, epsilon) }
+
+        Then("{word} + {word} = color\\({real}, {real}, {real})") {
+                v1: String, v2: String, r: Double, g: Double, b: Double ->
+            assertThat(tuples[v1]!! + tuples[v2]!!).isCloseTo(color(r, g, b), epsilon)
+        }
+
+        Then("{word} - {word} = color\\({real}, {real}, {real})") {
+                v1: String, v2: String, r: Double, g: Double, b: Double ->
+            assertThat(tuples[v1]!! - tuples[v2]!!).isCloseTo(color(r, g, b), epsilon)
+        }
+
+        Then("{word} * {real} = color\\({real}, {real}, {real})") {
+                v: String, s: Double, r: Double, g: Double, b: Double ->
+            assertThat(tuples[v]!! * s).isCloseTo(color(r, g, b), epsilon)
+        }
+
+        Then("{word} * {word} = color\\({real}, {real}, {real})") {
+                v1: String, v2: String, r: Double, g: Double, b: Double ->
+            assertThat(tuples[v1]!! * tuples[v2]!!).isCloseTo(color(r, g, b), epsilon)
         }
     }
 }
@@ -146,5 +172,3 @@ class TupleStepDefinitions: En {
 private fun Assert<Tuple>.isCloseTo(expected: Tuple, epsilon: Double) {
     matchesPredicate { v : Tuple -> v.isCloseTo(expected, epsilon) }
 }
-
-
