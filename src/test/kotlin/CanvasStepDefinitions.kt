@@ -26,8 +26,7 @@ class CanvasStepDefinitions: En {
         Then("c.width = {int}") { e: Int -> assertThat(c.width).isEqualTo(e) }
         Then("c.height = {int}") { e: Int -> assertThat(c.height).isEqualTo(e) }
 
-        Then("every pixel of c is color\\({real}, {real}, {real})") { r: Double, g: Double, b: Double ->
-            val e = color(r, g, b)
+        Then("every pixel of c is {color}") { e: Tuple ->
             c.pixels.forEach { pixel: Tuple -> assertThat(pixel).isEqualTo(e) }
         }
 

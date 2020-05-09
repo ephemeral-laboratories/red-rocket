@@ -1,58 +1,70 @@
-data class Tuple (val x: Double, val y: Double, val z: Double, val w: Double) {
+import kotlin.math.sqrt
+
+data class Tuple (val cells: DoubleArray) {
     val point:      Boolean get() = w == 1.0
     val vector:     Boolean get() = w == 0.0
-    val magnitude:  Double  get() = Math.sqrt(x * x + y * y + z * z + w * w)
-    val red:        Double  get() = x
-    val green:      Double  get() = y
-    val blue:       Double  get() = z
-    val alpha:      Double  get() = w
-    val r:          Double  get() = x
-    val g:          Double  get() = y
-    val b:          Double  get() = z
-    val a:          Double  get() = w
+    val magnitude:  Double  get() = sqrt(cells.sumByDouble { cell -> cell * cell })
+    val x:          Double  get() = cells[0]
+    val y:          Double  get() = cells[1]
+    val z:          Double  get() = cells[2]
+    val w:          Double  get() = cells[3]
+    val r:          Double  get() = cells[0]
+    val g:          Double  get() = cells[1]
+    val b:          Double  get() = cells[2]
+    val a:          Double  get() = cells[3]
+
+    constructor(x: Double, y: Double, z: Double) : this(doubleArrayOf(x, y, z))
+    constructor(x: Double, y: Double, z: Double, w: Double) : this(doubleArrayOf(x, y, z, w))
 
     companion object {
         val zero: Tuple = Tuple(0.0, 0.0, 0.0, 0.0)
 
-        fun point(x: Double, y: Double, z: Double) : Tuple {
-            return Tuple(x, y, z, 1.0)
-        }
+        fun point(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 1.0) }
+        fun vector(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 0.0) }
+        fun color(r: Double, g: Double, b: Double, a: Double) : Tuple { return Tuple(r, g, b, a) }
+        // Feels real dirty to default this to 0.0 but it's passing the tests
+        fun color(r: Double, g: Double, b: Double) : Tuple { return Tuple(r, g, b, 0.0) }
+        fun color(cells: DoubleArray) : Tuple { return Tuple(cells) }
+    }
 
-        fun vector(x: Double, y: Double, z: Double) : Tuple {
-            return Tuple(x, y, z, 0.0)
-        }
+    private fun unaryOp(op: (Double) -> Double): Tuple {
+        val result = DoubleArray(4)
+        (0 until 4).forEach { index -> result[index] = op(cells[index]) }
+        return Tuple(result)
+    }
 
-        fun color(r: Double, g: Double, b: Double, a: Double = 0.0) : Tuple {
-            return Tuple(r, g, b, a)
-        }
+    private fun binaryOp(their: Tuple, op: (Double, Double) -> Double): Tuple {
+        val result = DoubleArray(4)
+        (0 until 4).forEach { index -> result[index] = op(cells[index], their.cells[index]) }
+        return Tuple(result)
     }
 
     operator fun plus(their: Tuple): Tuple {
-        return Tuple(x + their.x, y + their.y, z + their.z, w + their.w)
+        return binaryOp(their) { a, b -> a + b }
     }
 
     operator fun minus(their: Tuple): Tuple {
-        return Tuple(x - their.x, y - their.y, z - their.z, w - their.w)
+        return binaryOp(their) { a, b -> a - b }
     }
 
     operator fun unaryMinus(): Tuple {
-        return Tuple(-x, -y, -z, -w)
+        return unaryOp { a -> -a }
     }
 
     operator fun times(scalar: Double): Tuple {
-        return Tuple(x * scalar, y * scalar, z * scalar, w * scalar)
+        return unaryOp { a -> a * scalar }
     }
 
     operator fun times(their: Tuple): Tuple {
-        return Tuple(x * their.x, y * their.y, z * their.z, w * their.w)
+        return binaryOp(their) { a, b -> a * b }
     }
 
     operator fun div(scalar: Double): Tuple {
-        return Tuple(x / scalar, y / scalar, z / scalar, w / scalar)
+        return unaryOp { a -> a / scalar }
     }
 
     operator fun div(their: Tuple): Tuple {
-        return Tuple(x / their.x, y / their.y, z / their.z, w / their.w)
+        return binaryOp(their) { a, b -> a / b }
     }
 
     fun normalize(): Tuple {
@@ -67,7 +79,7 @@ data class Tuple (val x: Double, val y: Double, val z: Double, val w: Double) {
     }
 
     fun dot(their: Tuple): Double {
-        return x * their.x + y * their.y + z * their.z;
+        return x * their.x + y * their.y + z * their.z + w * their.w;
     }
 
     fun cross(their: Tuple): Tuple {
@@ -80,11 +92,26 @@ data class Tuple (val x: Double, val y: Double, val z: Double, val w: Double) {
             x * their.y - y * their.x)
     }
 
-    fun toInts(): Array<Int> {
-        return arrayOf(floatToClampedInt(r), floatToClampedInt(g), floatToClampedInt(b), floatToClampedInt(a))
+    fun toInts(): IntArray {
+        return intArrayOf(floatToClampedInt(r), floatToClampedInt(g), floatToClampedInt(b), floatToClampedInt(a))
     }
 
-    fun floatToClampedInt(f: Double): Int {
+    private fun floatToClampedInt(f: Double): Int {
         return (f * 256).toInt().coerceIn(0, 255)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Tuple
+
+        if (!cells.contentEquals(other.cells)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return cells.contentHashCode()
     }
 }

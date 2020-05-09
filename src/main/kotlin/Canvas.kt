@@ -1,11 +1,12 @@
 @file:Suppress("EXPERIMENTAL_API_USAGE")
 
+import Tuple.Companion.color
 import java.nio.DoubleBuffer
 
 class Canvas(val width: Int, val height: Int) {
     val bpp : Int = 4
-    val stride : Int get() = width * 4
-    var buffer: DoubleBuffer = DoubleBuffer.allocate(width * height * 4)
+    val stride : Int get() = width * bpp
+    var buffer: DoubleBuffer = DoubleBuffer.allocate(height * stride)
 
     fun pixelPosition(x: Int, y: Int) {
         buffer.position(x * bpp + y * stride)
@@ -13,19 +14,21 @@ class Canvas(val width: Int, val height: Int) {
 
     fun getPixel(x: Int, y: Int): Tuple {
         pixelPosition(x, y)
-        return Tuple(buffer.get(), buffer.get(), buffer.get(), buffer.get())
+        val rgb = DoubleArray(4)
+        buffer.get(rgb)
+        return color(rgb)
     }
 
     fun setPixel(x: Int, y: Int, color: Tuple) {
         pixelPosition(x, y)
-        buffer.put(color.r).put(color.g).put(color.b).put(color.a)
+        buffer.put(color.cells)
     }
 
     fun fill(color: Tuple) {
         buffer.clear()
         buffer.position(0)
         while (buffer.remaining() > 0) {
-            buffer.put(color.r).put(color.g).put(color.b).put(color.a)
+            buffer.put(color.cells)
         }
     }
 
