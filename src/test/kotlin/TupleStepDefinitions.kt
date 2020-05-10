@@ -58,9 +58,9 @@ class TupleStepDefinitions: En {
         Then("{var} is a vector")     { v: String -> assertThat(tuples[v]!!.vector).isTrue() }
         Then("{var} is not a vector") { v: String -> assertThat(tuples[v]!!.vector).isFalse() }
 
-        Then("{var} = {tuple}") { v: String, e: Tuple ->
-            assertThat(tuples[v]!!).isCloseTo(e, epsilon)
-        }
+        Then("{var} = {tuple}") { v: String, e: Tuple -> assertThat(tuples[v]!!).isCloseTo(e, epsilon) }
+        Then("{var} = {point}") { v: String, e: Tuple -> assertThat(tuples[v]!!).isCloseTo(e, epsilon) }
+        Then("{var} = {vector}") { v: String, e: Tuple -> assertThat(tuples[v]!!).isCloseTo(e, epsilon) }
 
         Then("{var} + {var} = {tuple}") { v1: String, v2: String, e: Tuple ->
             assertThat(tuples[v1]!! + tuples[v2]!!).isCloseTo(e, epsilon)
@@ -132,6 +132,6 @@ class TupleStepDefinitions: En {
     }
 }
 
-private fun Assert<Tuple>.isCloseTo(expected: Tuple, epsilon: Double) {
+fun Assert<Tuple>.isCloseTo(expected: Tuple, epsilon: Double) {
     matchesPredicate { v : Tuple -> v.isCloseTo(expected, epsilon) }
 }

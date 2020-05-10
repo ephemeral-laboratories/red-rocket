@@ -2,16 +2,11 @@ import io.cucumber.java8.En
 
 class CommonParameterTypes: En {
     companion object {
-        val realRegex : String = "-?√?\\d+\\.\\d+(?:\\/-?√?\\d+\\.\\d+)?"
+        private const val doubleTermRegex : String = "\\d+(?:\\.\\d+)?"
+        private const val realTermRegex : String = "-?√?(?:${doubleTermRegex}|π)"
+        const val realRegex : String = "${realTermRegex}(?:\\s*\\/\\s*${realTermRegex})?"
 
-        fun realFromString(string: String) : Double {
-
-            // How long until we need a proper parser here just to parse numbers?
-            if (string.contains("/")) {
-                val rational = string.split("/")
-                return realFromString(rational[0]) / realFromString(rational[1])
-            }
-
+        fun realTermFromString(string: String) : Double {
             var s = string
             var negative = false
             var root = false
@@ -23,7 +18,13 @@ class CommonParameterTypes: En {
                 s = s.substring(1)
                 root = true
             }
-            var n = s.toDouble()
+
+            var n = if (s == "π") {
+                Math.PI
+            } else {
+                s.toDouble()
+            }
+
             if (root) {
                 n = Math.sqrt(n)
             }
@@ -32,11 +33,22 @@ class CommonParameterTypes: En {
             }
             return n
         }
+
+        fun realFromString(string: String) : Double {
+            // How long until we need a proper parser here just to parse numbers?
+            if (string.contains("/")) {
+                val rational = string.split("/")
+                return realTermFromString(rational[0].trim()) / realTermFromString(rational[1].trim())
+            } else {
+                return realTermFromString(string)
+            }
+        }
     }
 
     init {
+        ParameterType("mvar", "([A-Z][A-Za-z0-9_]*|transform|inv|half_quarter|full_quarter)") { string -> string }
+
         ParameterType("var", "[a-z][A-Za-z0-9_]*") { string -> string }
-        ParameterType("mvar", "[A-Z][A-Za-z0-9_]*") { string -> string }
 
         // I can smell this getting much hairier than this, but it would be nice if I could do sweet stuff
         // like (1 + √5)/2 eventually so let's get this started.
