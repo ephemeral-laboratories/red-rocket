@@ -71,11 +71,11 @@ data class Tuple (val cells: DoubleArray) {
         return div(magnitude)
     }
 
-    fun isCloseTo(their: Tuple, epsilon: Double) : Boolean {
-        return Math.abs(x - their.x) <= epsilon
-                && Math.abs(y - their.y) <= epsilon
-                && Math.abs(z - their.z) <= epsilon
-                && Math.abs(w - their.w) <= epsilon
+    fun isCloseTo(their: Tuple, delta: Double) : Boolean {
+        return Math.abs(x - their.x) <= delta
+                && Math.abs(y - their.y) <= delta
+                && Math.abs(z - their.z) <= delta
+                && Math.abs(w - their.w) <= delta
     }
 
     fun dot(their: Tuple): Double {

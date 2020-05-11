@@ -90,11 +90,11 @@ Feature: Matrices
       | 1.0 | 2.0 |  4.0 |  8.0 |
       | 2.0 | 4.0 |  8.0 | 16.0 |
       | 4.0 | 8.0 | 16.0 | 32.0 |
-    Then A * I = A
+    Then A * identity_matrix = A
 
   Scenario: Multiplying the identity matrix by a tuple
     Given a ← tuple(1.0, 2.0, 3.0, 4.0)
-    Then I * a = a
+    Then identity_matrix * a = a
 
   Scenario: Transposing a matrix
     Given the following matrix A:
@@ -109,8 +109,8 @@ Feature: Matrices
       | 0.0 | 8.0 | 3.0 | 8.0 |
 
   Scenario: Transposing the identity matrix
-    Given A ← transpose(I)
-    Then A = I
+    Given A ← transpose(identity_matrix)
+    Then A = identity_matrix
 
   Scenario: Calculating the determinant of a 2x2 matrix
     Given the following 2x2 matrix A:

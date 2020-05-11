@@ -145,13 +145,13 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         return true
     }
 
-    fun isCloseTo(their: Matrix, epsilon: Double): Boolean {
+    fun isCloseTo(their: Matrix, delta: Double): Boolean {
         if (their.rowCount != rowCount || their.columnCount != columnCount) {
             return false;
         }
 
         cells.forEachIndexed { index, value ->
-            if (abs(their.cells[index] - value) > epsilon) {
+            if (abs(their.cells[index] - value) > delta) {
                 return false;
             }
         }

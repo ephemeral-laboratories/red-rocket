@@ -17,7 +17,9 @@ class CanvasStepDefinitions: En {
             ppm = c.toPPM()
         }
 
-        When("write_pixel\\(c, {int}, {int}, {var})") { x: Int, y: Int, v: String -> c.setPixel(x, y, tuples[v]!!) }
+        When("write_pixel\\(c, {int}, {int}, {tuple_var})") { x: Int, y: Int, v: String ->
+            c.setPixel(x, y, tuples[v]!!)
+        }
 
         When("every pixel of c is set to color\\({real}, {real}, {real})") { r: Double, g: Double, b: Double ->
             c.fill(color(r, g, b))
@@ -30,7 +32,9 @@ class CanvasStepDefinitions: En {
             c.pixels.forEach { pixel: Tuple -> assertThat(pixel).isEqualTo(e) }
         }
 
-        Then("pixel_at\\(c, {int}, {int}) = {var}") { x: Int, y: Int, v: String -> assertThat(c.getPixel(x, y)).isEqualTo(tuples[v]!!)}
+        Then("pixel_at\\(c, {int}, {int}) = {tuple_var}") { x: Int, y: Int, v: String ->
+            assertThat(c.getPixel(x, y)).isEqualTo(tuples[v]!!)
+        }
 
         Then("lines {int}-{int} of ppm are") { start: Int, end: Int, expected: String ->
             val lines = ppm.lines().slice(IntRange(start - 1, end - 1))

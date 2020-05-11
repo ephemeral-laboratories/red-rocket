@@ -21,6 +21,8 @@ class TupleStepDefinitions: En {
     }
 
     init {
+        ParameterType("tuple_var", "(?:a|b|c|t|p|v)\\d*|red|origin|direction|zero|norm") { string -> string }
+
         ParameterType("tuple", "tuple\\(($realRegex), ($realRegex), ($realRegex), ($realRegex)\\)") {
                 s1: String, s2: String, s3: String, s4: String ->
             Tuple(realFromString(s1), realFromString(s2), realFromString(s3), realFromString(s4))
@@ -41,97 +43,97 @@ class TupleStepDefinitions: En {
             color(realFromString(s1), realFromString(s2), realFromString(s3))
         }
 
-        Given("{var} ← {tuple}") { v: String, e: Tuple -> tuples[v] = e }
-        Given("{var} ← {point}") { v: String, e: Tuple -> tuples[v] = e }
-        Given("{var} ← {vector}") { v: String, e: Tuple -> tuples[v] = e }
-        Given("{var} ← {color}") { v: String, e: Tuple -> tuples[v] = e }
+        Given("{tuple_var} ← {tuple}") { v: String, e: Tuple -> tuples[v] = e }
+        Given("{tuple_var} ← {point}") { v: String, e: Tuple -> tuples[v] = e }
+        Given("{tuple_var} ← {vector}") { v: String, e: Tuple -> tuples[v] = e }
+        Given("{tuple_var} ← {color}") { v: String, e: Tuple -> tuples[v] = e }
 
-        When("{var} ← normalize\\({var})") { v1: String, v2: String -> tuples[v1] = tuples[v2]!!.normalize() }
+        When("{tuple_var} ← normalize\\({tuple_var})") { v1: String, v2: String -> tuples[v1] = tuples[v2]!!.normalize() }
 
-        Then("{var}.x = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.x).isCloseTo(e, epsilon) }
-        Then("{var}.y = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.y).isCloseTo(e, epsilon) }
-        Then("{var}.z = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.z).isCloseTo(e, epsilon) }
-        Then("{var}.w = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.w).isCloseTo(e, epsilon) }
+        Then("{tuple_var}.x = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.x).isCloseTo(e, epsilon) }
+        Then("{tuple_var}.y = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.y).isCloseTo(e, epsilon) }
+        Then("{tuple_var}.z = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.z).isCloseTo(e, epsilon) }
+        Then("{tuple_var}.w = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.w).isCloseTo(e, epsilon) }
 
-        Then("{var} is a point")      { v: String -> assertThat(tuples[v]!!.point).isTrue() }
-        Then("{var} is not a point")  { v: String -> assertThat(tuples[v]!!.point).isFalse() }
-        Then("{var} is a vector")     { v: String -> assertThat(tuples[v]!!.vector).isTrue() }
-        Then("{var} is not a vector") { v: String -> assertThat(tuples[v]!!.vector).isFalse() }
+        Then("{tuple_var} is a point")      { v: String -> assertThat(tuples[v]!!.point).isTrue() }
+        Then("{tuple_var} is not a point")  { v: String -> assertThat(tuples[v]!!.point).isFalse() }
+        Then("{tuple_var} is a vector")     { v: String -> assertThat(tuples[v]!!.vector).isTrue() }
+        Then("{tuple_var} is not a vector") { v: String -> assertThat(tuples[v]!!.vector).isFalse() }
 
-        Then("{var} = {tuple}") { v: String, e: Tuple -> assertThat(tuples[v]!!).isCloseTo(e, epsilon) }
-        Then("{var} = {point}") { v: String, e: Tuple -> assertThat(tuples[v]!!).isCloseTo(e, epsilon) }
-        Then("{var} = {vector}") { v: String, e: Tuple -> assertThat(tuples[v]!!).isCloseTo(e, epsilon) }
+        Then("{tuple_var} = {tuple}") { v: String, e: Tuple -> assertThat(tuples[v]!!).isCloseTo(e, epsilon) }
+        Then("{tuple_var} = {point}") { v: String, e: Tuple -> assertThat(tuples[v]!!).isCloseTo(e, epsilon) }
+        Then("{tuple_var} = {vector}") { v: String, e: Tuple -> assertThat(tuples[v]!!).isCloseTo(e, epsilon) }
 
-        Then("{var} + {var} = {tuple}") { v1: String, v2: String, e: Tuple ->
+        Then("{tuple_var} + {tuple_var} = {tuple}") { v1: String, v2: String, e: Tuple ->
             assertThat(tuples[v1]!! + tuples[v2]!!).isCloseTo(e, epsilon)
         }
 
-        Then("{var} - {var} = {tuple}") { v1: String, v2: String, e: Tuple ->
+        Then("{tuple_var} - {tuple_var} = {tuple}") { v1: String, v2: String, e: Tuple ->
             assertThat(tuples[v1]!! - tuples[v2]!!).isCloseTo(e, epsilon)
         }
 
-        Then("{var} - {var} = {point}") { v1: String, v2: String, e: Tuple ->
+        Then("{tuple_var} - {tuple_var} = {point}") { v1: String, v2: String, e: Tuple ->
             assertThat(tuples[v1]!! - tuples[v2]!!).isCloseTo(e, epsilon)
         }
 
-        Then("{var} - {var} = {vector}") { v1: String, v2: String, e: Tuple ->
+        Then("{tuple_var} - {tuple_var} = {vector}") { v1: String, v2: String, e: Tuple ->
             assertThat(tuples[v1]!! - tuples[v2]!!).isCloseTo(e, epsilon)
         }
 
-        Then("-{var} = {tuple}") { v: String, e: Tuple ->
+        Then("-{tuple_var} = {tuple}") { v: String, e: Tuple ->
             assertThat(-tuples[v]!!).isCloseTo(e, epsilon)
         }
 
-        Then("-{var} = {vector}") { v: String, e: Tuple ->
+        Then("-{tuple_var} = {vector}") { v: String, e: Tuple ->
             assertThat(-tuples[v]!!).isCloseTo(e, epsilon)
         }
 
-        Then("{var} * {real} = {tuple}") { v: String, s: Double, t: Tuple ->
+        Then("{tuple_var} * {real} = {tuple}") { v: String, s: Double, t: Tuple ->
             assertThat(tuples[v]!! * s).isCloseTo(t, epsilon)
         }
 
-        Then("{var} / {real} = {tuple}") { v: String, s: Double, e: Tuple ->
+        Then("{tuple_var} / {real} = {tuple}") { v: String, s: Double, e: Tuple ->
             assertThat(tuples[v]!! / s).isCloseTo(e, epsilon)
         }
 
-        Then("magnitude\\({var}) = {real}") { v: String, e: Double ->
+        Then("magnitude\\({tuple_var}) = {real}") { v: String, e: Double ->
             assertThat(tuples[v]!!.magnitude).isCloseTo(e, epsilon)
         }
 
-        Then("normalize\\({var}) =( approximately) {vector}") { v: String, e: Tuple ->
+        Then("normalize\\({tuple_var}) =( approximately) {vector}") { v: String, e: Tuple ->
             assertThat(tuples[v]!!.normalize()).isCloseTo(e, epsilon)
         }
 
-        Then("dot\\({var}, {var}) = {real}") { v1: String, v2: String, e: Double ->
+        Then("dot\\({tuple_var}, {tuple_var}) = {real}") { v1: String, v2: String, e: Double ->
             assertThat(tuples[v1]!!.dot(tuples[v2]!!)).isCloseTo(e, epsilon)
         }
 
-        Then("cross\\({var}, {var}) = {vector}") { v1: String, v2: String, e: Tuple ->
+        Then("cross\\({tuple_var}, {tuple_var}) = {vector}") { v1: String, v2: String, e: Tuple ->
             assertThat(tuples[v1]!!.cross(tuples[v2]!!)).isCloseTo(e, epsilon)
         }
 
-        Then("{var}.red = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.r).isCloseTo(e, epsilon) }
-        Then("{var}.green = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.g).isCloseTo(e, epsilon) }
-        Then("{var}.blue = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.b).isCloseTo(e, epsilon) }
+        Then("{tuple_var}.red = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.r).isCloseTo(e, epsilon) }
+        Then("{tuple_var}.green = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.g).isCloseTo(e, epsilon) }
+        Then("{tuple_var}.blue = {real}") { v: String, e: Double -> assertThat(tuples[v]!!.b).isCloseTo(e, epsilon) }
 
-        Then("{var} + {var} = {color}") { v1: String, v2: String, e: Tuple ->
+        Then("{tuple_var} + {tuple_var} = {color}") { v1: String, v2: String, e: Tuple ->
             assertThat(tuples[v1]!! + tuples[v2]!!).isCloseTo(e, epsilon)
         }
 
-        Then("{var} - {var} = {color}") { v1: String, v2: String, e: Tuple ->
+        Then("{tuple_var} - {tuple_var} = {color}") { v1: String, v2: String, e: Tuple ->
             assertThat(tuples[v1]!! - tuples[v2]!!).isCloseTo(e, epsilon)
         }
 
-        Then("{var} * {real} = {color}") { v: String, s: Double, e: Tuple ->
+        Then("{tuple_var} * {real} = {color}") { v: String, s: Double, e: Tuple ->
             assertThat(tuples[v]!! * s).isCloseTo(e, epsilon)
         }
 
-        Then("{var} * {var} = {color}") { v1: String, v2: String, e: Tuple ->
+        Then("{tuple_var} * {tuple_var} = {color}") { v1: String, v2: String, e: Tuple ->
             assertThat(tuples[v1]!! * tuples[v2]!!).isCloseTo(e, epsilon)
         }
     }
 }
 
-fun Assert<Tuple>.isCloseTo(expected: Tuple, epsilon: Double) {
-    matchesPredicate { v : Tuple -> v.isCloseTo(expected, epsilon) }
+fun Assert<Tuple>.isCloseTo(expected: Tuple, delta: Double) {
+    matchesPredicate { t : Tuple -> t.isCloseTo(expected, delta) }
 }
