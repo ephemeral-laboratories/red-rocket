@@ -4,7 +4,6 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNull
 import io.cucumber.java8.En
 import org.trypticon.rocket.IntersectionStepDefinitions.Companion.comps
 import org.trypticon.rocket.IntersectionStepDefinitions.Companion.xs
@@ -27,7 +26,7 @@ class WorldStepDefinitions: En {
         }
 
         Given("w.light ← point_light\\({point}, {color})") { p: Tuple, c: Tuple ->
-            w.light = PointLight(p, c)
+            w.lights = mutableListOf(PointLight(p, c))
         }
 
         Given("{sphere_var} ← the first object in w") { sv: String ->
@@ -54,7 +53,9 @@ class WorldStepDefinitions: En {
             assertThat(w.objects).contains(spheres[sv]!!)
         }
 
-        Then("w has no light source") { assertThat(w.light).isNull() }
-        Then("w.light = light") { assertThat(w.light).isEqualTo(light) }
+        Then("w has no light source") { assertThat(w.lights).isEmpty() }
+        Then("w.light = light") {
+            assertThat(w.lights).isEqualTo(mutableListOf(light))
+        }
     }
 }

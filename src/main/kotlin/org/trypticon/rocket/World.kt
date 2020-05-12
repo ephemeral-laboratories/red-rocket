@@ -9,12 +9,12 @@ import org.trypticon.rocket.Tuple.Companion.white
 
 class World {
     var objects : MutableList<Shape> = mutableListOf()
-    var light : PointLight? = null
+    var lights : MutableList<PointLight> = mutableListOf()
 
     companion object {
         fun defaultWorld(): World {
             return World().apply {
-                light = PointLight(point(-10.0, 10.0, -10.0), white)
+                lights.add(PointLight(point(-10.0, 10.0, -10.0), white))
                 objects.add(Sphere().apply {
                     material.color = color(0.8, 1.0, 0.6)
                     material.diffuse = 0.7
@@ -34,8 +34,9 @@ class World {
     }
 
     fun shadeHit(precomputed: Intersection.Precomputed): Tuple {
-        val light = this.light ?: return black
-        return lighting(precomputed.obj.material, light, precomputed.point, precomputed.eyeVector, precomputed.normal)
+        return lights.fold(black) { color, light ->
+            color + lighting(precomputed.obj.material, light, precomputed.point, precomputed.eyeVector, precomputed.normal)
+        }
     }
 
     fun colorAt(ray: Ray): Tuple {
