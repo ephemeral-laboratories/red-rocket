@@ -1,7 +1,12 @@
 
 # IDEA
 .idea/
+out/
 
 # Gradle
 .gradle/
 build/
+
+# My own test output files
+out.ppm
+

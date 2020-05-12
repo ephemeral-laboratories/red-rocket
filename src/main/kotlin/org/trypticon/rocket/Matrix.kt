@@ -1,3 +1,5 @@
+package org.trypticon.rocket
+
 import java.lang.Math.abs
 
 data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArray) {
@@ -16,11 +18,23 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
 
     companion object {
         val identity2x2 = Matrix(2, 2, doubleArrayOf(1.0, 0.0, 0.0, 1.0))
-        val identity3x3 = Matrix(3, 3, doubleArrayOf(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0))
-        val identity4x4 = Matrix(4, 4, doubleArrayOf(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0))
+        val identity3x3 = Matrix(
+            3,
+            3,
+            doubleArrayOf(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+        )
+        val identity4x4 = Matrix(
+            4,
+            4,
+            doubleArrayOf(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0)
+        )
 
         fun fromLists(cells: List<List<Double>>): Matrix {
-            return Matrix(cells.size, cells[0].size, cells.flatten().toDoubleArray())
+            return Matrix(
+                cells.size,
+                cells[0].size,
+                cells.flatten().toDoubleArray()
+            )
         }
     }
 

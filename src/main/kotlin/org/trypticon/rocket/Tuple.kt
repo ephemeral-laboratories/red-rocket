@@ -17,7 +17,9 @@ data class Tuple (val cells: DoubleArray) {
     constructor(x: Double, y: Double, z: Double, w: Double) : this(doubleArrayOf(x, y, z, w))
 
     companion object {
-        val zero: Tuple = Tuple(0.0, 0.0, 0.0, 0.0)
+        val zero: Tuple = vector(0.0, 0.0, 0.0)
+        val origin: Tuple = point(0.0, 0.0, 0.0)
+        val black: Tuple = color(0.0, 0.0, 0.0)
 
         fun point(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 1.0) }
         fun vector(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 0.0) }
@@ -90,6 +92,10 @@ data class Tuple (val cells: DoubleArray) {
             y * their.z - z * their.y,
             z * their.x - x * their.z,
             x * their.y - y * their.x)
+    }
+
+    fun reflect(normal: Tuple): Tuple {
+        return this - normal * 2.0 * dot(normal)
     }
 
     fun toInts(): IntArray {

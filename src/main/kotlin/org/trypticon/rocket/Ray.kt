@@ -1,3 +1,5 @@
+package org.trypticon.rocket
+
 data class Ray(val origin: Tuple, val direction: Tuple) {
     fun position(t: Double): Tuple {
         return origin + direction * t

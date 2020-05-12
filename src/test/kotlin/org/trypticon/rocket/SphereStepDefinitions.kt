@@ -1,5 +1,7 @@
 
+import MaterialStepDefinitions.Companion.m
 import MatrixStepDefinitions.Companion.matrices
+import TupleStepDefinitions.Companion.tuples
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.cucumber.java8.En
@@ -26,8 +28,23 @@ class SphereStepDefinitions: En {
             s.transform = m
         }
 
+        When("{tuple_var} ← normal_at\\(s, {point})") { tv: String, p: Tuple ->
+            tuples[tv] = s.worldNormalAt(p)
+        }
+
+        When("m ← s.material") {
+            m = s.material
+        }
+        When("s.material ← m") {
+            s.material = m
+        }
+
         Then("s.transform = {matrix_var}") { mv: String ->
             assertThat(s.transform).isEqualTo(matrices[mv])
+        }
+
+        Then("s.material = m") {
+            assertThat(s.material).isEqualTo(m)
         }
     }
 }

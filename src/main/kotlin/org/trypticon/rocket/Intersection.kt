@@ -1,3 +1,5 @@
+package org.trypticon.rocket
+
 class Intersection(val t: Double, val obj: Sphere) {
     companion object {
         fun hit(intersections: List<Intersection>): Intersection? {

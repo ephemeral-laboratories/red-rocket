@@ -1,6 +1,6 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+package org.trypticon.rocket
 
-import Tuple.Companion.color
+import org.trypticon.rocket.Tuple.Companion.color
 import java.nio.DoubleBuffer
 
 class Canvas(val width: Int, val height: Int) {
@@ -39,22 +39,22 @@ class Canvas(val width: Int, val height: Int) {
         builder.append("P3\n")
         builder.append(width).append(' ').append(height).append('\n')
         builder.append("255\n")
-        IntRange(0, height - 1).forEach { y: Int ->
+        (0 until height).forEach { y: Int ->
             lineBuffer.clear()
-            IntRange(0, width - 1).forEach { x: Int ->
+            (0 until width).forEach { x: Int ->
                 getPixel(x, y).toInts().sliceArray(IntRange(0, 2)).forEach { i: Int ->
                     val nextValue = i.toString()
                     if (lineBuffer.length + 1 + nextValue.length >= maximumLineLength) {
                         builder.append(lineBuffer).append('\n')
                         lineBuffer.clear()
                     }
-                    if (lineBuffer.length > 0) {
+                    if (lineBuffer.isNotEmpty()) {
                         lineBuffer.append(' ')
                     }
                     lineBuffer.append(nextValue)
                 }
             }
-            if (lineBuffer.length > 0) {
+            if (lineBuffer.isNotEmpty()) {
                 builder.append(lineBuffer).append('\n')
             }
         }
