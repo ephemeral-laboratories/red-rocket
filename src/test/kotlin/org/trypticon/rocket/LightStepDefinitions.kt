@@ -1,7 +1,9 @@
-import TupleStepDefinitions.Companion.tuples
+package org.trypticon.rocket
+
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.cucumber.java8.En
+import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 
 class LightStepDefinitions: En {
     companion object {

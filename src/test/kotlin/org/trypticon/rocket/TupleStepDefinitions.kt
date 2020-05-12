@@ -1,9 +1,5 @@
+package org.trypticon.rocket
 
-import CommonParameterTypes.Companion.realFromString
-import CommonParameterTypes.Companion.realRegex
-import Tuple.Companion.color
-import Tuple.Companion.point
-import Tuple.Companion.vector
 import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.isCloseTo
@@ -11,7 +7,11 @@ import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import assertk.assertions.matchesPredicate
 import io.cucumber.java8.En
-
+import org.trypticon.rocket.CommonParameterTypes.Companion.realFromString
+import org.trypticon.rocket.CommonParameterTypes.Companion.realRegex
+import org.trypticon.rocket.Tuple.Companion.color
+import org.trypticon.rocket.Tuple.Companion.point
+import org.trypticon.rocket.Tuple.Companion.vector
 
 class TupleStepDefinitions: En {
     private val epsilon: Double = 0.00001
@@ -29,7 +29,12 @@ class TupleStepDefinitions: En {
 
         ParameterType("tuple", "tuple\\(($realRegex), ($realRegex), ($realRegex), ($realRegex)\\)") {
                 s1: String, s2: String, s3: String, s4: String ->
-            Tuple(realFromString(s1), realFromString(s2), realFromString(s3), realFromString(s4))
+            Tuple(
+                realFromString(s1),
+                realFromString(s2),
+                realFromString(s3),
+                realFromString(s4)
+            )
         }
 
         ParameterType("point", "point\\(($realRegex), ($realRegex), ($realRegex)\\)") {
@@ -55,7 +60,8 @@ class TupleStepDefinitions: En {
         When("{tuple_var} ← normalize\\({tuple_var})") { tv1: String, tv2: String -> tuples[tv1] = tuples[tv2]!!.normalize() }
 
         When("{tuple_var} ← reflect\\({tuple_var}, {tuple_var})") { tv1: String, tv2: String, tv3: String ->
-            tuples[tv1] = tuples[tv2]!!.reflect(tuples[tv3]!!)
+            tuples[tv1] = tuples[tv2]!!.reflect(
+                tuples[tv3]!!)
         }
 
         Then("{tuple_var}.x = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.x).isCloseTo(e, epsilon) }
@@ -113,11 +119,15 @@ class TupleStepDefinitions: En {
         }
 
         Then("dot\\({tuple_var}, {tuple_var}) = {real}") { tv1: String, tv2: String, e: Double ->
-            assertThat(tuples[tv1]!!.dot(tuples[tv2]!!)).isCloseTo(e, epsilon)
+            assertThat(
+                tuples[tv1]!!.dot(
+                    tuples[tv2]!!)).isCloseTo(e, epsilon)
         }
 
         Then("cross\\({tuple_var}, {tuple_var}) = {vector}") { tv1: String, tv2: String, e: Tuple ->
-            assertThat(tuples[tv1]!!.cross(tuples[tv2]!!)).isCloseTo(e, epsilon)
+            assertThat(
+                tuples[tv1]!!.cross(
+                    tuples[tv2]!!)).isCloseTo(e, epsilon)
         }
 
         Then("{tuple_var}.red = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.r).isCloseTo(e, epsilon) }
@@ -141,7 +151,8 @@ class TupleStepDefinitions: En {
         }
 
         Then("{tuple_var} = normalize\\({tuple_var})") { tv1: String, tv2: String ->
-            assertThat(tuples[tv1]!!).isCloseTo(tuples[tv2]!!.normalize(), epsilon)
+            assertThat(tuples[tv1]!!).isCloseTo(
+                tuples[tv2]!!.normalize(), epsilon)
         }
     }
 }

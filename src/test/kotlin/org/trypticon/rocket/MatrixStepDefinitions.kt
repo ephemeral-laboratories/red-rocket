@@ -1,18 +1,19 @@
+package org.trypticon.rocket
 
-import CommonParameterTypes.Companion.realFromString
-import CommonParameterTypes.Companion.realRegex
-import Transforms.Companion.rotationX
-import Transforms.Companion.rotationY
-import Transforms.Companion.rotationZ
-import Transforms.Companion.scaling
-import Transforms.Companion.shearing
-import Transforms.Companion.translation
-import TupleStepDefinitions.Companion.tuples
 import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.*
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
+import org.trypticon.rocket.CommonParameterTypes.Companion.realFromString
+import org.trypticon.rocket.CommonParameterTypes.Companion.realRegex
+import org.trypticon.rocket.Transforms.Companion.rotationX
+import org.trypticon.rocket.Transforms.Companion.rotationY
+import org.trypticon.rocket.Transforms.Companion.rotationZ
+import org.trypticon.rocket.Transforms.Companion.scaling
+import org.trypticon.rocket.Transforms.Companion.shearing
+import org.trypticon.rocket.Transforms.Companion.translation
+import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 
 class MatrixStepDefinitions: En {
     private val epsilon: Double = 0.00001
@@ -95,10 +96,12 @@ class MatrixStepDefinitions: En {
         }
 
         Then("{matrix_var} = {matrix_var}") { mv1: String?, mv2: String? ->
-            assertThat(matrices[mv1]!!).isEqualTo(matrices[mv2]!!)
+            assertThat(matrices[mv1]!!).isEqualTo(
+                matrices[mv2]!!)
         }
         Then("{matrix_var} != {matrix_var}") { mv1: String?, mv2: String? ->
-            assertThat(matrices[mv1]!!).isNotEqualTo(matrices[mv2]!!)
+            assertThat(matrices[mv1]!!).isNotEqualTo(
+                matrices[mv2]!!)
         }
 
         Then("{matrix_var} is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->
@@ -109,7 +112,8 @@ class MatrixStepDefinitions: En {
         }
 
         Then("{matrix_var} * {matrix_var} = {matrix_var}") { mv1: String, mv2: String, v3: String ->
-            assertThat(matrices[mv1]!! * matrices[mv2]!!).isEqualTo(matrices[v3]!!)
+            assertThat(matrices[mv1]!! * matrices[mv2]!!).isEqualTo(
+                matrices[v3]!!)
         }
         Then("{matrix_var} * {tuple_var} = {tuple_var}") { mv: String, tv1: String, tv2: String ->
             assertThat(matrices[mv]!! * tuples[tv1]!!).isEqualTo(tuples[tv2]!!)
@@ -129,7 +133,8 @@ class MatrixStepDefinitions: En {
         }
 
         Then("{matrix_var} * inverse\\({matrix_var}) = {matrix_var}") { mv1: String, mv2: String, mv3: String ->
-            assertThat(matrices[mv1]!! * matrices[mv2]!!.inverse()).isCloseTo(matrices[mv3]!!, epsilon)
+            assertThat(matrices[mv1]!! * matrices[mv2]!!.inverse()).isCloseTo(
+                matrices[mv3]!!, epsilon)
         }
 
         Then("submatrix\\({matrix_var}, {int}, {int}) is $theFollowingMatrix:") {

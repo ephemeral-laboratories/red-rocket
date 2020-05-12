@@ -1,10 +1,11 @@
+package org.trypticon.rocket
 
-import MaterialStepDefinitions.Companion.m
-import MatrixStepDefinitions.Companion.matrices
-import TupleStepDefinitions.Companion.tuples
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.cucumber.java8.En
+import org.trypticon.rocket.MaterialStepDefinitions.Companion.m
+import org.trypticon.rocket.MatrixStepDefinitions.Companion.matrices
+import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 
 class SphereStepDefinitions: En {
     private val epsilon: Double = 0.00001

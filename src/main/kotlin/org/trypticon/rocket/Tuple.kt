@@ -1,3 +1,5 @@
+package org.trypticon.rocket
+
 import kotlin.math.sqrt
 
 data class Tuple (val cells: DoubleArray) {
@@ -17,16 +19,46 @@ data class Tuple (val cells: DoubleArray) {
     constructor(x: Double, y: Double, z: Double, w: Double) : this(doubleArrayOf(x, y, z, w))
 
     companion object {
-        val zero: Tuple = vector(0.0, 0.0, 0.0)
-        val origin: Tuple = point(0.0, 0.0, 0.0)
-        val black: Tuple = color(0.0, 0.0, 0.0)
+        val zero: Tuple =
+            vector(0.0, 0.0, 0.0)
+        val origin: Tuple =
+            point(0.0, 0.0, 0.0)
+        val black: Tuple =
+            color(0.0, 0.0, 0.0)
 
-        fun point(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 1.0) }
-        fun vector(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 0.0) }
-        fun color(r: Double, g: Double, b: Double, a: Double) : Tuple { return Tuple(r, g, b, a) }
+        fun point(x: Double, y: Double, z: Double) : Tuple { return Tuple(
+            x,
+            y,
+            z,
+            1.0
+        )
+        }
+        fun vector(x: Double, y: Double, z: Double) : Tuple { return Tuple(
+            x,
+            y,
+            z,
+            0.0
+        )
+        }
+        fun color(r: Double, g: Double, b: Double, a: Double) : Tuple { return Tuple(
+            r,
+            g,
+            b,
+            a
+        )
+        }
         // Feels real dirty to default this to 0.0 but it's passing the tests
-        fun color(r: Double, g: Double, b: Double) : Tuple { return Tuple(r, g, b, 0.0) }
-        fun color(cells: DoubleArray) : Tuple { return Tuple(cells) }
+        fun color(r: Double, g: Double, b: Double) : Tuple { return Tuple(
+            r,
+            g,
+            b,
+            0.0
+        )
+        }
+        fun color(cells: DoubleArray) : Tuple { return Tuple(
+            cells
+        )
+        }
     }
 
     private fun unaryOp(op: (Double) -> Double): Tuple {
@@ -91,7 +123,8 @@ data class Tuple (val cells: DoubleArray) {
         return vector(
             y * their.z - z * their.y,
             z * their.x - x * their.z,
-            x * their.y - y * their.x)
+            x * their.y - y * their.x
+        )
     }
 
     fun reflect(normal: Tuple): Tuple {

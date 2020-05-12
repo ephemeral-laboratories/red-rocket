@@ -1,17 +1,20 @@
+package org.trypticon.rocket
 
-import Tuple.Companion.color
-import TupleStepDefinitions.Companion.tuples
 import assertk.assertThat
 import assertk.assertions.endsWith
 import assertk.assertions.isEqualTo
 import io.cucumber.java8.En
+import org.trypticon.rocket.Tuple.Companion.color
+import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 
 class CanvasStepDefinitions: En {
     lateinit var c : Canvas
     lateinit var ppm : String
 
     init {
-        Given("c ← canvas\\({int}, {int})") { width: Int, height: Int -> c = Canvas(width, height) }
+        Given("c ← canvas\\({int}, {int})") { width: Int, height: Int -> c =
+            Canvas(width, height)
+        }
 
         When("ppm ← canvas_to_ppm\\(c)") {
             ppm = c.toPPM()

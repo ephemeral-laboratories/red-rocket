@@ -1,10 +1,12 @@
-import RayStepDefinitions.Companion.rays
-import SphereStepDefinitions.Companion.s
+package org.trypticon.rocket
+
 import assertk.assertThat
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import io.cucumber.java8.En
+import org.trypticon.rocket.RayStepDefinitions.Companion.rays
+import org.trypticon.rocket.SphereStepDefinitions.Companion.s
 
 class IntersectionStepDefinitions: En {
     private val epsilon: Double = 0.00001
@@ -42,7 +44,8 @@ class IntersectionStepDefinitions: En {
         }
 
         Then("{intersection_var} = {intersection_var}") { v1: String, v2: String ->
-            assertThat(intersections[v1]!!).isEqualTo(intersections[v2]!!)
+            assertThat(intersections[v1]!!).isEqualTo(
+                intersections[v2]!!)
         }
         Then("{intersection_var} is nothing") { v: String ->
             assertThat(intersections[v]).isNull()

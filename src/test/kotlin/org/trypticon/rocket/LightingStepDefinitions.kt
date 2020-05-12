@@ -1,10 +1,11 @@
+package org.trypticon.rocket
 
-import LightStepDefinitions.Companion.light
-import Lighting.Companion.lighting
-import MaterialStepDefinitions.Companion.m
-import TupleStepDefinitions.Companion.tuples
 import assertk.assertThat
 import io.cucumber.java8.En
+import org.trypticon.rocket.LightStepDefinitions.Companion.light
+import org.trypticon.rocket.Lighting.Companion.lighting
+import org.trypticon.rocket.MaterialStepDefinitions.Companion.m
+import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 
 class LightingStepDefinitions: En {
     private val epsilon: Double = 0.00001

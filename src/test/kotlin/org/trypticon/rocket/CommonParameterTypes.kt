@@ -1,10 +1,12 @@
+package org.trypticon.rocket
+
 import io.cucumber.java8.En
 
 class CommonParameterTypes: En {
     companion object {
         private const val doubleTermRegex : String = "\\d+(?:\\.\\d+)?"
-        private const val realTermRegex : String = "-?√?(?:${doubleTermRegex}|π)"
-        const val realRegex : String = "${realTermRegex}(?:\\s*\\/\\s*${realTermRegex})?"
+        private const val realTermRegex : String = "-?√?(?:$doubleTermRegex|π)"
+        const val realRegex : String = "$realTermRegex(?:\\s*\\/\\s*$realTermRegex)?"
 
         private fun realTermFromString(string: String) : Double {
             var s = string
@@ -38,7 +40,9 @@ class CommonParameterTypes: En {
             // How long until we need a proper parser here just to parse numbers?
             if (string.contains("/")) {
                 val rational = string.split("/")
-                return realTermFromString(rational[0].trim()) / realTermFromString(rational[1].trim())
+                return realTermFromString(
+                    rational[0].trim()
+                ) / realTermFromString(rational[1].trim())
             } else {
                 return realTermFromString(string)
             }
@@ -48,6 +52,8 @@ class CommonParameterTypes: En {
     init {
         // I can smell this getting much hairier than this, but it would be nice if I could do sweet stuff
         // like (1 + √5)/2 eventually so let's get this started.
-        ParameterType("real", realRegex) { string -> realFromString(string) }
+        ParameterType("real",
+            realRegex
+        ) { string -> realFromString(string) }
     }
 }
