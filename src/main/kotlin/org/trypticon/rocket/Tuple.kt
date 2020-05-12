@@ -25,6 +25,8 @@ data class Tuple (val cells: DoubleArray) {
             point(0.0, 0.0, 0.0)
         val black: Tuple =
             color(0.0, 0.0, 0.0)
+        val white: Tuple =
+            color(1.0, 1.0, 1.0)
 
         fun point(x: Double, y: Double, z: Double) : Tuple { return Tuple(
             x,

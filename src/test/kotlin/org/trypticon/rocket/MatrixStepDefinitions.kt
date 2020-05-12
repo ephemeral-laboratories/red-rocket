@@ -5,6 +5,7 @@ import assertk.assertThat
 import assertk.assertions.*
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
+import org.trypticon.rocket.CommonParameterTypes.Companion.epsilon
 import org.trypticon.rocket.CommonParameterTypes.Companion.realFromString
 import org.trypticon.rocket.CommonParameterTypes.Companion.realRegex
 import org.trypticon.rocket.Transforms.Companion.rotationX
@@ -13,14 +14,24 @@ import org.trypticon.rocket.Transforms.Companion.rotationZ
 import org.trypticon.rocket.Transforms.Companion.scaling
 import org.trypticon.rocket.Transforms.Companion.shearing
 import org.trypticon.rocket.Transforms.Companion.translation
+import org.trypticon.rocket.Transforms.Companion.viewTransform
 import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 
 class MatrixStepDefinitions: En {
-    private val epsilon: Double = 0.00001
     private val theFollowingMatrix = "the following( 4x4)( 3x3)( 2x2) matrix"
 
     companion object {
         val matrices: MutableMap<String, Matrix> = mutableMapOf()
+
+        fun scalingFromString(string: String): Matrix {
+            val open = string.indexOf('(')
+            val close = string.indexOf(')')
+            if (string.substring(0, open) != "scaling") {
+                throw IllegalArgumentException("Unknown transform: " + string)
+            }
+            val params = string.substring(open + 1, close).split(", ")
+            return scaling(realFromString(params[0]), realFromString(params[1]), realFromString(params[2]))
+        }
     }
 
     init {
@@ -38,6 +49,15 @@ class MatrixStepDefinitions: En {
         ParameterType("scaling", "scaling\\(($realRegex), ($realRegex), ($realRegex)\\)") {
                 s1: String, s2: String, s3: String ->
             scaling(realFromString(s1), realFromString(s2), realFromString(s3))
+        }
+        ParameterType("rotation", "rotation_([xyz])\\(($realRegex)\\)") { s1: String, s2: String ->
+            val theta = realFromString(s2)
+            when (s1) {
+                "x" -> { rotationX(theta) }
+                "y" -> { rotationY(theta) }
+                "z" -> { rotationZ(theta) }
+                else -> { throw IllegalArgumentException("Unsupported rotation: ${s1}") }
+            }
         }
 
         Given("$theFollowingMatrix {matrix_var}:") { mv: String, dataTable: DataTable ->
@@ -78,6 +98,11 @@ class MatrixStepDefinitions: En {
                 mv: String, xy: Double, xz: Double, yx: Double, yz: Double, zx: Double, zy: Double ->
             matrices[mv] = shearing(xy, xz, yx, yz, zx, zy)
         }
+        Given("{matrix_var} ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") {
+                mv: String, tv1: String, tv2: String, tv3: String ->
+            matrices[mv] = viewTransform(tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!)
+        }
+
         Given("{matrix_var} ← {scaling} * rotation_z\\({real})") { mv: String, m: Matrix, theta: Double ->
             matrices[mv] = m * rotationZ(theta)
         }
@@ -102,6 +127,16 @@ class MatrixStepDefinitions: En {
         Then("{matrix_var} != {matrix_var}") { mv1: String?, mv2: String? ->
             assertThat(matrices[mv1]!!).isNotEqualTo(
                 matrices[mv2]!!)
+        }
+
+        Given("{matrix_var} = {translation}") { mv: String, m: Matrix ->
+            assertThat(matrices[mv]!!).isEqualTo(m)
+        }
+        Given("{matrix_var} = {scaling}") { mv: String, m: Matrix ->
+            assertThat(matrices[mv]!!).isEqualTo(m)
+        }
+        Given("{matrix_var} = {rotation}") { mv: String, m: Matrix ->
+            assertThat(matrices[mv]!!).isEqualTo(m)
         }
 
         Then("{matrix_var} is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->

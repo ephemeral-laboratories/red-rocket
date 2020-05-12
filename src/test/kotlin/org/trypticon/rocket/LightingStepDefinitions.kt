@@ -2,14 +2,13 @@ package org.trypticon.rocket
 
 import assertk.assertThat
 import io.cucumber.java8.En
+import org.trypticon.rocket.CommonParameterTypes.Companion.epsilon
 import org.trypticon.rocket.LightStepDefinitions.Companion.light
 import org.trypticon.rocket.Lighting.Companion.lighting
 import org.trypticon.rocket.MaterialStepDefinitions.Companion.m
 import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 
 class LightingStepDefinitions: En {
-    private val epsilon: Double = 0.00001
-
     companion object {
         lateinit var result: Tuple
     }

@@ -2,12 +2,11 @@ package org.trypticon.rocket
 
 import assertk.assertThat
 import io.cucumber.java8.En
+import org.trypticon.rocket.CommonParameterTypes.Companion.epsilon
 import org.trypticon.rocket.MatrixStepDefinitions.Companion.matrices
 import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 
 class RayStepDefinitions: En {
-    private val epsilon: Double = 0.00001
-
     companion object {
         val rays : MutableMap<String, Ray> = mutableMapOf()
     }

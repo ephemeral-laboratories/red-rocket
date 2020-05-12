@@ -76,5 +76,18 @@ class Transforms {
                 )
             )
         }
+
+        fun viewTransform(from: Tuple, to: Tuple, up: Tuple): Matrix {
+            val forward = (to - from).normalize()
+            val upn = up.normalize()
+            val left = forward.cross(upn)
+            val trueUp = left.cross(forward)
+            val orientation = Matrix(4, 4, doubleArrayOf(
+                    left.x,     left.y,     left.z, 0.0,
+                  trueUp.x,   trueUp.y,   trueUp.z, 0.0,
+                -forward.x, -forward.y, -forward.z, 0.0,
+                       0.0,        0.0,        0.0, 1.0))
+            return orientation * translation(-from.x, -from.y, -from.z)
+        }
     }
 }

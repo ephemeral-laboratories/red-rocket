@@ -4,11 +4,13 @@ import io.cucumber.java8.En
 
 class CommonParameterTypes: En {
     companion object {
-        private const val doubleTermRegex : String = "\\d+(?:\\.\\d+)?"
-        private const val realTermRegex : String = "-?√?(?:$doubleTermRegex|π)"
-        const val realRegex : String = "$realTermRegex(?:\\s*\\/\\s*$realTermRegex)?"
+        val epsilon: Double = 0.00001
 
-        private fun realTermFromString(string: String) : Double {
+        private const val doubleTermRegex: String = "\\d+(?:\\.\\d+)?"
+        private const val realTermRegex: String = "-?√?(?:$doubleTermRegex|π)"
+        const val realRegex: String = "$realTermRegex(?:\\s*\\/\\s*$realTermRegex)?"
+
+        private fun realTermFromString(string: String): Double {
             var s = string
             var negative = false
             var root = false
@@ -36,7 +38,7 @@ class CommonParameterTypes: En {
             return n
         }
 
-        fun realFromString(string: String) : Double {
+        fun realFromString(string: String): Double {
             // How long until we need a proper parser here just to parse numbers?
             if (string.contains("/")) {
                 val rational = string.split("/")
@@ -52,8 +54,8 @@ class CommonParameterTypes: En {
     init {
         // I can smell this getting much hairier than this, but it would be nice if I could do sweet stuff
         // like (1 + √5)/2 eventually so let's get this started.
-        ParameterType("real",
-            realRegex
-        ) { string -> realFromString(string) }
+        ParameterType("real", realRegex) { string -> realFromString(string) }
+
+        ParameterType("boolean", "true|false") { string -> string == "true" }
     }
 }
