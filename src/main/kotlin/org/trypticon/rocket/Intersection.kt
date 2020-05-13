@@ -12,7 +12,7 @@ class Intersection(val t: Double, val obj: Shape) {
         }
     }
 
-    fun prepareComputations(ray: Ray): Precomputed {
+    fun prepareComputations(ray: Ray, allIntersections: List<Intersection>): Precomputed {
         val point = ray.position(t)
         val eyeVector = -ray.direction
         var normal = obj.worldNormalAt(point)
@@ -22,7 +22,27 @@ class Intersection(val t: Double, val obj: Shape) {
         }
         val reflectVector = ray.direction.reflect(normal)
         val overPoint = point + normal * epsilon
-        return Precomputed(t, obj, point, overPoint, eyeVector, normal, reflectVector, inside)
+        val underPoint = point - normal * epsilon
+
+        val containers : MutableList<Shape> = mutableListOf()
+        var n1 = 1.0
+        var n2 = 1.0
+        for (i in allIntersections) {
+            if (i == this) {
+                n1 = containers.lastOrNull()?.material?.refractiveIndex ?: 1.0
+            }
+            if (containers.contains(i.obj)) {
+                containers.remove(i.obj)
+            } else {
+                containers.add(i.obj)
+            }
+            if (i == this) {
+                n2 = containers.lastOrNull()?.material?.refractiveIndex ?: 1.0
+                break
+            }
+        }
+
+        return Precomputed(t, obj, point, overPoint, underPoint, eyeVector, normal, reflectVector, inside, n1, n2)
     }
 
     data class Precomputed(
@@ -30,8 +50,11 @@ class Intersection(val t: Double, val obj: Shape) {
         val obj: Shape,
         val point: Tuple,
         val overPoint: Tuple,
+        val underPoint: Tuple,
         val eyeVector: Tuple,
         val normal: Tuple,
         val reflectVector: Tuple,
-        val inside: Boolean)
+        val inside: Boolean,
+        val n1: Double,
+        val n2: Double)
 }

@@ -71,3 +71,14 @@ Feature: Materials
   Scenario: Reflectivity for the default material
     Given m ← material()
     Then m.reflective = 0.0
+
+  Scenario: Transparency and Refractive Index for the default material
+    Given m ← material()
+    Then m.transparency = 0.0
+    And m.refractive_index = 1.0
+
+  Scenario: A helper for producing a sphere with a glassy material
+    Given s ← glass_sphere()
+    Then s.transform = identity_matrix
+    And s.material.transparency = 1.0
+    And s.material.refractive_index = 1.5

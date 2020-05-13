@@ -7,6 +7,7 @@ import org.trypticon.rocket.Tuple.Companion.point
 import org.trypticon.rocket.Tuple.Companion.white
 import org.trypticon.rocket.shapes.Shape
 import org.trypticon.rocket.shapes.Sphere
+import kotlin.math.sqrt
 
 class World {
     var objects : MutableList<Shape> = mutableListOf()
@@ -50,14 +51,15 @@ class World {
             val surface = precomputed.obj.material.lighting(
                 precomputed.obj, light, precomputed.overPoint, precomputed.eyeVector, precomputed.normal, shadowed)
             val reflected = reflectedColor(precomputed, recursionsAllowed)
-            color + surface + reflected
+            val refracted = refractedColor(precomputed, recursionsAllowed)
+            color + surface + reflected + refracted
         }
     }
 
     fun colorAt(ray: Ray, recursionsAllowed: Int = 5): Tuple {
         val intersections = intersect(ray)
         val hit = Intersection.hit(intersections) ?: return black
-        val precomputed = hit.prepareComputations(ray)
+        val precomputed = hit.prepareComputations(ray, intersections)
         return shadeHit(precomputed, recursionsAllowed)
     }
 
@@ -73,5 +75,35 @@ class World {
         val reflectRay = Ray(comps.overPoint, comps.reflectVector)
         val color = colorAt(reflectRay, recursionsAllowed - 1)
         return color * comps.obj.material.reflective
+    }
+
+    fun refractedColor(comps: Intersection.Precomputed, recursionsAllowed: Int = 5): Tuple {
+        if (recursionsAllowed == 0) {
+            return black
+        }
+
+        if (comps.obj.material.transparency == 0.0) {
+            return black
+        }
+
+        // Find the ratio of first index of refraction to the second.
+        // (Yup, this is inverted from the definition of Snell's Law.)
+        val nRatio = comps.n1 / comps.n2
+        // cos(theta_i) is the same as the dot product of the two vectors
+        val cosI = comps.eyeVector.dot(comps.normal)
+        // Find sin(theta_t)^2 via trigonometric identity
+        val sin2t = nRatio * nRatio * (1 - cosI * cosI)
+        if (sin2t > 1.0) {
+            // Total internal reflection
+            return black
+        }
+
+        // Find cos(theta_t) via trigonometric identity
+        val cosT = sqrt(1.0 - sin2t)
+        val direction = comps.normal * (nRatio * cosI - cosT) - comps.eyeVector * nRatio
+        val refractRay = Ray(comps.underPoint, direction)
+        // Find the color of the refracted ray, making sure to multiply
+        // by the transparency value to account for any opacity
+        return colorAt(refractRay, recursionsAllowed - 1) * comps.obj.material.transparency
     }
 }

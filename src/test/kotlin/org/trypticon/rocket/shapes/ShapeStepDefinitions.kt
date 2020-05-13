@@ -13,11 +13,12 @@ import org.trypticon.rocket.MatrixStepDefinitions.Companion.transformFromString
 import org.trypticon.rocket.RayStepDefinitions.Companion.rays
 import org.trypticon.rocket.Tuple
 import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
+import org.trypticon.rocket.patterns.TestPattern
 
 class ShapeStepDefinitions: En {
     companion object {
         val shapes: MutableMap<String, Shape> = mutableMapOf()
-        const val shapeVarRegex = "[ps]\\d*|shape|outer|inner|lower|upper|object"
+        const val shapeVarRegex = "[ps]\\d*|A|B|C|shape|outer|inner|lower|upper|object|floor|ball"
 
         fun configureFromDataTable(shape: Shape, dataTable: DataTable) {
             dataTable.asLists().forEach { row ->
@@ -30,15 +31,19 @@ class ShapeStepDefinitions: En {
                             realFromString(params[2])
                         )
                     }
-                    "material.diffuse" -> {
-                        shape.material.diffuse = realFromString(row[1])
+                    "material.pattern" -> {
+                        shape.material.pattern = if (row[1] == "test_pattern()") {
+                            TestPattern()
+                        } else {
+                            throw IllegalArgumentException("Unrecognised row: $row")
+                        }
                     }
-                    "material.specular" -> {
-                        shape.material.specular = realFromString(row[1])
-                    }
-                    "material.reflective" -> {
-                        shape.material.reflective = realFromString(row[1])
-                    }
+                    "material.ambient"          -> { shape.material.ambient         = realFromString(row[1]) }
+                    "material.diffuse"          -> { shape.material.diffuse         = realFromString(row[1]) }
+                    "material.specular"         -> { shape.material.specular        = realFromString(row[1]) }
+                    "material.reflective"       -> { shape.material.reflective      = realFromString(row[1]) }
+                    "material.transparency"     -> { shape.material.transparency    = realFromString(row[1]) }
+                    "material.refractive_index" -> { shape.material.refractiveIndex = realFromString(row[1]) }
                     "transform" -> {
                         shape.transform = transformFromString(row[1])
                     }
@@ -54,6 +59,10 @@ class ShapeStepDefinitions: En {
         ParameterType("shape_var", shapeVarRegex) { string -> string }
 
         Given("^($shapeVarRegex) ← test_shape\\(\\)") { sv: String -> shapes[sv] = TestShape() }
+
+        Given("{shape_var} has:") { sv: String, dataTable: DataTable ->
+            configureFromDataTable(shapes[sv]!!, dataTable)
+        }
 
         Given("{shape_var}.material.ambient ← {real}") { sv: String, v: Double ->
             shapes[sv]!!.material.ambient = v
@@ -99,6 +108,12 @@ class ShapeStepDefinitions: En {
         }
         Then("{tuple_var} = {shape_var}.material.color") { tv: String, sv: String ->
             assertThat(tuples[tv]!!).isEqualTo(shapes[sv]!!.material.color)
+        }
+        Then("{shape_var}.material.transparency = {real}") { sv: String, e: Double ->
+            assertThat(shapes[sv]!!.material.transparency).isEqualTo(e)
+        }
+        Then("{shape_var}.material.refractive_index = {real}") { sv: String, e: Double ->
+            assertThat(shapes[sv]!!.material.refractiveIndex).isEqualTo(e)
         }
 
         Then("{shape_var}.saved_ray.origin = {point}") { sv: String, e: Tuple ->

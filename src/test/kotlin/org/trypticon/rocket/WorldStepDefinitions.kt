@@ -46,6 +46,9 @@ class WorldStepDefinitions: En {
         When("{tuple_var} ← shade_hit\\(w, comps)") { tv: String ->
             tuples[tv] = w.shadeHit(comps)
         }
+        When("{tuple_var} ← shade_hit\\(w, comps, {int})") { tv: String, i: Int ->
+            tuples[tv] = w.shadeHit(comps, i)
+        }
 
         When("{tuple_var} ← color_at\\(w, {ray_var})") { tv: String, rv: String ->
             tuples[tv] = w.colorAt(rays[rv]!!)
@@ -56,6 +59,9 @@ class WorldStepDefinitions: En {
         }
         When("{tuple_var} ← reflected_color\\(w, comps, {int})") { tv: String, i: Int ->
             tuples[tv] = w.reflectedColor(comps, i)
+        }
+        When("{tuple_var} ← refracted_color\\(w, comps, {int})") { tv: String, i: Int ->
+            tuples[tv] = w.refractedColor(comps, i)
         }
 
         Then("w contains no objects") { assertThat(w.objects).isEmpty() }

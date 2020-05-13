@@ -1,6 +1,6 @@
 package org.trypticon.rocket
 
-import org.trypticon.rocket.patterns.StripePattern
+import org.trypticon.rocket.patterns.Pattern
 import org.trypticon.rocket.shapes.Shape
 import kotlin.math.pow
 
@@ -11,7 +11,9 @@ data class Material(
     var specular: Double = 0.9,
     var shininess: Double = 200.0,
     var reflective: Double = 0.0,
-    var pattern: StripePattern? = null
+    var transparency: Double = 0.0,
+    var refractiveIndex: Double = 1.0,
+    var pattern: Pattern? = null
 ) {
     fun lighting(
         shape: Shape,

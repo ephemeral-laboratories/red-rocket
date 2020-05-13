@@ -48,11 +48,13 @@ class MaterialStepDefinitions: En {
 
         Then("^m = material\\(\\)") { assertThat(m).isEqualTo(Material()) }
 
-        Then("m.color = {color}")     { e: Tuple -> assertThat(m.color).isEqualTo(e) }
-        Then("m.ambient = {real}")    { e: Double -> assertThat(m.ambient).isEqualTo(e) }
-        Then("m.diffuse = {real}")    { e: Double -> assertThat(m.diffuse).isEqualTo(e) }
-        Then("m.specular = {real}")   { e: Double -> assertThat(m.specular).isEqualTo(e) }
-        Then("m.shininess = {real}")  { e: Double -> assertThat(m.shininess).isEqualTo(e) }
-        Then("m.reflective = {real}") { e: Double -> assertThat(m.reflective).isEqualTo(e) }
+        Then("m.color = {color}")           { e: Tuple -> assertThat(m.color).isEqualTo(e) }
+        Then("m.ambient = {real}")          { e: Double -> assertThat(m.ambient).isEqualTo(e) }
+        Then("m.diffuse = {real}")          { e: Double -> assertThat(m.diffuse).isEqualTo(e) }
+        Then("m.specular = {real}")         { e: Double -> assertThat(m.specular).isEqualTo(e) }
+        Then("m.shininess = {real}")        { e: Double -> assertThat(m.shininess).isEqualTo(e) }
+        Then("m.reflective = {real}")       { e: Double -> assertThat(m.reflective).isEqualTo(e) }
+        Then("m.transparency = {real}")     { e: Double -> assertThat(m.transparency).isEqualTo(e) }
+        Then("m.refractive_index = {real}") { e: Double -> assertThat(m.refractiveIndex).isEqualTo(e) }
     }
 }
