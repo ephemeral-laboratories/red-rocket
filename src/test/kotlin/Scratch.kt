@@ -58,7 +58,9 @@ fun main() {
 
     val world = World().apply {
         objects = mutableListOf(floor, leftWall, rightWall, middle, right, left)
-        lights = mutableListOf(PointLight(point(-10.0, 10.0, -10.0), color(1.0, 1.0, 1.0)))
+        lights = mutableListOf(
+            PointLight(point(-11.0, 9.0, -10.0), color(1.0, 0.0, 1.0)),
+            PointLight(point(-9.0, 11.0, -10.0), color(0.0, 1.0, 1.0)))
     }
 
     val camera = Camera(500, 250, PI/3).apply {
