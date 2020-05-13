@@ -3,7 +3,7 @@ package org.trypticon.rocket
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import org.trypticon.rocket.CommonParameterTypes.Companion.realFromString
-import org.trypticon.rocket.MatrixStepDefinitions.Companion.scalingFromString
+import org.trypticon.rocket.MatrixStepDefinitions.Companion.transformFromString
 import org.trypticon.rocket.ShapeStepDefinitions.Companion.shapeVarRegex
 import org.trypticon.rocket.ShapeStepDefinitions.Companion.shapes
 import org.trypticon.rocket.Tuple.Companion.color
@@ -32,7 +32,7 @@ class SphereStepDefinitions: En {
                             material.specular = realFromString(row[1])
                         }
                         row[0] == "transform" -> {
-                            transform = scalingFromString(row[1])
+                            transform = transformFromString(row[1])
                         }
                         else -> {
                             throw IllegalArgumentException("Unrecognised row: $row")

@@ -9,7 +9,7 @@ import org.trypticon.rocket.RayStepDefinitions.Companion.rays
 class ShapeStepDefinitions: En {
     companion object {
         val shapes: MutableMap<String, Shape> = mutableMapOf()
-        const val shapeVarRegex = "[ps]\\d*|shape|outer|inner"
+        const val shapeVarRegex = "[ps]\\d*|shape|outer|inner|object"
     }
 
     init {

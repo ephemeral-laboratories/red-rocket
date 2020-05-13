@@ -1,5 +1,6 @@
 package org.trypticon.rocket
 
+import org.trypticon.rocket.patterns.StripePattern
 import kotlin.math.pow
 
 data class Material(
@@ -7,14 +8,25 @@ data class Material(
     var ambient: Double = 0.1,
     var diffuse: Double = 0.9,
     var specular: Double = 0.9,
-    var shininess: Double = 200.0
+    var shininess: Double = 200.0,
+    var pattern: StripePattern? = null
 ) {
-    fun lighting(light: PointLight, point: Tuple, eyeDirection: Tuple, normal: Tuple, inShadow: Boolean): Tuple {
+    fun lighting(
+        shape: Shape,
+        light: PointLight,
+        worldPoint: Tuple,
+        worldEyeDirection: Tuple,
+        worldNormal: Tuple,
+        inShadow: Boolean
+    ) : Tuple {
+
+        val color = pattern?.patternAtShape(shape, worldPoint) ?: color
+
         // Combine the surface color with the light's color/intensity
         val effectiveColor: Tuple = color * light.intensity
 
         // Direction to the light source
-        val lightDirection = (light.position - point).normalize()
+        val lightDirection = (light.position - worldPoint).normalize()
 
         // Ambient contribution
         var result = effectiveColor * ambient
@@ -23,7 +35,7 @@ data class Material(
             // lightDotNormal represents the cosine of the angle between the
             // light vector and the normal vector . A negative number means the
             // light is on the other side of the surface.
-            val lightDotNormal = lightDirection.dot(normal)
+            val lightDotNormal = lightDirection.dot(worldNormal)
 
             val diffuseColor: Tuple
             val specularColor: Tuple
@@ -37,8 +49,8 @@ data class Material(
                 // reflect_dot_eye represents the cosine of the angle between the
                 // reflection vector and the eye vector . A negative number means the
                 // light reflects away from the eye .
-                val reflectDirection = (-lightDirection).reflect(normal)
-                val reflectDotEye = reflectDirection.dot(eyeDirection)
+                val reflectDirection = (-lightDirection).reflect(worldNormal)
+                val reflectDotEye = reflectDirection.dot(worldEyeDirection)
 
                 specularColor = if (reflectDotEye <= 0) {
                     Tuple.black

@@ -23,7 +23,7 @@ class MatrixStepDefinitions: En {
     companion object {
         val matrices: MutableMap<String, Matrix> = mutableMapOf()
 
-        fun scalingFromString(string: String): Matrix {
+        fun transformFromString(string: String): Matrix {
             val open = string.indexOf('(')
             val close = string.indexOf(')')
             val params = string.substring(open + 1, close).split(", ")

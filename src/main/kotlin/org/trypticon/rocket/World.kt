@@ -46,7 +46,7 @@ class World {
         return lights.fold(black) { color, light ->
             val shadowed = isShadowed(precomputed.overPoint, light)
             color + precomputed.obj.material.lighting(
-                light, precomputed.point, precomputed.eyeVector, precomputed.normal, shadowed)
+                precomputed.obj, light, precomputed.point, precomputed.eyeVector, precomputed.normal, shadowed)
         }
     }
 

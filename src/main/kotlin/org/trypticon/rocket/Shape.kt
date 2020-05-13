@@ -2,7 +2,7 @@ package org.trypticon.rocket
 
 import org.trypticon.rocket.Tuple.Companion.vector
 
-abstract class Shape() {
+abstract class Shape {
     var transform: Matrix = Matrix.identity4x4
     var material: Material = Material()
 

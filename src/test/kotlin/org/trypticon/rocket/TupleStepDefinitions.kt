@@ -20,8 +20,9 @@ class TupleStepDefinitions: En {
     }
 
     init {
-        ParameterType("tuple_var", "(?:a|b|c|t|n|p|r|v)\\d*|red|position|origin|direction|" +
-                "zero|norm|intensity|eyev|normalv|from|to|up|result") {
+        ParameterType("tuple_var", "(?:a|b|c|t|n|p|r|v)\\d*|position|origin|direction|" +
+                "zero|norm|intensity|eyev|normalv|from|to|up|result|" +
+                "red|black|white") {
                 string ->
             string
         }
@@ -77,6 +78,10 @@ class TupleStepDefinitions: En {
         Then("{tuple_var} = {point}")  { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
         Then("{tuple_var} = {vector}") { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
         Then("{tuple_var} = {color}")  { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
+
+        Then("{tuple_var} = {tuple_var}")  { tv1: String, tv2: String ->
+            assertThat(tuples[tv1]!!).isCloseTo(tuples[tv2]!!, epsilon)
+        }
 
         Then("{tuple_var} + {tuple_var} = {tuple}") { tv1: String, tv2: String, e: Tuple ->
             assertThat(tuples[tv1]!! + tuples[tv2]!!).isCloseTo(e, epsilon)
