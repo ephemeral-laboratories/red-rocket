@@ -29,6 +29,9 @@ class WorldStepDefinitions: En {
             w.lights = mutableListOf(PointLight(p, c))
         }
 
+        Given("{sphere_var} is added to w") { sv: String ->
+            w.objects.add(spheres[sv]!!)
+        }
         Given("{sphere_var} ← the first object in w") { sv: String ->
             spheres[sv] = w.objects[0] as Sphere
         }
@@ -56,6 +59,10 @@ class WorldStepDefinitions: En {
         Then("w has no light source") { assertThat(w.lights).isEmpty() }
         Then("w.light = light") {
             assertThat(w.lights).isEqualTo(mutableListOf(light))
+        }
+
+        Then("is_shadowed\\(w, {tuple_var}) is {boolean}") { tv: String, e: Boolean ->
+            assertThat(w.isShadowed(tuples[tv]!!, w.lights[0])).isEqualTo(e)
         }
     }
 }

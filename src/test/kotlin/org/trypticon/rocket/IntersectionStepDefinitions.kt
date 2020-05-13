@@ -1,9 +1,7 @@
 package org.trypticon.rocket
 
 import assertk.assertThat
-import assertk.assertions.isCloseTo
-import assertk.assertions.isEqualTo
-import assertk.assertions.isNull
+import assertk.assertions.*
 import io.cucumber.java8.En
 import org.trypticon.rocket.CommonParameterTypes.Companion.epsilon
 import org.trypticon.rocket.RayStepDefinitions.Companion.rays
@@ -79,6 +77,12 @@ class IntersectionStepDefinitions: En {
         }
         Then("comps.point = {point}") { e: Tuple ->
             assertThat(comps.point).isCloseTo(e, epsilon)
+        }
+        Then("^comps.over_point.z < -EPSILON/2") {
+            assertThat(comps.overPoint.z).isLessThan(-epsilon / 2.0)
+        }
+        Then("comps.point.z > comps.over_point.z") {
+            assertThat(comps.point.z).isGreaterThan(comps.overPoint.z)
         }
         Then("comps.eyev = {vector}") { e: Tuple ->
             assertThat(comps.eyeVector).isCloseTo(e, epsilon)

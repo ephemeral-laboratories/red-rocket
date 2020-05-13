@@ -32,10 +32,21 @@ class World {
             .sortedBy { intersection -> intersection.t }
     }
 
+    fun isShadowed(point: Tuple, light: PointLight): Boolean {
+        val v = light.position - point
+        val distance = v.magnitude
+        val direction = v.normalize()
+        val r = Ray(point, direction)
+        val intersections = intersect(r)
+        val h = Intersection.hit(intersections)
+        return h != null && h.t < distance
+    }
+
     fun shadeHit(precomputed: Intersection.Precomputed): Tuple {
         return lights.fold(black) { color, light ->
+            val shadowed = isShadowed(precomputed.overPoint, light)
             color + precomputed.obj.material.lighting(
-                light, precomputed.point, precomputed.eyeVector, precomputed.normal)
+                light, precomputed.point, precomputed.eyeVector, precomputed.normal, shadowed)
         }
     }
 

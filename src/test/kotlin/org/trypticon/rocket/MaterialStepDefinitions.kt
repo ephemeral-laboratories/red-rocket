@@ -10,6 +10,7 @@ class MaterialStepDefinitions: En {
     companion object {
         lateinit var m: Material
         lateinit var result: Tuple
+        var inShadow: Boolean = false
     }
 
     init {
@@ -23,9 +24,15 @@ class MaterialStepDefinitions: En {
         Given("m.specular ← {real}")  { v: Double -> m.specular = v }
         Given("m.shininess ← {real}") { v: Double -> m.shininess = v }
 
+        Given("in_shadow ← {boolean}") { v: Boolean -> inShadow = v }
+
         When("{tuple_var} ← lighting\\(m, light, {tuple_var}, {tuple_var}, {tuple_var})") {
                 tv1: String, tv2: String, tv3: String, tv4: String ->
-            tuples[tv1] = m.lighting(light, tuples[tv2]!!, tuples[tv3]!!, tuples[tv4]!!)
+            tuples[tv1] = m.lighting(light, tuples[tv2]!!, tuples[tv3]!!, tuples[tv4]!!, false)
+        }
+        When("{tuple_var} ← lighting\\(m, light, {tuple_var}, {tuple_var}, {tuple_var}, in_shadow)") {
+                tv1: String, tv2: String, tv3: String, tv4: String ->
+            tuples[tv1] = m.lighting(light, tuples[tv2]!!, tuples[tv3]!!, tuples[tv4]!!, inShadow)
         }
 
         Then("^m = material\\(\\)") { assertThat(m).isEqualTo(Material()) }

@@ -1,6 +1,7 @@
 package org.trypticon.rocket
 
 class Intersection(val t: Double, val obj: Shape) {
+    private val epsilon: Double = 0.00001
     companion object {
         fun hit(intersections: List<Intersection>): Intersection? {
             return intersections
@@ -17,13 +18,15 @@ class Intersection(val t: Double, val obj: Shape) {
         if (inside) {
             normal = -normal
         }
-        return Precomputed(t, obj, point, eyeVector, normal, inside)
+        val overPoint = point + normal * epsilon
+        return Precomputed(t, obj, point, overPoint, eyeVector, normal, inside)
     }
 
     data class Precomputed(
         val t: Double,
         val obj: Shape,
         val point: Tuple,
+        val overPoint: Tuple,
         val eyeVector: Tuple,
         val normal: Tuple,
         val inside: Boolean)

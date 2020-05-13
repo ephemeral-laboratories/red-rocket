@@ -26,11 +26,18 @@ class MatrixStepDefinitions: En {
         fun scalingFromString(string: String): Matrix {
             val open = string.indexOf('(')
             val close = string.indexOf(')')
-            if (string.substring(0, open) != "scaling") {
-                throw IllegalArgumentException("Unknown transform: " + string)
-            }
             val params = string.substring(open + 1, close).split(", ")
-            return scaling(realFromString(params[0]), realFromString(params[1]), realFromString(params[2]))
+            return when (string.substring(0, open)) {
+                "translation" -> {
+                    translation(realFromString(params[0]), realFromString(params[1]), realFromString(params[2]))
+                }
+                "scaling" -> {
+                    scaling(realFromString(params[0]), realFromString(params[1]), realFromString(params[2]))
+                }
+                else -> {
+                    throw IllegalArgumentException("Unknown transform: " + string)
+                }
+            }
         }
     }
 
