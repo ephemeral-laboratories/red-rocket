@@ -1,12 +1,12 @@
-package org.trypticon.rocket
+package org.trypticon.rocket.shapes
 
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import org.trypticon.rocket.CommonParameterTypes.Companion.realFromString
 import org.trypticon.rocket.MatrixStepDefinitions.Companion.transformFromString
-import org.trypticon.rocket.ShapeStepDefinitions.Companion.shapeVarRegex
-import org.trypticon.rocket.ShapeStepDefinitions.Companion.shapes
 import org.trypticon.rocket.Tuple.Companion.color
+import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapeVarRegex
+import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 
 class SphereStepDefinitions: En {
     init {

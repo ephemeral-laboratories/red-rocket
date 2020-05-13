@@ -6,6 +6,7 @@ import io.cucumber.java8.En
 import org.trypticon.rocket.LightStepDefinitions.Companion.light
 import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 import org.trypticon.rocket.patterns.StripePattern
+import org.trypticon.rocket.shapes.Sphere
 
 class MaterialStepDefinitions: En {
     companion object {

@@ -1,5 +1,6 @@
-package org.trypticon.rocket
+package org.trypticon.rocket.shapes
 
+import org.trypticon.rocket.*
 import org.trypticon.rocket.Tuple.Companion.vector
 
 abstract class Shape {

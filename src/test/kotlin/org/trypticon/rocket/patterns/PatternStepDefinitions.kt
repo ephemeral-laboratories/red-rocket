@@ -5,9 +5,9 @@ import assertk.assertions.isEqualTo
 import io.cucumber.java8.En
 import org.trypticon.rocket.Matrix
 import org.trypticon.rocket.MatrixStepDefinitions.Companion.matrices
-import org.trypticon.rocket.ShapeStepDefinitions.Companion.shapes
 import org.trypticon.rocket.Tuple
 import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
+import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 
 class PatternStepDefinitions: En {
     companion object {
@@ -46,8 +46,7 @@ class PatternStepDefinitions: En {
             tuples[tv] = pattern.patternAtShape(shapes[sv]!!, p)
         }
 
-        Then("pattern.transform = {translation}") { t: Matrix -> assertThat(
-            pattern.transform).isEqualTo(t) }
+        Then("pattern.transform = {translation}") { t: Matrix -> assertThat(pattern.transform).isEqualTo(t) }
 
         Then("pattern.transform = {matrix_var}") { mv: String ->
             assertThat(pattern.transform).isEqualTo(matrices[mv])

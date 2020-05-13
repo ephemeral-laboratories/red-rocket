@@ -1,7 +1,7 @@
 package org.trypticon.rocket.patterns
 
 import org.trypticon.rocket.Matrix
-import org.trypticon.rocket.Shape
+import org.trypticon.rocket.shapes.Shape
 import org.trypticon.rocket.Tuple
 
 abstract class Pattern {

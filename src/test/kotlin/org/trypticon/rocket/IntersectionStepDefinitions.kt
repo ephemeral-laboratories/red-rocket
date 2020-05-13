@@ -5,7 +5,7 @@ import assertk.assertions.*
 import io.cucumber.java8.En
 import org.trypticon.rocket.CommonParameterTypes.Companion.epsilon
 import org.trypticon.rocket.RayStepDefinitions.Companion.rays
-import org.trypticon.rocket.ShapeStepDefinitions.Companion.shapes
+import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 
 class IntersectionStepDefinitions: En {
     companion object {

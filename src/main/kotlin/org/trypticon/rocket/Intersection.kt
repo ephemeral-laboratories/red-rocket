@@ -1,6 +1,7 @@
 package org.trypticon.rocket
 
 import org.trypticon.rocket.Constants.Companion.epsilon
+import org.trypticon.rocket.shapes.Shape
 
 class Intersection(val t: Double, val obj: Shape) {
     companion object {

@@ -5,6 +5,8 @@ import org.trypticon.rocket.Tuple.Companion.black
 import org.trypticon.rocket.Tuple.Companion.color
 import org.trypticon.rocket.Tuple.Companion.point
 import org.trypticon.rocket.Tuple.Companion.white
+import org.trypticon.rocket.shapes.Shape
+import org.trypticon.rocket.shapes.Sphere
 
 class World {
     var objects : MutableList<Shape> = mutableListOf()

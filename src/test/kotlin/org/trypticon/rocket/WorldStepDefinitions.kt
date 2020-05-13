@@ -9,7 +9,7 @@ import org.trypticon.rocket.IntersectionStepDefinitions.Companion.comps
 import org.trypticon.rocket.IntersectionStepDefinitions.Companion.xs
 import org.trypticon.rocket.LightStepDefinitions.Companion.light
 import org.trypticon.rocket.RayStepDefinitions.Companion.rays
-import org.trypticon.rocket.ShapeStepDefinitions.Companion.shapes
+import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 
 class WorldStepDefinitions: En {

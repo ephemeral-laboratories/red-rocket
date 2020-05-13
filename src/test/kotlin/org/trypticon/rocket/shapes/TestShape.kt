@@ -1,5 +1,8 @@
-package org.trypticon.rocket
+package org.trypticon.rocket.shapes
 
+import org.trypticon.rocket.Intersection
+import org.trypticon.rocket.Ray
+import org.trypticon.rocket.Tuple
 import org.trypticon.rocket.Tuple.Companion.vector
 
 class TestShape: Shape() {

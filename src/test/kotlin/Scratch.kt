@@ -8,6 +8,8 @@ import org.trypticon.rocket.Transforms.Companion.viewTransform
 import org.trypticon.rocket.Tuple.Companion.color
 import org.trypticon.rocket.Tuple.Companion.point
 import org.trypticon.rocket.Tuple.Companion.vector
+import org.trypticon.rocket.shapes.Plane
+import org.trypticon.rocket.shapes.Sphere
 import java.io.File
 import kotlin.math.PI
 

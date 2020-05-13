@@ -1,6 +1,7 @@
 package org.trypticon.rocket
 
 import org.trypticon.rocket.patterns.StripePattern
+import org.trypticon.rocket.shapes.Shape
 import kotlin.math.pow
 
 data class Material(
