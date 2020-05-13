@@ -21,7 +21,7 @@ class TupleStepDefinitions: En {
 
     init {
         ParameterType("tuple_var", "(?:a|b|c|t|n|p|r|v)\\d*|red|position|origin|direction|" +
-                "zero|norm|intensity|eyev|normalv|from|to|up") {
+                "zero|norm|intensity|eyev|normalv|from|to|up|result") {
                 string ->
             string
         }

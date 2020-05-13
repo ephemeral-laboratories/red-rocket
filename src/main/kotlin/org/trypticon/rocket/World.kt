@@ -1,6 +1,5 @@
 package org.trypticon.rocket
 
-import org.trypticon.rocket.Lighting.Companion.lighting
 import org.trypticon.rocket.Transforms.Companion.scaling
 import org.trypticon.rocket.Tuple.Companion.black
 import org.trypticon.rocket.Tuple.Companion.color
@@ -35,7 +34,8 @@ class World {
 
     fun shadeHit(precomputed: Intersection.Precomputed): Tuple {
         return lights.fold(black) { color, light ->
-            color + lighting(precomputed.obj.material, light, precomputed.point, precomputed.eyeVector, precomputed.normal)
+            color + precomputed.obj.material.lighting(
+                light, precomputed.point, precomputed.eyeVector, precomputed.normal)
         }
     }
 
