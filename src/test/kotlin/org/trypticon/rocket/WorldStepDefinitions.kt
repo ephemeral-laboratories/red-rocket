@@ -9,7 +9,7 @@ import org.trypticon.rocket.IntersectionStepDefinitions.Companion.comps
 import org.trypticon.rocket.IntersectionStepDefinitions.Companion.xs
 import org.trypticon.rocket.LightStepDefinitions.Companion.light
 import org.trypticon.rocket.RayStepDefinitions.Companion.rays
-import org.trypticon.rocket.SphereStepDefinitions.Companion.spheres
+import org.trypticon.rocket.ShapeStepDefinitions.Companion.shapes
 import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 
 class WorldStepDefinitions: En {
@@ -29,14 +29,14 @@ class WorldStepDefinitions: En {
             w.lights = mutableListOf(PointLight(p, c))
         }
 
-        Given("{sphere_var} is added to w") { sv: String ->
-            w.objects.add(spheres[sv]!!)
+        Given("{shape_var} is added to w") { sv: String ->
+            w.objects.add(shapes[sv]!!)
         }
-        Given("{sphere_var} ← the first object in w") { sv: String ->
-            spheres[sv] = w.objects[0] as Sphere
+        Given("{shape_var} ← the first object in w") { sv: String ->
+            shapes[sv] = w.objects[0]
         }
-        Given("{sphere_var} ← the second object in w") { sv: String ->
-            spheres[sv] = w.objects[1] as Sphere
+        Given("{shape_var} ← the second object in w") { sv: String ->
+            shapes[sv] = w.objects[1]
         }
 
         When("xs ← intersect_world\\(w, {ray_var})") { rv: String ->
@@ -52,8 +52,8 @@ class WorldStepDefinitions: En {
         }
 
         Then("w contains no objects") { assertThat(w.objects).isEmpty() }
-        Then("w contains {sphere_var}") { sv: String ->
-            assertThat(w.objects).contains(spheres[sv]!!)
+        Then("w contains {shape_var}") { sv: String ->
+            assertThat(w.objects).contains(shapes[sv]!!)
         }
 
         Then("w has no light source") { assertThat(w.lights).isEmpty() }

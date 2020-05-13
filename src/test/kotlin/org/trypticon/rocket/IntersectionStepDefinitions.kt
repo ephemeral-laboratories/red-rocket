@@ -5,7 +5,7 @@ import assertk.assertions.*
 import io.cucumber.java8.En
 import org.trypticon.rocket.CommonParameterTypes.Companion.epsilon
 import org.trypticon.rocket.RayStepDefinitions.Companion.rays
-import org.trypticon.rocket.SphereStepDefinitions.Companion.spheres
+import org.trypticon.rocket.ShapeStepDefinitions.Companion.shapes
 
 class IntersectionStepDefinitions: En {
     companion object {
@@ -17,12 +17,12 @@ class IntersectionStepDefinitions: En {
     init {
         ParameterType("intersection_var", "i\\d*") { string -> string }
 
-        Given("{intersection_var} ← intersection\\({real}, {sphere_var})") { iv: String, t: Double, sv: String ->
-            intersections[iv] = Intersection(t, spheres[sv]!!)
+        Given("{intersection_var} ← intersection\\({real}, {shape_var})") { iv: String, t: Double, sv: String ->
+            intersections[iv] = Intersection(t, shapes[sv]!!)
         }
 
-        When("xs ← intersect\\({sphere_var}, {ray_var})") { sv: String, rv: String ->
-            xs = spheres[sv]!!.intersect(rays[rv]!!)
+        When("xs ← intersect\\({shape_var}, {ray_var})") { sv: String, rv: String ->
+            xs = shapes[sv]!!.intersect(rays[rv]!!)
         }
         When("xs ← intersections\\({intersection_var}, {intersection_var})") { iv1: String, iv2: String ->
             xs = listOf(intersections[iv1]!!, intersections[iv2]!!)
@@ -55,18 +55,21 @@ class IntersectionStepDefinitions: En {
         Then("{intersection_var}.t = {real}") { iv: String, t: Double ->
             assertThat(intersections[iv]!!.t).isCloseTo(t, epsilon)
         }
-        Then("{intersection_var}.object = {sphere_var}") { iv: String, sv: String ->
-            assertThat(intersections[iv]!!.obj).isEqualTo(spheres[sv]!!)
+        Then("{intersection_var}.object = {shape_var}") { iv: String, sv: String ->
+            assertThat(intersections[iv]!!.obj).isEqualTo(shapes[sv]!!)
         }
 
+        Then("xs is empty") {
+            assertThat(xs).isEmpty()
+        }
         Then("xs.count = {int}") { e: Int ->
             assertThat(xs.size).isEqualTo(e)
         }
         Then("xs[{int}].t = {real}") { i: Int, e: Double ->
             assertThat(xs[i].t).isCloseTo(e, epsilon)
         }
-        Then("xs[{int}].object = {sphere_var}") { i: Int, sv: String ->
-            assertThat(xs[i].obj).isEqualTo(spheres[sv]!!)
+        Then("xs[{int}].object = {shape_var}") { i: Int, sv: String ->
+            assertThat(xs[i].obj).isEqualTo(shapes[sv]!!)
         }
 
         Then("comps.t = {intersection_var}.t") { iv: String ->

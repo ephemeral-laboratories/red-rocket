@@ -1,6 +1,7 @@
+
 import org.trypticon.rocket.*
 import org.trypticon.rocket.Transforms.Companion.rotationX
-import org.trypticon.rocket.Transforms.Companion.rotationY
+import org.trypticon.rocket.Transforms.Companion.rotationZ
 import org.trypticon.rocket.Transforms.Companion.scaling
 import org.trypticon.rocket.Transforms.Companion.translation
 import org.trypticon.rocket.Transforms.Companion.viewTransform
@@ -11,21 +12,20 @@ import java.io.File
 import kotlin.math.PI
 
 fun main() {
-    val floor = Sphere().apply {
-        transform = scaling(10.0, 0.01, 10.0)
+    val floor = Plane().apply {
         material = Material().apply {
             color = color(1.0, 0.9, 0.9)
             specular = 0.0
         }
     }
 
-    val leftWall = Sphere().apply {
-        transform = translation(0.0, 0.0, 5.0) * rotationY(-PI / 4) * rotationX(PI / 2) * scaling(10.0, 0.01, 10.0)
+    val leftWall = Plane().apply {
+        transform = translation(0.0, 0.0, 5.0) * rotationX(PI / 2)
         material = floor.material
     }
 
-    val rightWall = Sphere().apply {
-        transform = translation(0.0, 0.0, 5.0) * rotationY(PI / 4) * rotationX(PI / 2) * scaling(10.0, 0.01, 10.0)
+    val rightWall = Plane().apply {
+        transform = translation(5.0, 0.0, 0.0) * rotationZ(PI / 2)
         material = floor.material
     }
 

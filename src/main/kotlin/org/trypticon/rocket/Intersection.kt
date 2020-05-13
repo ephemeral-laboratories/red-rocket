@@ -1,7 +1,8 @@
 package org.trypticon.rocket
 
+import org.trypticon.rocket.Constants.Companion.epsilon
+
 class Intersection(val t: Double, val obj: Shape) {
-    private val epsilon: Double = 0.00001
     companion object {
         fun hit(intersections: List<Intersection>): Intersection? {
             return intersections
