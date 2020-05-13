@@ -20,8 +20,9 @@ class Intersection(val t: Double, val obj: Shape) {
         if (inside) {
             normal = -normal
         }
+        val reflectVector = ray.direction.reflect(normal)
         val overPoint = point + normal * epsilon
-        return Precomputed(t, obj, point, overPoint, eyeVector, normal, inside)
+        return Precomputed(t, obj, point, overPoint, eyeVector, normal, reflectVector, inside)
     }
 
     data class Precomputed(
@@ -31,5 +32,6 @@ class Intersection(val t: Double, val obj: Shape) {
         val overPoint: Tuple,
         val eyeVector: Tuple,
         val normal: Tuple,
+        val reflectVector: Tuple,
         val inside: Boolean)
 }

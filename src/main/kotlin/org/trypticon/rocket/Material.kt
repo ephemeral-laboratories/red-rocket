@@ -10,6 +10,7 @@ data class Material(
     var diffuse: Double = 0.9,
     var specular: Double = 0.9,
     var shininess: Double = 200.0,
+    var reflective: Double = 0.0,
     var pattern: StripePattern? = null
 ) {
     fun lighting(

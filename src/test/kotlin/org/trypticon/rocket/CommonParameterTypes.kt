@@ -4,8 +4,6 @@ import io.cucumber.java8.En
 
 class CommonParameterTypes: En {
     companion object {
-        val epsilon: Double = 0.00001
-
         private const val doubleTermRegex: String = "\\d+(?:\\.\\d+)?"
         private const val realTermRegex: String = "-?√?(?:$doubleTermRegex|π)"
         const val realRegex: String = "$realTermRegex(?:\\s*\\/\\s*$realTermRegex)?"

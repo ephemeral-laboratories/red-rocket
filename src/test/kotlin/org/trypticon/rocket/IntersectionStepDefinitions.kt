@@ -3,7 +3,8 @@ package org.trypticon.rocket
 import assertk.assertThat
 import assertk.assertions.*
 import io.cucumber.java8.En
-import org.trypticon.rocket.CommonParameterTypes.Companion.epsilon
+import io.cucumber.java8.PendingException
+import org.trypticon.rocket.Constants.Companion.epsilon
 import org.trypticon.rocket.RayStepDefinitions.Companion.rays
 import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 
@@ -93,6 +94,10 @@ class IntersectionStepDefinitions: En {
         Then("comps.normalv = {vector}") { e: Tuple ->
             assertThat(comps.normal).isCloseTo(e, epsilon)
         }
+        Then("comps.reflectv = {vector}") { e: Tuple ->
+            assertThat(comps.reflectVector).isCloseTo(e, epsilon)
+        }
+
         Then("comps.inside = {boolean}") { e: Boolean ->
             assertThat(comps.inside).isEqualTo(e)
         }

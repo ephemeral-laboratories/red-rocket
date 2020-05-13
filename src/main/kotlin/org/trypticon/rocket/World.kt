@@ -44,18 +44,34 @@ class World {
         return h != null && h.t < distance
     }
 
-    fun shadeHit(precomputed: Intersection.Precomputed): Tuple {
+    fun shadeHit(precomputed: Intersection.Precomputed, recursionsAllowed: Int = 5): Tuple {
         return lights.fold(black) { color, light ->
             val shadowed = isShadowed(precomputed.overPoint, light)
-            color + precomputed.obj.material.lighting(
-                precomputed.obj, light, precomputed.point, precomputed.eyeVector, precomputed.normal, shadowed)
+            val surface = precomputed.obj.material.lighting(
+                precomputed.obj, light, precomputed.overPoint, precomputed.eyeVector, precomputed.normal, shadowed)
+            val reflected = reflectedColor(precomputed, recursionsAllowed)
+            color + surface + reflected
         }
     }
 
-    fun colorAt(ray: Ray): Tuple {
+    fun colorAt(ray: Ray, recursionsAllowed: Int = 5): Tuple {
         val intersections = intersect(ray)
         val hit = Intersection.hit(intersections) ?: return black
         val precomputed = hit.prepareComputations(ray)
-        return shadeHit(precomputed)
+        return shadeHit(precomputed, recursionsAllowed)
+    }
+
+    fun reflectedColor(comps: Intersection.Precomputed, recursionsAllowed: Int = 5): Tuple {
+        if (recursionsAllowed == 0) {
+            return black
+        }
+
+        if (comps.obj.material.reflective == 0.0) {
+            return black
+        }
+
+        val reflectRay = Ray(comps.overPoint, comps.reflectVector)
+        val color = colorAt(reflectRay, recursionsAllowed - 1)
+        return color * comps.obj.material.reflective
     }
 }

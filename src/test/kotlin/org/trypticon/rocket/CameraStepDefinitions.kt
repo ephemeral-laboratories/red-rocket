@@ -4,7 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
 import io.cucumber.java8.En
-import org.trypticon.rocket.CommonParameterTypes.Companion.epsilon
+import org.trypticon.rocket.Constants.Companion.epsilon
 import org.trypticon.rocket.MatrixStepDefinitions.Companion.matrices
 import org.trypticon.rocket.RayStepDefinitions.Companion.rays
 import org.trypticon.rocket.Transforms.Companion.viewTransform

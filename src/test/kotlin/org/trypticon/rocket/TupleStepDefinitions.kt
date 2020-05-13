@@ -7,9 +7,9 @@ import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import assertk.assertions.matchesPredicate
 import io.cucumber.java8.En
-import org.trypticon.rocket.CommonParameterTypes.Companion.epsilon
 import org.trypticon.rocket.CommonParameterTypes.Companion.realFromString
 import org.trypticon.rocket.CommonParameterTypes.Companion.realRegex
+import org.trypticon.rocket.Constants.Companion.epsilon
 import org.trypticon.rocket.Tuple.Companion.color
 import org.trypticon.rocket.Tuple.Companion.point
 import org.trypticon.rocket.Tuple.Companion.vector
@@ -22,7 +22,7 @@ class TupleStepDefinitions: En {
     init {
         ParameterType("tuple_var", "(?:a|b|c|t|n|p|r|v)\\d*|position|origin|direction|" +
                 "zero|norm|intensity|eyev|normalv|from|to|up|result|" +
-                "red|black|white") {
+                "red|black|white|color") {
                 string ->
             string
         }

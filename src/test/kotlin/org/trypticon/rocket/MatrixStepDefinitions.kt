@@ -5,9 +5,9 @@ import assertk.assertThat
 import assertk.assertions.*
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
-import org.trypticon.rocket.CommonParameterTypes.Companion.epsilon
 import org.trypticon.rocket.CommonParameterTypes.Companion.realFromString
 import org.trypticon.rocket.CommonParameterTypes.Companion.realRegex
+import org.trypticon.rocket.Constants.Companion.epsilon
 import org.trypticon.rocket.Transforms.Companion.rotationX
 import org.trypticon.rocket.Transforms.Companion.rotationY
 import org.trypticon.rocket.Transforms.Companion.rotationZ

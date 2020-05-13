@@ -9,8 +9,8 @@ import org.trypticon.rocket.IntersectionStepDefinitions.Companion.comps
 import org.trypticon.rocket.IntersectionStepDefinitions.Companion.xs
 import org.trypticon.rocket.LightStepDefinitions.Companion.light
 import org.trypticon.rocket.RayStepDefinitions.Companion.rays
-import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
+import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 
 class WorldStepDefinitions: En {
     companion object {
@@ -51,6 +51,13 @@ class WorldStepDefinitions: En {
             tuples[tv] = w.colorAt(rays[rv]!!)
         }
 
+        When("{tuple_var} ← reflected_color\\(w, comps)") { tv: String ->
+            tuples[tv] = w.reflectedColor(comps)
+        }
+        When("{tuple_var} ← reflected_color\\(w, comps, {int})") { tv: String, i: Int ->
+            tuples[tv] = w.reflectedColor(comps, i)
+        }
+
         Then("w contains no objects") { assertThat(w.objects).isEmpty() }
         Then("w contains {shape_var}") { sv: String ->
             assertThat(w.objects).contains(shapes[sv]!!)
@@ -63,6 +70,10 @@ class WorldStepDefinitions: En {
 
         Then("is_shadowed\\(w, {tuple_var}) is {boolean}") { tv: String, e: Boolean ->
             assertThat(w.isShadowed(tuples[tv]!!, w.lights[0])).isEqualTo(e)
+        }
+
+        Then("color_at\\(w, {ray_var}) should terminate successfully") { rv: String ->
+            w.colorAt(rays[rv]!!)
         }
     }
 }
