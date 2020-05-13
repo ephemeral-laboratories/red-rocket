@@ -1,5 +1,7 @@
 
-import org.trypticon.rocket.*
+import org.trypticon.rocket.Camera
+import org.trypticon.rocket.Material
+import org.trypticon.rocket.PointLight
 import org.trypticon.rocket.Transforms.Companion.rotationX
 import org.trypticon.rocket.Transforms.Companion.rotationZ
 import org.trypticon.rocket.Transforms.Companion.scaling
@@ -8,6 +10,7 @@ import org.trypticon.rocket.Transforms.Companion.viewTransform
 import org.trypticon.rocket.Tuple.Companion.color
 import org.trypticon.rocket.Tuple.Companion.point
 import org.trypticon.rocket.Tuple.Companion.vector
+import org.trypticon.rocket.World
 import org.trypticon.rocket.shapes.Plane
 import org.trypticon.rocket.shapes.Sphere
 import java.io.File
@@ -37,6 +40,7 @@ fun main() {
             color = color(0.1, 1.0, 0.5)
             diffuse = 0.7
             specular = 0.3
+            reflective = 0.5
         }
     }
 

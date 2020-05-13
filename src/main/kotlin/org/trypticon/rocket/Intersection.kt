@@ -2,6 +2,8 @@ package org.trypticon.rocket
 
 import org.trypticon.rocket.Constants.Companion.epsilon
 import org.trypticon.rocket.shapes.Shape
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class Intersection(val t: Double, val obj: Shape) {
     companion object {
@@ -56,5 +58,29 @@ class Intersection(val t: Double, val obj: Shape) {
         val reflectVector: Tuple,
         val inside: Boolean,
         val n1: Double,
-        val n2: Double)
+        val n2: Double
+    ) {
+        fun schlick(): Double {
+            var cos = eyeVector.dot(normal)
+
+            // Total internal reflection can only occur if n1 > n2
+            if (n1 > n2) {
+                val n = n1 / n2
+                val sin2t = n * n * (1.0 - cos * cos)
+                if (sin2t > 1.0) {
+                    return 1.0
+                }
+
+                // compute cosine of theta_t using trig identity
+                val cosT = sqrt(1.0 - sin2t)
+
+                // when n1 > n2, use cos(theta_t) instead
+                cos = cosT
+            }
+
+            var r0 = ((n1 - n2) / (n1 + n2))
+            r0 *= r0
+            return r0 + (1 - r0) * (1 - cos).pow(5)
+        }
+    }
 }

@@ -15,6 +15,7 @@ class IntersectionStepDefinitions: En {
         val intersections : MutableMap<String, Intersection> = mutableMapOf()
         lateinit var comps : Intersection.Precomputed
         lateinit var xs : List<Intersection>
+        var reflectance : Double = 0.0
     }
 
     init {
@@ -67,6 +68,10 @@ class IntersectionStepDefinitions: En {
         }
         When("comps ← prepare_computations\\(xs\\[{int}], {ray_var}, xs)") { i: Int, rv: String ->
             comps = xs[i].prepareComputations(rays[rv]!!, xs)
+        }
+
+        When("^reflectance ← schlick\\(comps\\)") {
+            reflectance = comps.schlick()
         }
 
         Then("{intersection_var} = {intersection_var}") { iv1: String, iv2: String ->
@@ -134,6 +139,10 @@ class IntersectionStepDefinitions: En {
         }
         Then("comps.n2 = {real}") { e: Double ->
             assertThat(comps.n2).isEqualTo(e)
+        }
+
+        Then("reflectance = {real}") { e: Double ->
+            assertThat(reflectance).isCloseTo(e, epsilon)
         }
     }
 }

@@ -47,12 +47,22 @@ class World {
 
     fun shadeHit(precomputed: Intersection.Precomputed, recursionsAllowed: Int = 5): Tuple {
         return lights.fold(black) { color, light ->
+            val material = precomputed.obj.material
             val shadowed = isShadowed(precomputed.overPoint, light)
-            val surface = precomputed.obj.material.lighting(
+            val surface = material.lighting(
                 precomputed.obj, light, precomputed.overPoint, precomputed.eyeVector, precomputed.normal, shadowed)
+
             val reflected = reflectedColor(precomputed, recursionsAllowed)
             val refracted = refractedColor(precomputed, recursionsAllowed)
-            color + surface + reflected + refracted
+
+            val reflectRefract = if (material.reflective > 0.0 && material.transparency > 0.0) {
+                val reflectance = precomputed.schlick()
+                reflected * reflectance + refracted * (1.0 - reflectance)
+            } else {
+                reflected + refracted
+            }
+
+            color + surface + reflectRefract
         }
     }
 
