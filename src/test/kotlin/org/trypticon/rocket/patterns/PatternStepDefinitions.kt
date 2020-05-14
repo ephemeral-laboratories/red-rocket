@@ -32,10 +32,7 @@ class PatternStepDefinitions: En {
             pattern = CheckersPattern(tuples[tv1]!!, tuples[tv2]!!)
         }
 
-        Given("set_pattern_transform\\(pattern, {translation})") { t: Matrix ->
-            pattern.transform = t
-        }
-        Given("set_pattern_transform\\(pattern, {scaling})") { t: Matrix ->
+        Given("set_pattern_transform\\(pattern, {transform})") { t: Matrix ->
             pattern.transform = t
         }
 
@@ -46,7 +43,7 @@ class PatternStepDefinitions: En {
             tuples[tv] = pattern.patternAtShape(shapes[sv]!!, p)
         }
 
-        Then("pattern.transform = {translation}") { t: Matrix -> assertThat(pattern.transform).isEqualTo(t) }
+        Then("pattern.transform = {transform}") { t: Matrix -> assertThat(pattern.transform).isEqualTo(t) }
 
         Then("pattern.transform = {matrix_var}") { mv: String ->
             assertThat(pattern.transform).isEqualTo(matrices[mv])

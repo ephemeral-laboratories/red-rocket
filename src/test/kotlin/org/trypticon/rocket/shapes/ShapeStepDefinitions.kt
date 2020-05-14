@@ -2,6 +2,7 @@ package org.trypticon.rocket.shapes
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import org.trypticon.rocket.CommonParameterTypes.Companion.realFromString
@@ -18,7 +19,7 @@ import org.trypticon.rocket.patterns.TestPattern
 class ShapeStepDefinitions: En {
     companion object {
         val shapes: MutableMap<String, Shape> = mutableMapOf()
-        const val shapeVarRegex = "[ps]\\d*|A|B|C|shape|outer|inner|lower|upper|object|floor|ball|cyl"
+        const val shapeVarRegex = "[gps]\\d*|A|B|C|shape|outer|inner|lower|upper|object|floor|ball|cyl"
 
         fun configureFromDataTable(shape: Shape, dataTable: DataTable) {
             dataTable.asLists().forEach { row ->
@@ -71,10 +72,7 @@ class ShapeStepDefinitions: En {
         When("set_transform\\({shape_var}, {matrix_var})") { sv: String, mv: String ->
             shapes[sv]!!.transform = matrices[mv]!!
         }
-        When("set_transform\\({shape_var}, {translation})") { sv: String, m: Matrix ->
-            shapes[sv]!!.transform = m
-        }
-        When("set_transform\\({shape_var}, {scaling})") { sv: String, m: Matrix ->
+        When("set_transform\\({shape_var}, {transform})") { sv: String, m: Matrix ->
             shapes[sv]!!.transform = m
         }
 
@@ -99,10 +97,18 @@ class ShapeStepDefinitions: En {
             tuples[tv1] = shapes[sv]!!.localNormalAt(tuples[tv2]!!)
         }
 
+        When("{tuple_var} ← world_to_object\\({shape_var}, {point})") { tv: String, sv: String, p: Tuple ->
+            tuples[tv] = shapes[sv]!!.worldToObject(p)
+        }
+
+        When("{tuple_var} ← normal_to_world\\({shape_var}, {vector})") { tv: String, sv: String, v: Tuple ->
+            tuples[tv] = shapes[sv]!!.normalToWorld(v)
+        }
+
         Then("{shape_var}.transform = {matrix_var}") { sv: String, mv: String ->
             assertThat(shapes[sv]!!.transform).isEqualTo(matrices[mv])
         }
-        Then("{shape_var}.transform = {translation}") { sv: String, e: Matrix ->
+        Then("{shape_var}.transform = {transform}") { sv: String, e: Matrix ->
             assertThat(shapes[sv]!!.transform).isEqualTo(e)
         }
 
@@ -124,6 +130,13 @@ class ShapeStepDefinitions: En {
         }
         Then("{shape_var}.saved_ray.direction = {vector}") { sv: String, e: Tuple ->
             assertThat((shapes[sv] as TestShape).savedRay!!.direction).isEqualTo(e)
+        }
+
+        Then("{shape_var}.parent is nothing") { sv: String ->
+            assertThat(shapes[sv]!!.parent).isNull()
+        }
+        Then("{shape_var}.parent = {shape_var}") { sv1: String, sv2: String ->
+            assertThat(shapes[sv1]!!.parent).isEqualTo(shapes[sv2]!!)
         }
     }
 }

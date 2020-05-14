@@ -34,6 +34,9 @@ class MatrixStepDefinitions: En {
                 "scaling" -> {
                     scaling(realFromString(params[0]), realFromString(params[1]), realFromString(params[2]))
                 }
+                "rotation_x" -> { rotationX(realFromString(params[0])) }
+                "rotation_y" -> { rotationY(realFromString(params[0])) }
+                "rotation_z" -> { rotationZ(realFromString(params[0])) }
                 else -> {
                     throw IllegalArgumentException("Unknown transform: " + string)
                 }
@@ -49,22 +52,8 @@ class MatrixStepDefinitions: En {
             string
         }
 
-        ParameterType("translation", "translation\\(($realRegex), ($realRegex), ($realRegex)\\)") {
-                s1: String, s2: String, s3: String ->
-            translation(realFromString(s1), realFromString(s2), realFromString(s3))
-        }
-        ParameterType("scaling", "scaling\\(($realRegex), ($realRegex), ($realRegex)\\)") {
-                s1: String, s2: String, s3: String ->
-            scaling(realFromString(s1), realFromString(s2), realFromString(s3))
-        }
-        ParameterType("rotation", "rotation_([xyz])\\(($realRegex)\\)") { s1: String, s2: String ->
-            val theta = realFromString(s2)
-            when (s1) {
-                "x" -> { rotationX(theta) }
-                "y" -> { rotationY(theta) }
-                "z" -> { rotationZ(theta) }
-                else -> { throw IllegalArgumentException("Unsupported rotation: ${s1}") }
-            }
+        ParameterType("transform", "(?:translation|scaling|rotation_[xyz])\\((?:(?:$realRegex)(?:, )?)+\\)") { string ->
+            transformFromString(string)
         }
 
         Given("$theFollowingMatrix {matrix_var}:") { mv: String, dataTable: DataTable ->
@@ -80,26 +69,14 @@ class MatrixStepDefinitions: En {
             matrices[mv1] = matrices[mv2]!!.transpose()
         }
         Given("{matrix_var} ← inverse\\({matrix_var})(.)") { mv1: String, mv2: String ->
-            matrices[mv1] = matrices[mv2]!!.inverse()
+            matrices[mv1] = matrices[mv2]!!.inverse
         }
         Given("{matrix_var} ← submatrix\\({matrix_var}, {int}, {int})") {
                 mv1: String, mv2: String, row: Int, column: Int ->
             matrices[mv1] = matrices[mv2]!!.submatrix(row, column)
         }
-        Given("{matrix_var} ← {translation}") { mv: String, m: Matrix ->
+        Given("{matrix_var} ← {transform}") { mv: String, m: Matrix ->
             matrices[mv] = m
-        }
-        Given("{matrix_var} ← {scaling}") { mv: String, m: Matrix ->
-            matrices[mv] = m
-        }
-        Given("{matrix_var} ← rotation_x\\({real})") { mv: String, theta: Double ->
-            matrices[mv] = rotationX(theta)
-        }
-        Given("{matrix_var} ← rotation_y\\({real})") { mv: String, theta: Double ->
-            matrices[mv] = rotationY(theta)
-        }
-        Given("{matrix_var} ← rotation_z\\({real})") { mv: String, theta: Double ->
-            matrices[mv] = rotationZ(theta)
         }
         Given("{matrix_var} ← shearing\\({real}, {real}, {real}, {real}, {real}, {real})") {
                 mv: String, xy: Double, xz: Double, yx: Double, yz: Double, zx: Double, zy: Double ->
@@ -110,8 +87,8 @@ class MatrixStepDefinitions: En {
             matrices[mv] = viewTransform(tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!)
         }
 
-        Given("{matrix_var} ← {scaling} * rotation_z\\({real})") { mv: String, m: Matrix, theta: Double ->
-            matrices[mv] = m * rotationZ(theta)
+        Given("{matrix_var} ← {transform} * {transform}") { mv: String, m1: Matrix, m2: Matrix ->
+            matrices[mv] = m1 * m2
         }
 
         When("{matrix_var} ← {matrix_var} * {matrix_var} * {matrix_var}") {
@@ -136,13 +113,7 @@ class MatrixStepDefinitions: En {
                 matrices[mv2]!!)
         }
 
-        Given("{matrix_var} = {translation}") { mv: String, m: Matrix ->
-            assertThat(matrices[mv]!!).isEqualTo(m)
-        }
-        Given("{matrix_var} = {scaling}") { mv: String, m: Matrix ->
-            assertThat(matrices[mv]!!).isEqualTo(m)
-        }
-        Given("{matrix_var} = {rotation}") { mv: String, m: Matrix ->
+        Given("{matrix_var} = {transform}") { mv: String, m: Matrix ->
             assertThat(matrices[mv]!!).isEqualTo(m)
         }
 
@@ -175,7 +146,7 @@ class MatrixStepDefinitions: En {
         }
 
         Then("{matrix_var} * inverse\\({matrix_var}) = {matrix_var}") { mv1: String, mv2: String, mv3: String ->
-            assertThat(matrices[mv1]!! * matrices[mv2]!!.inverse()).isCloseTo(
+            assertThat(matrices[mv1]!! * matrices[mv2]!!.inverse).isCloseTo(
                 matrices[mv3]!!, epsilon)
         }
 
@@ -196,9 +167,8 @@ class MatrixStepDefinitions: En {
             assertThat(matrices[mv]!!.invertible).isFalse()
         }
         Then("inverse\\({matrix_var}) is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->
-            assertThat(matrices[mv]!!.inverse()).isCloseTo(matrixFromDataTable(dataTable), epsilon)
+            assertThat(matrices[mv]!!.inverse).isCloseTo(matrixFromDataTable(dataTable), epsilon)
         }
-
     }
 
     fun matrixFromDataTable(dataTable: DataTable): Matrix {

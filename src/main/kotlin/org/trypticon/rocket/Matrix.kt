@@ -13,6 +13,22 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         }
     }
 
+    val inverse: Matrix by lazy {
+        if (!invertible) {
+            throw UnsupportedOperationException("This matrix is not invertible")
+        }
+
+        val inverseCells = DoubleArray(cells.size)
+        (0 until rowCount).forEach { rowIndex ->
+            (0 until columnCount).forEach { columnIndex ->
+                val c = cofactor(rowIndex, columnIndex)
+                inverseCells[columnIndex * rowCount + rowIndex] = c / determinant
+            }
+        }
+        Matrix(columnCount, rowCount, inverseCells)
+    }
+
+
     val invertible: Boolean
         get() = determinant != 0.0
 
@@ -58,21 +74,6 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
             }
         }
         return Matrix(columnCount, rowCount, transposedCells)
-    }
-
-    fun inverse(): Matrix {
-        if (!invertible) {
-            throw UnsupportedOperationException("This matrix is not invertible")
-        }
-
-        val inverseCells = DoubleArray(cells.size)
-        (0 until rowCount).forEach { rowIndex ->
-            (0 until columnCount).forEach { columnIndex ->
-                val c = cofactor(rowIndex, columnIndex)
-                inverseCells[columnIndex * rowCount + rowIndex] = c / determinant
-            }
-        }
-        return Matrix(columnCount, rowCount, inverseCells)
     }
 
     fun submatrix(rowIndexToOmit: Int, columnIndexToOmit: Int): Matrix {

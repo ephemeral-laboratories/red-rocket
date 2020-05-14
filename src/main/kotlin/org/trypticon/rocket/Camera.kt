@@ -37,8 +37,8 @@ data class Camera(val hSize: Int, val vSize: Int, val fieldOfView: Double) {
         // Using the camera matrix, transform the canvas point and the origin,
         // and then compute the ray's direction vector.
         // (remember that the canvas is at z=-1)
-        val pixel = transform.inverse() * point(worldX, worldY, -1.0)
-        val origin = transform.inverse() * origin
+        val pixel = transform.inverse * point(worldX, worldY, -1.0)
+        val origin = transform.inverse * origin
         val direction = (pixel - origin).normalize()
 
         return Ray(origin, direction)

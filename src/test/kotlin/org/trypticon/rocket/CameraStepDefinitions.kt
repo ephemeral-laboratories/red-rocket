@@ -34,7 +34,7 @@ class CameraStepDefinitions: En {
             rays[rv] = c.rayForPixel(x, y)
         }
 
-        When("c.transform ← {rotation} * {translation}") { m1: Matrix, m2: Matrix ->
+        When("c.transform ← {transform} * {transform}") { m1: Matrix, m2: Matrix ->
             c.transform = m1 * m2
         }
         When("c.transform ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") {
