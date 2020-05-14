@@ -19,7 +19,7 @@ class Plane: Shape() {
         return listOf(Intersection(t, this))
     }
 
-    override fun localNormalAt(localPoint: Tuple): Tuple {
+    override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         return vector(0.0, 1.0, 0.0)
     }
 

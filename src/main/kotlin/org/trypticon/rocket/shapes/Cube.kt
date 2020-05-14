@@ -35,7 +35,7 @@ class Cube: Shape() {
         return tMinMax
     }
 
-    override fun localNormalAt(localPoint: Tuple): Tuple {
+    override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         return when (maxOf(abs(localPoint.x), abs(localPoint.y), abs(localPoint.z))) {
             abs(localPoint.x) -> { vector(localPoint.x, 0.0, 0.0) }
             abs(localPoint.y) -> { vector(0.0, localPoint.y, 0.0) }

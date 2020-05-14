@@ -200,16 +200,16 @@ Feature: World
 
   Scenario: The refracted color with a refracted ray
     Given w ← default_world()
-    And A ← the first object in w
-    And A has:
+    And s1 ← the first object in w
+    And s1 has:
       | material.ambient | 1.0 |
       | material.pattern | test_pattern() |
-    And B ← the second object in w
-    And B has:
+    And s2 ← the second object in w
+    And s2 has:
       | material.transparency     | 1.0 |
       | material.refractive_index | 1.5 |
     And r ← ray(point(0, 0, 0.1), vector(0, 1, 0))
-    And xs ← intersections(-0.9899:A, -0.4899:B, 0.4899:B, 0.9899:A)
+    And xs ← intersections(-0.9899:s1, -0.4899:s2, 0.4899:s2, 0.9899:s1)
     When comps ← prepare_computations(xs[2], r, xs)
     And c ← refracted_color(w, comps, 5)
     Then c = color(0, 0.99888, 0.04725)

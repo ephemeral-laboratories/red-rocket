@@ -35,6 +35,10 @@ class IntersectionStepDefinitions: En {
         Given("{intersection_var} ← intersection\\({real}, {shape_var})") { iv: String, t: Double, sv: String ->
             intersections[iv] = Intersection(t, shapes[sv]!!)
         }
+        When("{intersection_var} ← intersection_with_uv\\({real}, {shape_var}, {real}, {real})") {
+                iv: String, t: Double, sv: String, u: Double, v: Double ->
+            intersections[iv] = Intersection(t, shapes[sv]!!, u, v)
+        }
 
         When("xs ← intersect\\({shape_var}, {ray_var})") { sv: String, rv: String ->
             xs = shapes[sv]!!.intersect(rays[rv]!!)
@@ -87,6 +91,12 @@ class IntersectionStepDefinitions: En {
         Then("{intersection_var}.object = {shape_var}") { iv: String, sv: String ->
             assertThat(intersections[iv]!!.obj).isEqualTo(shapes[sv]!!)
         }
+        Then("{intersection_var}.u = {real}") { iv: String, t: Double ->
+            assertThat(intersections[iv]!!.u).isCloseTo(t, epsilon)
+        }
+        Then("{intersection_var}.v = {real}") { iv: String, t: Double ->
+            assertThat(intersections[iv]!!.v).isCloseTo(t, epsilon)
+        }
 
         Then("xs is empty") {
             assertThat(xs).isEmpty()
@@ -99,6 +109,12 @@ class IntersectionStepDefinitions: En {
         }
         Then("xs[{int}].object = {shape_var}") { i: Int, sv: String ->
             assertThat(xs[i].obj).isEqualTo(shapes[sv]!!)
+        }
+        Then("xs[{int}].u = {real}") { i: Int, e: Double ->
+            assertThat(xs[i].u).isCloseTo(e, epsilon)
+        }
+        Then("xs[{int}].v = {real}") { i: Int, e: Double ->
+            assertThat(xs[i].v).isCloseTo(e, epsilon)
         }
 
         Then("comps.t = {intersection_var}.t") { iv: String ->

@@ -27,7 +27,7 @@ class Sphere : Shape() {
         )
     }
 
-    override fun localNormalAt(localPoint: Tuple): Tuple {
+    override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         return localPoint - point(0.0, 0.0, 0.0)
     }
 

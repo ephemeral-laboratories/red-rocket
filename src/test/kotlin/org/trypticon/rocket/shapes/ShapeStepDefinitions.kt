@@ -6,6 +6,8 @@ import assertk.assertions.isNull
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import org.trypticon.rocket.CommonParameterTypes.Companion.realFromString
+import org.trypticon.rocket.Intersection
+import org.trypticon.rocket.IntersectionStepDefinitions.Companion.intersections
 import org.trypticon.rocket.IntersectionStepDefinitions.Companion.xs
 import org.trypticon.rocket.MaterialStepDefinitions.Companion.m
 import org.trypticon.rocket.Matrix
@@ -19,7 +21,7 @@ import org.trypticon.rocket.patterns.TestPattern
 class ShapeStepDefinitions: En {
     companion object {
         val shapes: MutableMap<String, Shape> = mutableMapOf()
-        const val shapeVarRegex = "[gps]\\d*|A|B|C|shape|outer|inner|lower|upper|object|floor|ball|cyl"
+        const val shapeVarRegex = "[gpst]\\d*|shape|outer|inner|lower|upper|object|floor|ball|cyl|tri\\d*"
 
         fun configureFromDataTable(shape: Shape, dataTable: DataTable) {
             dataTable.asLists().forEach { row ->
@@ -77,7 +79,11 @@ class ShapeStepDefinitions: En {
         }
 
         When("{tuple_var} ← normal_at\\({shape_var}, {point})") { tv: String, sv: String, p: Tuple ->
-            tuples[tv] = shapes[sv]!!.worldNormalAt(p)
+            tuples[tv] = shapes[sv]!!.worldNormalAt(p, dummyIntersection())
+        }
+        When("{tuple_var} ← normal_at\\({shape_var}, {point}, {intersection_var})") {
+                tv: String, sv: String, p: Tuple, iv: String ->
+            tuples[tv] = shapes[sv]!!.worldNormalAt(p, intersections[iv]!!)
         }
 
         When("m ← {shape_var}.material") { sv: String ->
@@ -91,10 +97,10 @@ class ShapeStepDefinitions: En {
             xs = shapes[sv]!!.localIntersect(rays[rv]!!)
         }
         When("{tuple_var} ← local_normal_at\\({shape_var}, {point})") { tv: String, sv: String, p: Tuple ->
-            tuples[tv] = shapes[sv]!!.localNormalAt(p)
+            tuples[tv] = shapes[sv]!!.localNormalAt(p, dummyIntersection())
         }
         When("{tuple_var} ← local_normal_at\\({shape_var}, {tuple_var})") { tv1: String, sv: String, tv2: String ->
-            tuples[tv1] = shapes[sv]!!.localNormalAt(tuples[tv2]!!)
+            tuples[tv1] = shapes[sv]!!.localNormalAt(tuples[tv2]!!, dummyIntersection())
         }
 
         When("{tuple_var} ← world_to_object\\({shape_var}, {point})") { tv: String, sv: String, p: Tuple ->
@@ -105,6 +111,9 @@ class ShapeStepDefinitions: En {
             tuples[tv] = shapes[sv]!!.normalToWorld(v)
         }
 
+        Then("{shape_var} = {shape_var}") { sv1: String, sv2: String ->
+            assertThat(shapes[sv1]!!).isEqualTo(shapes[sv2]!!)
+        }
         Then("{shape_var}.transform = {matrix_var}") { sv: String, mv: String ->
             assertThat(shapes[sv]!!.transform).isEqualTo(matrices[mv])
         }
@@ -138,5 +147,9 @@ class ShapeStepDefinitions: En {
         Then("{shape_var}.parent = {shape_var}") { sv1: String, sv2: String ->
             assertThat(shapes[sv1]!!.parent).isEqualTo(shapes[sv2]!!)
         }
+    }
+
+    private fun dummyIntersection(): Intersection {
+        return Intersection(0.0, Sphere(), 0.0, 0.0)
     }
 }

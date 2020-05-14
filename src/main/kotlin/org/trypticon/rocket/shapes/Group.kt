@@ -13,7 +13,7 @@ class Group: Shape() {
             .sortedBy { intersection -> intersection.t }
     }
 
-    override fun localNormalAt(localPoint: Tuple): Tuple {
+    override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         throw IllegalStateException("should not be asking a group for a normal!")
     }
 

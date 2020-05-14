@@ -59,7 +59,7 @@ class Cone: CylinderLikeShape() {
         return (x * x + z * z) <= y * y
     }
 
-    override fun localNormalAt(localPoint: Tuple): Tuple {
+    override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         var y = sqrt(localPoint.x * localPoint.x + localPoint.z * localPoint.z)
         if (localPoint.y > 0) {
             y = -y

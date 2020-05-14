@@ -5,7 +5,7 @@ import org.trypticon.rocket.shapes.Shape
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-data class Intersection(val t: Double, val obj: Shape) {
+data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val v: Double = 0.0) {
     companion object {
         fun hit(intersections: List<Intersection>): Intersection? {
             return intersections
@@ -17,7 +17,7 @@ data class Intersection(val t: Double, val obj: Shape) {
     fun prepareComputations(ray: Ray, allIntersections: List<Intersection>): Precomputed {
         val point = ray.position(t)
         val eyeVector = -ray.direction
-        var normal = obj.worldNormalAt(point)
+        var normal = obj.worldNormalAt(point, this)
         val inside = normal.dot(eyeVector) < 0
         if (inside) {
             normal = -normal

@@ -51,7 +51,7 @@ class Cylinder: CylinderLikeShape() {
         return (x * x + z * z) <= 1
     }
 
-    override fun localNormalAt(localPoint: Tuple): Tuple {
+    override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         val dist = localPoint.x * localPoint.x + localPoint.z * localPoint.z
         return if (dist < 1 && localPoint.y >= maximum - epsilon) {
             vector(0.0, 1.0, 0.0)

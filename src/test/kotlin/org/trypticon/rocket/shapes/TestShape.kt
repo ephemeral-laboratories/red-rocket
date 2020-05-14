@@ -13,7 +13,7 @@ class TestShape: Shape() {
         return listOf()
     }
 
-    override fun localNormalAt(localPoint: Tuple): Tuple {
+    override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         return vector(localPoint.x, localPoint.y, localPoint.z)
     }
 

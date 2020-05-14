@@ -27,13 +27,13 @@ abstract class Shape {
 
     abstract fun localIntersect(localRay: Ray): List<Intersection>
 
-    fun worldNormalAt(worldPoint: Tuple): Tuple {
+    fun worldNormalAt(worldPoint: Tuple, intersection: Intersection): Tuple {
         val localPoint = worldToObject(worldPoint)
-        val localNormal = localNormalAt(localPoint)
+        val localNormal = localNormalAt(localPoint, intersection)
         return normalToWorld(localNormal)
     }
 
-    abstract fun localNormalAt(localPoint: Tuple): Tuple
+    abstract fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple
 
     final override fun toString(): String {
         return "${toStringName()}(${toStringParams()})"
