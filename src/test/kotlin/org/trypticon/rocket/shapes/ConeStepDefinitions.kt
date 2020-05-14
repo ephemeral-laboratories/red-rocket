@@ -4,10 +4,10 @@ import io.cucumber.java8.En
 import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapeVarRegex
 import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 
-class CylinderStepDefinitions: En {
+class ConeStepDefinitions: En {
     init {
-        Given("^($shapeVarRegex) ← cylinder\\(\\)") { sv: String ->
-            shapes[sv] = Cylinder()
+        Given("^($shapeVarRegex) ← cone\\(\\)") { sv: String ->
+            shapes[sv] = Cone()
         }
     }
 }
