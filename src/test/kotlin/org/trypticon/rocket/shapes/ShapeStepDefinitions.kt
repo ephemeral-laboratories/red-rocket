@@ -18,7 +18,7 @@ import org.trypticon.rocket.patterns.TestPattern
 class ShapeStepDefinitions: En {
     companion object {
         val shapes: MutableMap<String, Shape> = mutableMapOf()
-        const val shapeVarRegex = "[ps]\\d*|A|B|C|shape|outer|inner|lower|upper|object|floor|ball"
+        const val shapeVarRegex = "[ps]\\d*|A|B|C|shape|outer|inner|lower|upper|object|floor|ball|cyl"
 
         fun configureFromDataTable(shape: Shape, dataTable: DataTable) {
             dataTable.asLists().forEach { row ->

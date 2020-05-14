@@ -20,6 +20,9 @@ class RayStepDefinitions: En {
         Given("{ray_var} ← ray\\({point}, {vector})") { rv: String, p: Tuple, v: Tuple ->
             rays[rv] = Ray(p, v)
         }
+        Given("{ray_var} ← ray\\({point}, {tuple_var})") { rv: String, p: Tuple, tv: String ->
+            rays[rv] = Ray(p, tuples[tv]!!)
+        }
 
         When("{ray_var} ← transform\\({ray_var}, {matrix_var})") { rv1: String, rv2: String, mv: String ->
             rays[rv1] = rays[rv2]!!.transform(matrices[mv]!!)

@@ -58,6 +58,7 @@ class TupleStepDefinitions: En {
         Given("{tuple_var} ← {vector}") { tv: String, e: Tuple -> tuples[tv] = e }
         Given("{tuple_var} ← {color}")  { tv: String, e: Tuple -> tuples[tv] = e }
 
+        When("{tuple_var} ← normalize\\({vector})") { tv1: String, v: Tuple -> tuples[tv1] = v.normalize() }
         When("{tuple_var} ← normalize\\({tuple_var})") { tv1: String, tv2: String -> tuples[tv1] = tuples[tv2]!!.normalize() }
 
         When("{tuple_var} ← reflect\\({tuple_var}, {tuple_var})") { tv1: String, tv2: String, tv3: String ->

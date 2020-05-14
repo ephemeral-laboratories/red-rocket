@@ -5,7 +5,7 @@ import org.trypticon.rocket.shapes.Shape
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class Intersection(val t: Double, val obj: Shape) {
+data class Intersection(val t: Double, val obj: Shape) {
     companion object {
         fun hit(intersections: List<Intersection>): Intersection? {
             return intersections

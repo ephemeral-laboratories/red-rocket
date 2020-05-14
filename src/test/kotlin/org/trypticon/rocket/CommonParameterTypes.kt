@@ -1,11 +1,12 @@
 package org.trypticon.rocket
 
 import io.cucumber.java8.En
+import kotlin.Double.Companion.POSITIVE_INFINITY
 
 class CommonParameterTypes: En {
     companion object {
         private const val doubleTermRegex: String = "\\d+(?:\\.\\d+)?"
-        private const val realTermRegex: String = "-?√?(?:$doubleTermRegex|π)"
+        private const val realTermRegex: String = "-?√?(?:$doubleTermRegex|π|infinity)"
         const val realRegex: String = "$realTermRegex(?:\\s*\\/\\s*$realTermRegex)?"
 
         private fun realTermFromString(string: String): Double {
@@ -21,10 +22,10 @@ class CommonParameterTypes: En {
                 root = true
             }
 
-            var n = if (s == "π") {
-                Math.PI
-            } else {
-                s.toDouble()
+            var n = when (s) {
+                "π" -> { Math.PI }
+                "infinity" -> { POSITIVE_INFINITY }
+                else -> { s.toDouble() }
             }
 
             if (root) {
