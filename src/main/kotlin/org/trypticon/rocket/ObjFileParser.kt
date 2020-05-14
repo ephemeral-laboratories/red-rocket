@@ -14,10 +14,11 @@ class ObjFileParser(file: File) {
     private val vertices: MutableList<Tuple> = mutableListOf()
     private val normals: MutableList<Tuple> = mutableListOf()
     var ignoredLines: Int = 0
+    private val whitespace = Regex("\\s+")
 
     init {
         file.forEachLine { line ->
-            val command = line.split(" ")
+            val command = line.trim().split(whitespace)
             when (command[0]) {
                 "v" -> {
                     vertices.add(point(command[1].toDouble(), command[2].toDouble(), command[3].toDouble()))
