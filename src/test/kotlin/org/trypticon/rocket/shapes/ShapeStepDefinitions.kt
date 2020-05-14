@@ -95,6 +95,9 @@ class ShapeStepDefinitions: En {
         When("{tuple_var} ← local_normal_at\\({shape_var}, {point})") { tv: String, sv: String, p: Tuple ->
             tuples[tv] = shapes[sv]!!.localNormalAt(p)
         }
+        When("{tuple_var} ← local_normal_at\\({shape_var}, {tuple_var})") { tv1: String, sv: String, tv2: String ->
+            tuples[tv1] = shapes[sv]!!.localNormalAt(tuples[tv2]!!)
+        }
 
         Then("{shape_var}.transform = {matrix_var}") { sv: String, mv: String ->
             assertThat(shapes[sv]!!.transform).isEqualTo(matrices[mv])

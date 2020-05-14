@@ -8,8 +8,8 @@ import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 
 class PlaneStepDefinitions: En {
     init {
-        Given("^($shapeVarRegex) ← plane\\(\\)") { sv: String -> shapes[sv] =
-            Plane()
+        Given("^($shapeVarRegex) ← plane\\(\\)") { sv: String ->
+            shapes[sv] = Plane()
         }
 
         Given("^($shapeVarRegex) ← plane\\(\\) with:") { sv: String, dataTable: DataTable ->
