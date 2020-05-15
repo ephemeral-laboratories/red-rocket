@@ -1,35 +1,44 @@
 package org.trypticon.rocket
 
 import org.trypticon.rocket.Tuple.Companion.color
-import java.nio.DoubleBuffer
+import java.awt.Transparency
+import java.awt.color.ColorSpace
+import java.awt.image.*
+import java.awt.image.DataBuffer
+
 
 class Canvas(val width: Int, val height: Int) {
-    val bpp : Int = 4
-    val stride : Int get() = width * bpp
-    var buffer: DoubleBuffer = DoubleBuffer.allocate(height * stride)
+    private val raster: WritableRaster
 
-    fun pixelPosition(x: Int, y: Int) {
-        buffer.position(x * bpp + y * stride)
+    init {
+        val bands = 4
+        val bandOffsets = intArrayOf(0, 1, 2, 3) // length == bands, 0 == R, 1 == G, 2 == B and 3 == A
+        val sampleModel: SampleModel = PixelInterleavedSampleModel(DataBuffer.TYPE_DOUBLE, width, height, bands, width * bands, bandOffsets)
+        val buffer: DataBuffer = DataBufferDouble(width * height * bands)
+        raster = Raster.createWritableRaster(sampleModel, buffer, null)
     }
 
     fun getPixel(x: Int, y: Int): Tuple {
-        pixelPosition(x, y)
-        val rgb = DoubleArray(4)
-        buffer.get(rgb)
-        return color(rgb)
+        return color(raster.getPixel(x, y, null as DoubleArray?))
     }
 
     fun setPixel(x: Int, y: Int, color: Tuple) {
-        pixelPosition(x, y)
-        buffer.put(color.cells)
+        raster.setPixel(x, y, color.cells)
     }
 
     fun fill(color: Tuple) {
-        buffer.clear()
-        buffer.position(0)
-        while (buffer.remaining() > 0) {
-            buffer.put(color.cells)
+        val doubles = color.cells
+        (0 until height).forEach { y ->
+            (0 until width).forEach { x ->
+                raster.setPixel(x, y, doubles)
+            }
         }
+    }
+
+    fun toBufferedImage(): BufferedImage {
+        val colorSpace = ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)
+        val colorModel = ComponentColorModel(colorSpace, true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_DOUBLE)
+        return BufferedImage(colorModel, raster, colorModel.isAlphaPremultiplied, null)
     }
 
     fun toPPM(): String {
