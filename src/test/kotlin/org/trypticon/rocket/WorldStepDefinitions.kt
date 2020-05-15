@@ -11,6 +11,7 @@ import org.trypticon.rocket.LightStepDefinitions.Companion.light
 import org.trypticon.rocket.RayStepDefinitions.Companion.rays
 import org.trypticon.rocket.TupleStepDefinitions.Companion.tuples
 import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
+import org.trypticon.rocket.shapes.Sphere
 
 class WorldStepDefinitions: En {
     companion object {
@@ -22,7 +23,7 @@ class WorldStepDefinitions: En {
             w = World()
         }
         Given("^w ← default_world\\(\\)") {
-            w = World.defaultWorld()
+            w = defaultWorld()
         }
 
         Given("w.light ← point_light\\({point}, {color})") { p: Tuple, c: Tuple ->
@@ -80,6 +81,22 @@ class WorldStepDefinitions: En {
 
         Then("color_at\\(w, {ray_var}) should terminate successfully") { rv: String ->
             w.colorAt(rays[rv]!!)
+        }
+    }
+
+    private fun defaultWorld(): World {
+        return World().apply {
+            lights.add(PointLight(Tuple.point(-10.0, 10.0, -10.0), Tuple.white))
+            objects.add(Sphere().apply {
+                material = Material.build {
+                    color = Tuple.color(0.8, 1.0, 0.6)
+                    diffuse = 0.7
+                    specular = 0.2
+                }
+            })
+            objects.add(Sphere().apply {
+                transform = Transforms.scaling(0.5, 0.5, 0.5)
+            })
         }
     }
 }

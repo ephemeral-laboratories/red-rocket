@@ -13,24 +13,6 @@ class World {
     var objects : MutableList<Shape> = mutableListOf()
     var lights : MutableList<PointLight> = mutableListOf()
 
-    companion object {
-        fun defaultWorld(): World {
-            return World().apply {
-                lights.add(PointLight(point(-10.0, 10.0, -10.0), white))
-                objects.add(Sphere().apply {
-                    material = Material.build {
-                        color = color(0.8, 1.0, 0.6)
-                        diffuse = 0.7
-                        specular = 0.2
-                    }
-                })
-                objects.add(Sphere().apply {
-                    transform = scaling(0.5, 0.5, 0.5)
-                })
-            }
-        }
-    }
-
     fun intersect(ray: Ray): List<Intersection> {
         return objects
             .flatMap { obj -> obj.intersect(ray) }
