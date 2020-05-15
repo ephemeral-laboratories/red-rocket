@@ -3,11 +3,12 @@ package garden.ephemeral.rocket
 import garden.ephemeral.rocket.Matrix.Companion.identity4x4
 import garden.ephemeral.rocket.Tuple.Companion.origin
 import garden.ephemeral.rocket.Tuple.Companion.point
+import kotlinx.coroutines.runBlocking
 import kotlin.math.tan
 
 data class Camera(val hSize: Int, val vSize: Int, val fieldOfView: Double) {
-    val halfWidth: Double
-    val halfHeight: Double
+    private val halfWidth: Double
+    private val halfHeight: Double
     val pixelSize: Double
     var transform: Matrix = identity4x4
 
@@ -46,11 +47,13 @@ data class Camera(val hSize: Int, val vSize: Int, val fieldOfView: Double) {
 
     fun render(world: World): Canvas {
         return Canvas(hSize, vSize).apply {
-            (0 until vSize).forEach { y ->
-                (0 until hSize).forEach { x ->
-                    val ray = rayForPixel(x, y)
-                    val color = world.colorAt(ray)
-                    setPixel(x, y, color)
+            runBlocking {
+                (0 until vSize).parallelForEach { y ->
+                    (0 until hSize).forEach { x ->
+                        val ray = rayForPixel(x, y)
+                        val color = world.colorAt(ray)
+                        setPixel(x, y, color)
+                    }
                 }
             }
         }
