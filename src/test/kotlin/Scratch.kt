@@ -1,24 +1,24 @@
 
-import org.trypticon.rocket.Camera
-import org.trypticon.rocket.Material
-import org.trypticon.rocket.PointLight
-import org.trypticon.rocket.Transforms.Companion.rotationX
-import org.trypticon.rocket.Transforms.Companion.rotationY
-import org.trypticon.rocket.Transforms.Companion.rotationZ
-import org.trypticon.rocket.Transforms.Companion.scaling
-import org.trypticon.rocket.Transforms.Companion.translation
-import org.trypticon.rocket.Transforms.Companion.viewTransform
-import org.trypticon.rocket.Tuple.Companion.black
-import org.trypticon.rocket.Tuple.Companion.color
-import org.trypticon.rocket.Tuple.Companion.point
-import org.trypticon.rocket.Tuple.Companion.vector
-import org.trypticon.rocket.Tuple.Companion.white
-import org.trypticon.rocket.World
-import org.trypticon.rocket.patterns.CheckersPattern
-import org.trypticon.rocket.shapes.Cylinder
-import org.trypticon.rocket.shapes.Group
-import org.trypticon.rocket.shapes.Plane
-import org.trypticon.rocket.shapes.Sphere
+import garden.ephemeral.rocket.Camera
+import garden.ephemeral.rocket.Material
+import garden.ephemeral.rocket.PointLight
+import garden.ephemeral.rocket.Transforms.Companion.rotationX
+import garden.ephemeral.rocket.Transforms.Companion.rotationY
+import garden.ephemeral.rocket.Transforms.Companion.rotationZ
+import garden.ephemeral.rocket.Transforms.Companion.scaling
+import garden.ephemeral.rocket.Transforms.Companion.translation
+import garden.ephemeral.rocket.Transforms.Companion.viewTransform
+import garden.ephemeral.rocket.Tuple.Companion.black
+import garden.ephemeral.rocket.Tuple.Companion.color
+import garden.ephemeral.rocket.Tuple.Companion.point
+import garden.ephemeral.rocket.Tuple.Companion.vector
+import garden.ephemeral.rocket.Tuple.Companion.white
+import garden.ephemeral.rocket.World
+import garden.ephemeral.rocket.patterns.CheckersPattern
+import garden.ephemeral.rocket.shapes.Cylinder
+import garden.ephemeral.rocket.shapes.Group
+import garden.ephemeral.rocket.shapes.Plane
+import garden.ephemeral.rocket.shapes.Sphere
 import java.io.File
 import kotlin.math.PI
 
@@ -91,10 +91,11 @@ fun main() {
         objects = mutableListOf(floor, leftWall, rightWall, middle, right, left)
         lights = mutableListOf(
             PointLight(point(-12.0, 10.0, -10.0), color(1.0, 0.0, 1.0)),
-            PointLight(point(-8.0, 10.0, -10.0), color(0.0, 1.0, 1.0)))
+            PointLight(point(-8.0, 10.0, -10.0), color(0.0, 1.0, 1.0))
+        )
     }
 
-    val camera = Camera(500, 250, PI/3).apply {
+    val camera = Camera(500, 250, PI / 3).apply {
         transform = viewTransform(point(0.0, 1.0, -5.0), point(0.0, 0.5, 0.0), vector(0.0, 1.0, 0.0))
     }
 
