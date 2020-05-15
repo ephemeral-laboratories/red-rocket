@@ -2,6 +2,7 @@ package org.trypticon.rocket.shapes
 
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
+import org.trypticon.rocket.Material
 import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.configureFromDataTable
 import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapeVarRegex
 import org.trypticon.rocket.shapes.ShapeStepDefinitions.Companion.shapes
@@ -29,8 +30,10 @@ class SphereStepDefinitions: En {
 
     private fun glassSphere(): Sphere {
         return Sphere().apply {
-            material.transparency = 1.0
-            material.refractiveIndex = 1.5
+            material = Material.build {
+                transparency = 1.0
+                refractiveIndex = 1.5
+            }
         }
     }
 }

@@ -28,25 +28,53 @@ class ShapeStepDefinitions: En {
                 when(row[0]) {
                     "material.color" -> {
                         val params = row[1].substring(1, row[1].length - 1).split(", ")
-                        shape.material.color = Tuple.color(
-                            realFromString(params[0]),
-                            realFromString(params[1]),
-                            realFromString(params[2])
-                        )
-                    }
-                    "material.pattern" -> {
-                        shape.material.pattern = if (row[1] == "test_pattern()") {
-                            TestPattern()
-                        } else {
-                            throw IllegalArgumentException("Unrecognised row: $row")
+                        shape.material = shape.material.build {
+                            color = Tuple.color(
+                                realFromString(params[0]),
+                                realFromString(params[1]),
+                                realFromString(params[2])
+                            )
                         }
                     }
-                    "material.ambient"          -> { shape.material.ambient         = realFromString(row[1]) }
-                    "material.diffuse"          -> { shape.material.diffuse         = realFromString(row[1]) }
-                    "material.specular"         -> { shape.material.specular        = realFromString(row[1]) }
-                    "material.reflective"       -> { shape.material.reflective      = realFromString(row[1]) }
-                    "material.transparency"     -> { shape.material.transparency    = realFromString(row[1]) }
-                    "material.refractive_index" -> { shape.material.refractiveIndex = realFromString(row[1]) }
+                    "material.pattern" -> {
+                        shape.material = shape.material.build {
+                            pattern = if (row[1] == "test_pattern()") {
+                                TestPattern()
+                            } else {
+                                throw IllegalArgumentException("Unrecognised row: $row")
+                            }
+                        }
+                    }
+                    "material.ambient" -> {
+                        shape.material = shape.material.build {
+                            ambient = realFromString(row[1])
+                        }
+                    }
+                    "material.diffuse" -> {
+                        shape.material = shape.material.build {
+                            diffuse = realFromString(row[1])
+                        }
+                    }
+                    "material.specular" -> {
+                        shape.material = shape.material.build {
+                            specular = realFromString(row[1])
+                        }
+                    }
+                    "material.reflective" -> {
+                        shape.material = shape.material.build {
+                            reflective = realFromString(row[1])
+                        }
+                    }
+                    "material.transparency" -> {
+                        shape.material = shape.material.build {
+                            transparency = realFromString(row[1])
+                        }
+                    }
+                    "material.refractive_index" -> {
+                        shape.material = shape.material.build {
+                            refractiveIndex = realFromString(row[1])
+                        }
+                    }
                     "transform" -> {
                         shape.transform = transformFromString(row[1])
                     }
@@ -68,7 +96,9 @@ class ShapeStepDefinitions: En {
         }
 
         Given("{shape_var}.material.ambient ← {real}") { sv: String, v: Double ->
-            shapes[sv]!!.material.ambient = v
+            shapes[sv]!!.material = shapes[sv]!!.material.build {
+                ambient = v
+            }
         }
 
         When("set_transform\\({shape_var}, {matrix_var})") { sv: String, mv: String ->

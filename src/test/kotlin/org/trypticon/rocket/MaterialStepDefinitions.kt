@@ -17,18 +17,44 @@ class MaterialStepDefinitions: En {
 
     init {
         Given("^m ← material\\(\\)") {
-            m = Material()
+            m = Material.default
         }
 
-        Given("m.color ← {color}")     { v: Tuple -> m.color = v }
-        Given("m.ambient ← {real}")    { v: Double -> m.ambient = v }
-        Given("m.diffuse ← {real}")    { v: Double -> m.diffuse = v }
-        Given("m.specular ← {real}")   { v: Double -> m.specular = v }
-        Given("m.shininess ← {real}")  { v: Double -> m.shininess = v }
-        Given("m.reflective ← {real}") { v: Double -> m.reflective = v }
+        Given("m.color ← {color}") { v: Tuple ->
+            m = m.build {
+                color = v
+            }
+        }
+        Given("m.ambient ← {real}") { v: Double ->
+            m = m.build {
+                ambient = v
+            }
+        }
+        Given("m.diffuse ← {real}") { v: Double ->
+            m = m.build {
+                diffuse = v
+            }
+        }
+        Given("m.specular ← {real}") { v: Double ->
+            m = m.build {
+                specular = v
+            }
+        }
+        Given("m.shininess ← {real}") { v: Double ->
+            m = m.build {
+                shininess = v
+            }
+        }
+        Given("m.reflective ← {real}") { v: Double ->
+            m = m.build {
+                reflective = v
+            }
+        }
 
         Given("m.pattern ← stripe_pattern\\({color}, {color})") { a: Tuple, b: Tuple ->
-            m.pattern = StripePattern(a, b)
+            m = m.build {
+                pattern = StripePattern(a, b)
+            }
         }
 
         Given("in_shadow ← {boolean}") { v: Boolean -> inShadow = v }
@@ -46,7 +72,7 @@ class MaterialStepDefinitions: En {
             tuples[tv1] = m.lighting(Sphere(), light, p, tuples[tv2]!!, tuples[tv3]!!, b)
         }
 
-        Then("^m = material\\(\\)") { assertThat(m).isEqualTo(Material()) }
+        Then("^m = material\\(\\)") { assertThat(m).isEqualTo(Material.default) }
 
         Then("m.color = {color}")           { e: Tuple -> assertThat(m.color).isEqualTo(e) }
         Then("m.ambient = {real}")          { e: Double -> assertThat(m.ambient).isEqualTo(e) }

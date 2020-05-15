@@ -1,20 +1,52 @@
 package org.trypticon.rocket
 
+import org.trypticon.rocket.Tuple.Companion.color
 import org.trypticon.rocket.patterns.Pattern
 import org.trypticon.rocket.shapes.Shape
 import kotlin.math.pow
 
 data class Material(
-    var color: Tuple = Tuple.color(1.0, 1.0, 1.0),
-    var ambient: Double = 0.1,
-    var diffuse: Double = 0.9,
-    var specular: Double = 0.9,
-    var shininess: Double = 200.0,
-    var reflective: Double = 0.0,
-    var transparency: Double = 0.0,
-    var refractiveIndex: Double = 1.0,
-    var pattern: Pattern? = null
+    val color: Tuple,
+    val ambient: Double,
+    val diffuse: Double,
+    val specular: Double,
+    val shininess: Double,
+    val reflective: Double,
+    val transparency: Double,
+    val refractiveIndex: Double,
+    val pattern: Pattern?
 ) {
+    companion object {
+        class Builder(material: Material) {
+            var color: Tuple            = material.color
+            var ambient: Double         = material.ambient
+            var diffuse: Double         = material.diffuse
+            var specular: Double        = material.specular
+            var shininess: Double       = material.shininess
+            var reflective: Double      = material.reflective
+            var transparency: Double    = material.transparency
+            var refractiveIndex: Double = material.refractiveIndex
+            var pattern: Pattern?       = material.pattern
+
+            fun build(callback: Builder.() -> Unit): Material {
+                callback(this)
+                return Material(
+                    color, ambient, diffuse, specular, shininess,
+                    reflective, transparency, refractiveIndex, pattern)
+            }
+        }
+
+        fun build(callback: Builder.() -> Unit) : Material {
+            return default.build(callback)
+        }
+
+        val default: Material = Material(color(1.0, 1.0, 1.0), 0.1, 0.9, 0.9, 200.0, 0.0, 0.0, 1.0, null)
+    }
+
+    fun build(callback: Builder.() -> Unit): Material {
+        return Builder(this).build(callback)
+    }
+
     fun lighting(
         shape: Shape,
         light: PointLight,

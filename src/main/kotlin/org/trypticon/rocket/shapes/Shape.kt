@@ -6,7 +6,7 @@ import org.trypticon.rocket.Tuple.Companion.vector
 abstract class Shape {
     var parent: Shape? = null
     var transform: Matrix = Matrix.identity4x4
-    var material: Material = Material()
+    var material: Material = Material.default
 
     fun worldToObject(worldPoint: Tuple): Tuple {
         val parentObjectPoint = parent?.worldToObject(worldPoint) ?: worldPoint

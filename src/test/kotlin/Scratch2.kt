@@ -19,7 +19,7 @@ import kotlin.math.PI
 
 fun main() {
     val floor = Plane().apply {
-        material = Material().apply {
+        material = Material.build {
             pattern = CheckersPattern(white, black).apply {
                 transform = scaling(0.25, 0.25, 0.25)
             }
@@ -30,14 +30,14 @@ fun main() {
 
     val leftWall = Plane().apply {
         transform = translation(0.0, 0.0, 5.0) * rotationX(PI / 2)
-        material = Material().apply {
+        material = Material.build {
             specular = 0.0
         }
     }
 
     val rightWall = Plane().apply {
         transform = translation(5.0, 0.0, 0.0) * rotationZ(PI / 2)
-        material = Material().apply {
+        material = Material.build {
             specular = 0.0
         }
     }
