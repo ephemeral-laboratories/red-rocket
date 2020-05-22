@@ -10,6 +10,7 @@ import garden.ephemeral.rocket.Tuple.Companion.color
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.Tuple.Companion.white
+import garden.ephemeral.rocket.importers.ObjFileParser
 import garden.ephemeral.rocket.patterns.CheckersPattern
 import garden.ephemeral.rocket.shapes.Plane
 import java.io.File

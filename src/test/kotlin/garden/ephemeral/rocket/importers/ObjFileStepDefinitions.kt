@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
 import garden.ephemeral.rocket.FileStepDefinitions.Companion.files
+import garden.ephemeral.rocket.importers.ObjFileParser
 import garden.ephemeral.rocket.shapes.BaseTriangle
 import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes

@@ -1,5 +1,6 @@
-package garden.ephemeral.rocket
+package garden.ephemeral.rocket.importers
 
+import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.shapes.Group
