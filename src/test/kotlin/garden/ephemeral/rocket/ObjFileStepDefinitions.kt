@@ -3,34 +3,17 @@ package garden.ephemeral.rocket
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
+import garden.ephemeral.rocket.FileStepDefinitions.Companion.files
 import garden.ephemeral.rocket.shapes.BaseTriangle
 import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import garden.ephemeral.rocket.shapes.SmoothTriangle
 import io.cucumber.java8.En
-import java.io.File
-import java.nio.file.Files
 
 class ObjFileStepDefinitions: En {
-    val files: MutableMap<String, File> = mutableMapOf()
     lateinit var parser: ObjFileParser
 
     init {
-        ParameterType("file_var", "file|gibberish") { string -> string }
-
-        Given("{file_var} ← a file containing:") { fv: String, docString: String ->
-            val file = File.createTempFile("scenario", ".obj")
-            After { _ ->
-                Files.deleteIfExists(file.toPath())
-            }
-            files[fv] = file.apply {
-                writeText(docString)
-            }
-        }
-        Given("{file_var} ← the file {string}") { fv: String, string: String ->
-            files[fv] = File("src/files/$string")
-        }
-
         When("parser ← parse_obj_file\\({file_var})") { fv: String ->
             parser = ObjFileParser(files[fv]!!)
         }

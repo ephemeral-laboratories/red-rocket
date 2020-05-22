@@ -5,6 +5,12 @@ import java.awt.Transparency
 import java.awt.color.ColorSpace
 import java.awt.image.*
 import java.awt.image.DataBuffer
+import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.util.*
+import java.util.regex.Pattern
+import javax.imageio.ImageIO
 
 
 class Canvas(val width: Int, val height: Int) {
@@ -41,20 +47,33 @@ class Canvas(val width: Int, val height: Int) {
         return BufferedImage(colorModel, raster, colorModel.isAlphaPremultiplied, null)
     }
 
+    fun toPNG(file: File) {
+        ImageIO.write(toBufferedImage(), "PNG", file)
+    }
+
+    fun toPPM(file: File) {
+        file.printWriter().use(this@Canvas::toPPM)
+    }
+
     fun toPPM(): String {
+        val stringWriter = StringWriter()
+        PrintWriter(stringWriter).use(this@Canvas::toPPM)
+        return stringWriter.toString()
+    }
+
+    private fun toPPM(writer: PrintWriter) {
         val maximumLineLength: Int = 70
-        val builder = StringBuilder()
         val lineBuffer = StringBuilder(80)
-        builder.append("P3\n")
-        builder.append(width).append(' ').append(height).append('\n')
-        builder.append("255\n")
+        writer.println("P3")
+        writer.println("$width $height")
+        writer.println("255")
         (0 until height).forEach { y: Int ->
             lineBuffer.clear()
             (0 until width).forEach { x: Int ->
                 getPixel(x, y).toIntArray().sliceArray(IntRange(0, 2)).forEach { i: Int ->
                     val nextValue = i.toString()
                     if (lineBuffer.length + 1 + nextValue.length >= maximumLineLength) {
-                        builder.append(lineBuffer).append('\n')
+                        writer.println(lineBuffer)
                         lineBuffer.clear()
                     }
                     if (lineBuffer.isNotEmpty()) {
@@ -64,10 +83,9 @@ class Canvas(val width: Int, val height: Int) {
                 }
             }
             if (lineBuffer.isNotEmpty()) {
-                builder.append(lineBuffer).append('\n')
+                writer.println(lineBuffer)
             }
         }
-        return builder.toString()
     }
 
     val pixels: Iterable<Tuple>
@@ -76,4 +94,46 @@ class Canvas(val width: Int, val height: Int) {
                 .zip(IntRange(0, height - 1))
                 .map {(x: Int, y: Int) -> getPixel(x, y)}
         }
+
+    companion object {
+        fun fromPNG(file: File): Canvas {
+            val image = ImageIO.read(file)
+            return Canvas(image.width, image.height).apply {
+                raster.setRect(image.raster)
+            }
+        }
+
+        fun fromPPM(file: File): Canvas {
+            return Scanner(file.bufferedReader()).use { scanner ->
+                val comments = Pattern.compile("\\s*(#.*\n)*")
+
+                scanner.skip(comments)
+                val header = scanner.nextLine()
+                if (header != "P3") {
+                    throw IllegalArgumentException("Unexpected file header: $header")
+                }
+
+                scanner.skip(comments)
+                val width = scanner.nextInt()
+                scanner.skip(comments)
+                val height = scanner.nextInt()
+                scanner.skip(comments)
+                val scale = scanner.nextInt().toDouble()
+
+                Canvas(width, height).apply {
+                    (0 until height).forEach { y ->
+                        (0 until width).forEach { x ->
+                            scanner.skip(comments)
+                            val r = scanner.nextInt() / scale
+                            scanner.skip(comments)
+                            val g = scanner.nextInt() / scale
+                            scanner.skip(comments)
+                            val b = scanner.nextInt() / scale
+                            setPixel(x, y, color(r, g, b))
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

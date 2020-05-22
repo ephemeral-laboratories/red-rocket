@@ -23,7 +23,8 @@ class TupleStepDefinitions: En {
         ParameterType(
             "tuple_var",
             "(?:tuple|point|position|vector|origin|direction|reflection|refraction|eyeline|normal|zero" +
-                    "|intensity|from|to|up|result|red|black|white|color)\\d?"
+                    "|intensity|from|to|up|result" +
+                    "|red|blue|green|cyan|magenta|yellow|brown|purple|black|white|color)\\d?"
         ) { string ->
             string
         }
