@@ -1,11 +1,11 @@
 Feature: Cylinders
 
   Scenario Outline: A ray misses a cylinder
-    Given cyl ← cylinder()
+    Given shape ← cylinder()
     And direction ← normalize(<direction>)
-    And r ← ray(<origin>, direction)
-    When xs ← local_intersect(cyl, r)
-    Then xs.count = 0
+    And ray ← ray(<origin>, direction)
+    When intersections ← local_intersect(shape, ray)
+    Then intersections.count = 0
 
     Examples:
       | origin          | direction       |
@@ -14,24 +14,24 @@ Feature: Cylinders
       | point(0, 0, -5) | vector(1, 1, 1) |
 
   Scenario Outline: A ray strikes a cylinder
-    Given cyl ← cylinder()
+    Given shape ← cylinder()
     And direction ← normalize(<direction>)
-    And r ← ray(<origin>, direction)
-    When xs ← local_intersect(cyl, r)
-    Then xs.count = 2
-    And xs[0].t = <t0>
-    And xs[1].t = <t1>
+    And ray ← ray(<origin>, direction)
+    When intersections ← local_intersect(shape, ray)
+    Then intersections.count = 2
+    And intersections[0].t = <t0>
+    And intersections[1].t = <t1>
 
     Examples:
       | origin            | direction         | t0      | t1      |
-      | point(1, 0, -5)   | vector(0, 0, 1)   | 5       | 5       |
-      | point(0, 0, -5)   | vector(0, 0, 1)   | 4       | 6       |
+      | point(1,   0, -5) | vector(0,   0, 1) | 5       | 5       |
+      | point(0,   0, -5) | vector(0,   0, 1) | 4       | 6       |
       | point(0.5, 0, -5) | vector(0.1, 1, 1) | 6.80798 | 7.08872 |
 
   Scenario Outline: Normal vector on a cylinder
-    Given cyl ← cylinder()
-    When n ← local_normal_at(cyl, <point>)
-    Then n = <normal>
+    Given shape ← cylinder()
+    When normal ← local_normal_at(shape, <point>)
+    Then normal = <normal>
 
     Examples:
       | point           | normal           |
@@ -41,41 +41,41 @@ Feature: Cylinders
       | point(-1, 1, 0) | vector(-1, 0, 0) |
 
   Scenario: The default minimum and maximum for a cylinder
-    Given cyl ← cylinder()
-    Then cyl.minimum = -infinity
-    And cyl.maximum = infinity
+    Given shape ← cylinder()
+    Then shape.minimum = -∞
+    And shape.maximum = ∞
 
   Scenario Outline: Intersecting a constrained cylinder
-    Given cyl ← cylinder()
-    And cyl.minimum ← 1
-    And cyl.maximum ← 2
+    Given shape ← cylinder() with:
+      | minimum | 1 |
+      | maximum | 2 |
     And direction ← normalize(<direction>)
-    And r ← ray(<point>, direction)
-    When xs ← local_intersect(cyl, r)
-    Then xs.count = <count>
+    And ray ← ray(<point>, direction)
+    When intersections ← local_intersect(shape, ray)
+    Then intersections.count = <count>
 
     Examples:
       | point             | direction         | count |
-      | point(0, 1.5, 0)  | vector(0.1, 1, 0) | 0     |
-      | point(0, 3, -5)   | vector(0, 0, 1)   | 0     |
-      | point(0, 0, -5)   | vector(0, 0, 1)   | 0     |
-      | point(0, 2, -5)   | vector(0, 0, 1)   | 0     |
-      | point(0, 1, -5)   | vector(0, 0, 1)   | 0     |
+      | point(0, 1.5,  0) | vector(0.1, 1, 0) | 0     |
+      | point(0, 3,   -5) | vector(0, 0, 1)   | 0     |
+      | point(0, 0,   -5) | vector(0, 0, 1)   | 0     |
+      | point(0, 2,   -5) | vector(0, 0, 1)   | 0     |
+      | point(0, 1,   -5) | vector(0, 0, 1)   | 0     |
       | point(0, 1.5, -2) | vector(0, 0, 1)   | 2     |
 
   Scenario: The default closed value for a cylinder
-    Given cyl ← cylinder()
-    Then cyl.closed = false
+    Given shape ← cylinder()
+    Then shape.closed = false
 
   Scenario Outline: Intersecting the caps of a closed cylinder
-    Given cyl ← cylinder()
-    And cyl.minimum ← 1
-    And cyl.maximum ← 2
-    And cyl.closed ← true
+    Given shape ← cylinder() with:
+      | minimum | 1    |
+      | maximum | 2    |
+      | closed  | true |
     And direction ← normalize(<direction>)
-    And r ← ray(<point>, direction)
-    When xs ← local_intersect(cyl, r)
-    Then xs.count = <count>
+    And ray ← ray(<point>, direction)
+    When intersections ← local_intersect(shape, ray)
+    Then intersections.count = <count>
 
     Examples:
       | point            | direction        | count |
@@ -86,12 +86,12 @@ Feature: Cylinders
       | point(0, -1, -2) | vector(0, 1, 1)  |     2 | # corner case
 
   Scenario Outline: The normal vector on a cylinder's end caps
-    Given cyl ← cylinder()
-    And cyl.minimum ← 1
-    And cyl.maximum ← 2
-    And cyl.closed ← true
-    When n ← local_normal_at(cyl, <point>)
-    Then n = <normal>
+    Given shape ← cylinder() with:
+      | minimum | 1    |
+      | maximum | 2    |
+      | closed  | true |
+    When normal ← local_normal_at(shape, <point>)
+    Then normal = <normal>
 
     Examples:
       | point            | normal           |

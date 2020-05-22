@@ -57,23 +57,23 @@ class ObjFileStepDefinitions: En {
             assertThat(parser.normal(i)).isEqualTo(e)
         }
 
-        Then("{shape_var}.p1 = parser.vertices[{int}]") { sv: String, i: Int ->
-            assertThat((shapes[sv] as BaseTriangle).p1).isEqualTo(parser.vertex(i))
+        Then("{shape_var}.point1 = parser.vertices[{int}]") { sv: String, i: Int ->
+            assertThat((shapes[sv] as BaseTriangle).point1).isEqualTo(parser.vertex(i))
         }
-        Then("{shape_var}.p2 = parser.vertices[{int}]") { sv: String, i: Int ->
-            assertThat((shapes[sv] as BaseTriangle).p2).isEqualTo(parser.vertex(i))
+        Then("{shape_var}.point2 = parser.vertices[{int}]") { sv: String, i: Int ->
+            assertThat((shapes[sv] as BaseTriangle).point2).isEqualTo(parser.vertex(i))
         }
-        Then("{shape_var}.p3 = parser.vertices[{int}]") { sv: String, i: Int ->
-            assertThat((shapes[sv] as BaseTriangle).p3).isEqualTo(parser.vertex(i))
+        Then("{shape_var}.point3 = parser.vertices[{int}]") { sv: String, i: Int ->
+            assertThat((shapes[sv] as BaseTriangle).point3).isEqualTo(parser.vertex(i))
         }
-        Then("{shape_var}.n1 = parser.normals[{int}]") { sv: String, i: Int ->
-            assertThat((shapes[sv] as SmoothTriangle).n1).isEqualTo(parser.normal(i))
+        Then("{shape_var}.normal1 = parser.normals[{int}]") { sv: String, i: Int ->
+            assertThat((shapes[sv] as SmoothTriangle).normal1).isEqualTo(parser.normal(i))
         }
-        Then("{shape_var}.n2 = parser.normals[{int}]") { sv: String, i: Int ->
-            assertThat((shapes[sv] as SmoothTriangle).n2).isEqualTo(parser.normal(i))
+        Then("{shape_var}.normal2 = parser.normals[{int}]") { sv: String, i: Int ->
+            assertThat((shapes[sv] as SmoothTriangle).normal2).isEqualTo(parser.normal(i))
         }
-        Then("{shape_var}.n3 = parser.normals[{int}]") { sv: String, i: Int ->
-            assertThat((shapes[sv] as SmoothTriangle).n3).isEqualTo(parser.normal(i))
+        Then("{shape_var}.normal3 = parser.normals[{int}]") { sv: String, i: Int ->
+            assertThat((shapes[sv] as SmoothTriangle).normal3).isEqualTo(parser.normal(i))
         }
 
         Then("{shape_var} includes {string} from parser") { sv: String, string: String ->

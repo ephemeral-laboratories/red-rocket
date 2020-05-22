@@ -21,14 +21,14 @@ class SmoothTriangleStepDefinitions: En {
                 tuples[tv4]!!, tuples[tv5]!!, tuples[tv6]!!)
         }
 
-        Then("{shape_var}.n1 = {tuple_var}") { sv: String, tv: String ->
-            assertThat((shapes[sv] as SmoothTriangle).n1).isEqualTo(tuples[tv]!!)
+        Then("{shape_var}.normal1 = {tuple_var}") { sv: String, tv: String ->
+            assertThat((shapes[sv] as SmoothTriangle).normal1).isEqualTo(tuples[tv]!!)
         }
-        Then("{shape_var}.n2 = {tuple_var}") { sv: String, tv: String ->
-            assertThat((shapes[sv] as SmoothTriangle).n2).isEqualTo(tuples[tv]!!)
+        Then("{shape_var}.normal2 = {tuple_var}") { sv: String, tv: String ->
+            assertThat((shapes[sv] as SmoothTriangle).normal2).isEqualTo(tuples[tv]!!)
         }
-        Then("{shape_var}.n3 = {tuple_var}") { sv: String, tv: String ->
-            assertThat((shapes[sv] as SmoothTriangle).n3).isEqualTo(tuples[tv]!!)
+        Then("{shape_var}.normal3 = {tuple_var}") { sv: String, tv: String ->
+            assertThat((shapes[sv] as SmoothTriangle).normal3).isEqualTo(tuples[tv]!!)
         }
     }
 }

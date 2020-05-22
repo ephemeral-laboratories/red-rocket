@@ -1,14 +1,14 @@
 Feature: Constructive Solid Geometry
 
   Scenario: CSG is created with an operation and two shapes
-    Given s1 ← sphere()
-    And s2 ← cube()
-    When s ← csg("union", s1, s2)
-    Then s.operation = "union"
-    And s.left = s1
-    And s.right = s2
-    And s1.parent = s
-    And s2.parent = s
+    Given shape1 ← sphere()
+    And shape2 ← cube()
+    When shape ← csg("union", shape1, shape2)
+    Then shape.operation = "union"
+    And shape.left = shape1
+    And shape.right = shape2
+    And shape1.parent = shape
+    And shape2.parent = shape
 
   Scenario Outline: Evaluating the rule for a CSG operation
     When result ← intersection_allowed("<op>", <lhit>, <inl>, <inr>)
@@ -41,14 +41,14 @@ Feature: Constructive Solid Geometry
       | difference   | false | false | false | false  |
 
   Scenario Outline: Filtering a list of intersections
-    Given s1 ← sphere()
-    And s2 ← cube()
-    And s ← csg("<operation>", s1, s2)
-    And xs ← intersections(1:s1, 2:s2, 3:s1, 4:s2)
-    When result ← filter_intersections(s, xs)
+    Given shape1 ← sphere()
+    And shape2 ← cube()
+    And shape ← csg("<operation>", shape1, shape2)
+    And intersections ← intersections(1:shape1, 2:shape2, 3:shape1, 4:shape2)
+    When result ← filter_intersections(shape, intersections)
     Then result.count = 2
-    And result[0] = xs[<x0>]
-    And result[1] = xs[<x1>]
+    And result[0] = intersections[<x0>]
+    And result[1] = intersections[<x1>]
 
     Examples:
       | operation    | x0 | x1 |
@@ -57,20 +57,20 @@ Feature: Constructive Solid Geometry
       | difference   |  0 |  1 |
 
   Scenario: A ray misses a CSG object
-    Given s ← csg("union", sphere(), cube())
-    And r ← ray(point(0, 2, -5), vector(0, 0, 1))
-    When xs ← local_intersect(s, r)
-    Then xs is empty
+    Given shape ← csg("union", sphere(), cube())
+    And ray ← ray(point(0, 2, -5), vector(0, 0, 1))
+    When intersections ← local_intersect(shape, ray)
+    Then intersections is empty
 
   Scenario: A ray hits a CSG object
-    Given s1 ← sphere()
-    And s2 ← sphere()
-    And set_transform(s2, translation(0, 0, 0.5))
-    And s ← csg("union", s1, s2)
-    And r ← ray(point(0, 0, -5), vector(0, 0, 1))
-    When xs ← local_intersect(s, r)
-    Then xs.count = 2
-    And xs[0].t = 4
-    And xs[0].object = s1
-    And xs[1].t = 6.5
-    And xs[1].object = s2
+    Given shape1 ← sphere()
+    And shape2 ← sphere()
+    And set_transform(shape2, translation(0, 0, 0.5))
+    And shape ← csg("union", shape1, shape2)
+    And ray ← ray(point(0, 0, -5), vector(0, 0, 1))
+    When intersections ← local_intersect(shape, ray)
+    Then intersections.count = 2
+    And intersections[0].t = 4
+    And intersections[0].object = shape1
+    And intersections[1].t = 6.5
+    And intersections[1].object = shape2

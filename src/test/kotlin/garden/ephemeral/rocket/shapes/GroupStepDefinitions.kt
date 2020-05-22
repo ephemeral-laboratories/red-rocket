@@ -4,14 +4,15 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEmpty
 import assertk.assertions.isNotEmpty
-import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapeVarRegex
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.java8.En
 
 class GroupStepDefinitions: En {
     init {
-        Given("^($shapeVarRegex) ← group\\(\\)") { sv: String ->
-            shapes[sv] = Group()
+        ParameterType("group", "group\\(\\)") { _ -> Group() }
+
+        Given("{shape_var} ← {group}") { sv: String, g: Group ->
+            shapes[sv] = g
         }
 
         When("add_child\\({shape_var}, {shape_var})") { sv1: String, sv2: String ->

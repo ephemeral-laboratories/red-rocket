@@ -12,7 +12,7 @@ class RayStepDefinitions: En {
     }
 
     init {
-        ParameterType("ray_var", "r\\d*") { string -> string }
+        ParameterType("ray_var", "ray\\d*") { string -> string }
 
         When("{ray_var} ← ray\\({tuple_var}, {tuple_var})") { rv: String, tv1: String, tv2: String ->
             rays[rv] = Ray(tuples[tv1]!!, tuples[tv2]!!)

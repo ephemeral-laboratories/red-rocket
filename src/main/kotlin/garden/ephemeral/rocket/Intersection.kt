@@ -16,13 +16,13 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
 
     fun prepareComputations(ray: Ray, allIntersections: List<Intersection>): Precomputed {
         val point = ray.position(t)
-        val eyeVector = -ray.direction
+        val eyeline = -ray.direction
         var normal = obj.worldNormalAt(point, this)
-        val inside = normal.dot(eyeVector) < 0
+        val inside = normal.dot(eyeline) < 0
         if (inside) {
             normal = -normal
         }
-        val reflectVector = ray.direction.reflect(normal)
+        val reflection = ray.direction.reflect(normal)
         val overPoint = point + normal * epsilon
         val underPoint = point - normal * epsilon
 
@@ -44,7 +44,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
             }
         }
 
-        return Precomputed(t, obj, point, overPoint, underPoint, eyeVector, normal, reflectVector, inside, n1, n2)
+        return Precomputed(t, obj, point, overPoint, underPoint, eyeline, normal, reflection, inside, n1, n2)
     }
 
     data class Precomputed(
@@ -53,15 +53,15 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
         val point: Tuple,
         val overPoint: Tuple,
         val underPoint: Tuple,
-        val eyeVector: Tuple,
+        val eyeline: Tuple,
         val normal: Tuple,
-        val reflectVector: Tuple,
+        val reflection: Tuple,
         val inside: Boolean,
         val n1: Double,
         val n2: Double
     ) {
         fun schlick(): Double {
-            var cos = eyeVector.dot(normal)
+            var cos = eyeline.dot(normal)
 
             // Total internal reflection can only occur if n1 > n2
             if (n1 > n2) {

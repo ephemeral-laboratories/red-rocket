@@ -4,7 +4,7 @@ import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Tuple
 
 class Triangle(p1: Tuple, p2: Tuple, p3: Tuple) : BaseTriangle(p1, p2, p3) {
-    val normal = e2.cross(e1).normalize()
+    val normal = edge2.cross(edge1).normalize()
 
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         return normal

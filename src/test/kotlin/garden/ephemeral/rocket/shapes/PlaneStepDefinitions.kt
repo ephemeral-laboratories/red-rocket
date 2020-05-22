@@ -1,19 +1,20 @@
 package garden.ephemeral.rocket.shapes
 
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.configureFromDataTable
-import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapeVarRegex
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 
 class PlaneStepDefinitions: En {
     init {
-        Given("^($shapeVarRegex) ← plane\\(\\)") { sv: String ->
-            shapes[sv] = Plane()
+        ParameterType("plane", "(?:plane)\\(\\)") { _ -> Plane() }
+
+        Given("{shape_var} ← {plane}") { sv: String, s: Shape ->
+            shapes[sv] = s
         }
 
-        Given("^($shapeVarRegex) ← plane\\(\\) with:") { sv: String, dataTable: DataTable ->
-            shapes[sv] = Plane().apply {
+        Given("{shape_var} ← {plane} with:") { sv: String, s: Shape, dataTable: DataTable ->
+            shapes[sv] = s.apply {
                 configureFromDataTable(this, dataTable)
             }
         }

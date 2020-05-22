@@ -8,35 +8,35 @@ import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import io.cucumber.java8.En
 
 class CanvasStepDefinitions: En {
-    lateinit var c : Canvas
+    lateinit var canvas : Canvas
     lateinit var ppm : String
 
     init {
-        Given("c ← canvas\\({int}, {int})") { width: Int, height: Int -> c =
-            Canvas(width, height)
+        Given("canvas ← canvas\\({int}, {int})") { width: Int, height: Int ->
+            canvas = Canvas(width, height)
         }
 
-        When("ppm ← canvas_to_ppm\\(c)") {
-            ppm = c.toPPM()
+        When("ppm ← canvas_to_ppm\\(canvas)") {
+            ppm = canvas.toPPM()
         }
 
-        When("write_pixel\\(c, {int}, {int}, {tuple_var})") { x: Int, y: Int, v: String ->
-            c.setPixel(x, y, tuples[v]!!)
+        When("write_pixel\\(canvas, {int}, {int}, {tuple_var})") { x: Int, y: Int, v: String ->
+            canvas.setPixel(x, y, tuples[v]!!)
         }
 
-        When("every pixel of c is set to color\\({real}, {real}, {real})") { r: Double, g: Double, b: Double ->
-            c.fill(color(r, g, b))
+        When("every pixel of canvas is set to color\\({real}, {real}, {real})") { r: Double, g: Double, b: Double ->
+            canvas.fill(color(r, g, b))
         }
 
-        Then("c.width = {int}") { e: Int -> assertThat(c.width).isEqualTo(e) }
-        Then("c.height = {int}") { e: Int -> assertThat(c.height).isEqualTo(e) }
+        Then("canvas.width = {int}") { e: Int -> assertThat(canvas.width).isEqualTo(e) }
+        Then("canvas.height = {int}") { e: Int -> assertThat(canvas.height).isEqualTo(e) }
 
-        Then("every pixel of c is {color}") { e: Tuple ->
-            c.pixels.forEach { pixel: Tuple -> assertThat(pixel).isEqualTo(e) }
+        Then("every pixel of canvas is {color}") { e: Tuple ->
+            canvas.pixels.forEach { pixel: Tuple -> assertThat(pixel).isEqualTo(e) }
         }
 
-        Then("pixel_at\\(c, {int}, {int}) = {tuple_var}") { x: Int, y: Int, v: String ->
-            assertThat(c.getPixel(x, y)).isEqualTo(tuples[v]!!)
+        Then("pixel_at\\(canvas, {int}, {int}) = {tuple_var}") { x: Int, y: Int, v: String ->
+            assertThat(canvas.getPixel(x, y)).isEqualTo(tuples[v]!!)
         }
 
         Then("lines {int}-{int} of ppm are") { start: Int, end: Int, expected: String ->

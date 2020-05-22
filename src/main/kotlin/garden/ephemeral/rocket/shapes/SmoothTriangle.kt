@@ -3,11 +3,11 @@ package garden.ephemeral.rocket.shapes
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Tuple
 
-class SmoothTriangle(p1: Tuple, p2: Tuple, p3: Tuple, val n1: Tuple, val n2: Tuple, val n3: Tuple):
-    BaseTriangle(p1, p2, p3) {
+class SmoothTriangle(point1: Tuple, point2: Tuple, point3: Tuple, val normal1: Tuple, val normal2: Tuple, val normal3: Tuple):
+    BaseTriangle(point1, point2, point3) {
 
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
-        return n2 * hit.u + n3 * hit.v + n1 * (1 - hit.u - hit.v)
+        return normal2 * hit.u + normal3 * hit.v + normal1 * (1 - hit.u - hit.v)
     }
 
     override fun toStringName(): String {
@@ -15,7 +15,7 @@ class SmoothTriangle(p1: Tuple, p2: Tuple, p3: Tuple, val n1: Tuple, val n2: Tup
     }
 
     override fun toStringParams(): String {
-        return "${super.toStringParams()}, n1=$n1, n2=$n2, n3=$n3"
+        return "${super.toStringParams()}, n1=$normal1, n2=$normal2, n3=$normal3"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -23,18 +23,18 @@ class SmoothTriangle(p1: Tuple, p2: Tuple, p3: Tuple, val n1: Tuple, val n2: Tup
         if (other !is SmoothTriangle) return false
         if (!super.equals(other)) return false
 
-        if (n1 != other.n1) return false
-        if (n2 != other.n2) return false
-        if (n3 != other.n3) return false
+        if (normal1 != other.normal1) return false
+        if (normal2 != other.normal2) return false
+        if (normal3 != other.normal3) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + n1.hashCode()
-        result = 31 * result + n2.hashCode()
-        result = 31 * result + n3.hashCode()
+        result = 31 * result + normal1.hashCode()
+        result = 31 * result + normal2.hashCode()
+        result = 31 * result + normal3.hashCode()
         return result
     }
 }

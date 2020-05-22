@@ -3,8 +3,6 @@ package garden.ephemeral.rocket
 import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.*
-import garden.ephemeral.rocket.CommonParameterTypes.Companion.realFromString
-import garden.ephemeral.rocket.CommonParameterTypes.Companion.realRegex
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.rotationY
@@ -14,6 +12,8 @@ import garden.ephemeral.rocket.Transforms.Companion.shearing
 import garden.ephemeral.rocket.Transforms.Companion.translation
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
+import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
+import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 

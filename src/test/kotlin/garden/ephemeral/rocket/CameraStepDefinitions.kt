@@ -8,14 +8,14 @@ import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
 import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
-import garden.ephemeral.rocket.WorldStepDefinitions.Companion.w
+import garden.ephemeral.rocket.WorldStepDefinitions.Companion.world
 import io.cucumber.java8.En
 
 class CameraStepDefinitions: En {
     var hSize: Int = 0
     var vSize: Int = 0
     var fieldOfView: Double = 0.0
-    lateinit var c: Camera
+    lateinit var camera: Camera
     lateinit var image: Canvas
 
     init {
@@ -23,38 +23,38 @@ class CameraStepDefinitions: En {
         Given("vsize ← {int}") { v: Int -> vSize = v }
         Given("field_of_view ← {real}") { v: Double -> fieldOfView = v }
 
-        Given("c ← camera\\({int}, {int}, {real})") { h: Int, v: Int, fov: Double ->
-            c = Camera(h, v, fov)
+        Given("camera ← camera\\({int}, {int}, {real})") { h: Int, v: Int, fov: Double ->
+            camera = Camera(h, v, fov)
         }
-        Given("c ← camera\\(hsize, vsize, field_of_view)") {
-            c = Camera(hSize, vSize, fieldOfView)
-        }
-
-        When("{ray_var} ← ray_for_pixel\\(c, {int}, {int})") { rv: String, x: Int, y: Int ->
-            rays[rv] = c.rayForPixel(x, y)
+        Given("camera ← camera\\(hsize, vsize, field_of_view)") {
+            camera = Camera(hSize, vSize, fieldOfView)
         }
 
-        When("c.transform ← {transform} * {transform}") { m1: Matrix, m2: Matrix ->
-            c.transform = m1 * m2
+        When("{ray_var} ← ray_for_pixel\\(camera, {int}, {int})") { rv: String, x: Int, y: Int ->
+            rays[rv] = camera.rayForPixel(x, y)
         }
-        When("c.transform ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") {
+
+        When("camera.transform ← {transform} * {transform}") { m1: Matrix, m2: Matrix ->
+            camera.transform = m1 * m2
+        }
+        When("camera.transform ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") {
                 tv1: String, tv2: String, tv3: String ->
-            c.transform = viewTransform(tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!)
+            camera.transform = viewTransform(tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!)
         }
 
-        When("image ← render\\(c, w)") {
-            image = c.render(w)
+        When("image ← render\\(camera, world)") {
+            image = camera.render(world)
         }
 
-        Then("c.hsize = {int}") { e: Int -> assertThat(c.hSize).isEqualTo(e) }
-        Then("c.vsize = {int}") { e: Int -> assertThat(c.vSize).isEqualTo(e) }
-        Then("c.field_of_view = {real}") { e: Double -> assertThat(c.fieldOfView).isEqualTo(e) }
+        Then("camera.hsize = {int}") { e: Int -> assertThat(camera.hSize).isEqualTo(e) }
+        Then("camera.vsize = {int}") { e: Int -> assertThat(camera.vSize).isEqualTo(e) }
+        Then("camera.field_of_view = {real}") { e: Double -> assertThat(camera.fieldOfView).isEqualTo(e) }
 
-        Then("c.transform = {matrix_var}") { mv: String ->
-            assertThat(c.transform).isEqualTo(matrices[mv]!!)
+        Then("camera.transform = {matrix_var}") { mv: String ->
+            assertThat(camera.transform).isEqualTo(matrices[mv]!!)
         }
-        Then("c.pixel_size = {real}") { e: Double ->
-            assertThat(c.pixelSize).isCloseTo(e, epsilon)
+        Then("camera.pixel_size = {real}") { e: Double ->
+            assertThat(camera.pixelSize).isCloseTo(e, epsilon)
         }
 
         Then("pixel_at\\(image, {int}, {int}) = {color}") { x: Int, y: Int, e: Tuple ->

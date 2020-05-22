@@ -31,26 +31,26 @@ Feature: Patterns
     And stripe_at(pattern, point(-1.1, 0, 0)) = white
 
   Scenario: Stripes with an object transformation
-    Given object ← sphere()
-    And set_transform(object, scaling(2, 2, 2))
+    Given shape ← sphere()
+    And set_transform(shape, scaling(2, 2, 2))
     And pattern ← stripe_pattern(white, black)
-    When c ← stripe_at_object(pattern, object, point(1.5, 0, 0))
-    Then c = white
+    When color ← stripe_at_object(pattern, shape, point(1.5, 0, 0))
+    Then color = white
 
   Scenario: Stripes with a pattern transformation
-    Given object ← sphere()
+    Given shape ← sphere()
     And pattern ← stripe_pattern(white, black)
     And set_pattern_transform(pattern, scaling(2, 2, 2))
-    When c ← stripe_at_object(pattern, object, point(1.5, 0, 0))
-    Then c = white
+    When color ← stripe_at_object(pattern, shape, point(1.5, 0, 0))
+    Then color = white
 
   Scenario: Stripes with both an object and a pattern transformation
-    Given object ← sphere()
-    And set_transform(object, scaling(2, 2, 2))
+    Given shape ← sphere()
+    And set_transform(shape, scaling(2, 2, 2))
     And pattern ← stripe_pattern(white, black)
     And set_pattern_transform(pattern, translation(0.5, 0, 0))
-    When c ← stripe_at_object(pattern, object, point(2.5, 0, 0))
-    Then c = white
+    When color ← stripe_at_object(pattern, shape, point(2.5, 0, 0))
+    Then color = white
 
   Scenario: The default pattern transformation
     Given pattern ← test_pattern()
@@ -65,23 +65,23 @@ Feature: Patterns
     Given shape ← sphere()
     And set_transform(shape, scaling(2, 2, 2))
     And pattern ← test_pattern()
-    When c ← pattern_at_shape(pattern, shape, point(2, 3, 4))
-    Then c = color(1, 1.5, 2)
+    When color ← pattern_at_shape(pattern, shape, point(2, 3, 4))
+    Then color = color(1, 1.5, 2)
 
   Scenario: A pattern with a pattern transformation
     Given shape ← sphere()
     And pattern ← test_pattern()
     And set_pattern_transform(pattern, scaling(2, 2, 2))
-    When c ← pattern_at_shape(pattern, shape, point(2, 3, 4))
-    Then c = color(1, 1.5, 2)
+    When color ← pattern_at_shape(pattern, shape, point(2, 3, 4))
+    Then color = color(1, 1.5, 2)
 
   Scenario: A pattern with both an object and a pattern transformation
     Given shape ← sphere()
     And set_transform(shape, scaling(2, 2, 2))
     And pattern ← test_pattern()
     And set_pattern_transform(pattern, translation(0.5, 1, 1.5))
-    When c ← pattern_at_shape(pattern, shape, point(2.5, 3, 3.5))
-    Then c = color(0.75, 0.5, 0.25)
+    When color ← pattern_at_shape(pattern, shape, point(2.5, 3, 3.5))
+    Then color = color(0.75, 0.5, 0.25)
 
   Scenario: A gradient linearly interpolates between colors
     Given pattern ← gradient_pattern(white, black)
@@ -102,7 +102,7 @@ Feature: Patterns
     Given pattern ← checkers_pattern(white, black)
     Then pattern_at(pattern, point(0, 0, 0)) = white
     And pattern_at(pattern, point(0.99, 0, 0)) = white
-    And pattern_at(pattern, point(1.01, 0, 0)) = black
+    And pattern_at(pattern, point(11, 0, 0)) = black
 
   Scenario: Checkers should repeat in y
     Given pattern ← checkers_pattern(white, black)

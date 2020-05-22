@@ -37,15 +37,15 @@ Feature: OBJ File
       f 1 3 4
       """
     When parser ← parse_obj_file(file)
-    And g ← parser.default_group
-    And tri1 ← first child of g
-    And tri2 ← second child of g
-    Then tri1.p1 = parser.vertices[1]
-    And tri1.p2 = parser.vertices[2]
-    And tri1.p3 = parser.vertices[3]
-    And tri2.p1 = parser.vertices[1]
-    And tri2.p2 = parser.vertices[3]
-    And tri2.p3 = parser.vertices[4]
+    And group ← parser.default_group
+    And shape1 ← first child of group
+    And shape2 ← second child of group
+    Then shape1.point1 = parser.vertices[1]
+    And shape1.point2 = parser.vertices[2]
+    And shape1.point3 = parser.vertices[3]
+    And shape2.point1 = parser.vertices[1]
+    And shape2.point2 = parser.vertices[3]
+    And shape2.point3 = parser.vertices[4]
 
   Scenario: Triangulating polygons
     Given file ← a file containing:
@@ -58,40 +58,40 @@ Feature: OBJ File
       f 1 2 3 4 5
       """
     When parser ← parse_obj_file(file)
-    And g ← parser.default_group
-    And tri1 ← first child of g
-    And tri2 ← second child of g
-    And tri3 ← third child of g
-    Then tri1.p1 = parser.vertices[1]
-    And tri1.p2 = parser.vertices[2]
-    And tri1.p3 = parser.vertices[3]
-    And tri2.p1 = parser.vertices[1]
-    And tri2.p2 = parser.vertices[3]
-    And tri2.p3 = parser.vertices[4]
-    And tri3.p1 = parser.vertices[1]
-    And tri3.p2 = parser.vertices[4]
-    And tri3.p3 = parser.vertices[5]
+    And group ← parser.default_group
+    And shape1 ← first child of group
+    And shape2 ← second child of group
+    And shape3 ← third child of group
+    Then shape1.point1 = parser.vertices[1]
+    And shape1.point2 = parser.vertices[2]
+    And shape1.point3 = parser.vertices[3]
+    And shape2.point1 = parser.vertices[1]
+    And shape2.point2 = parser.vertices[3]
+    And shape2.point3 = parser.vertices[4]
+    And shape3.point1 = parser.vertices[1]
+    And shape3.point2 = parser.vertices[4]
+    And shape3.point3 = parser.vertices[5]
 
   Scenario: Triangles in groups
     Given file ← the file "triangles.obj"
     When parser ← parse_obj_file(file)
-    And g1 ← "FirstGroup" from parser
-    And g2 ← "SecondGroup" from parser
-    And tri1 ← first child of g1
-    And tri2 ← first child of g2
-    Then tri1.p1 = parser.vertices[1]
-    And tri1.p2 = parser.vertices[2]
-    And tri1.p3 = parser.vertices[3]
-    And tri2.p1 = parser.vertices[1]
-    And tri2.p2 = parser.vertices[3]
-    And tri2.p3 = parser.vertices[4]
+    And group1 ← "FirstGroup" from parser
+    And group2 ← "SecondGroup" from parser
+    And shape1 ← first child of group1
+    And shape2 ← first child of group2
+    Then shape1.point1 = parser.vertices[1]
+    And shape1.point2 = parser.vertices[2]
+    And shape1.point3 = parser.vertices[3]
+    And shape2.point1 = parser.vertices[1]
+    And shape2.point2 = parser.vertices[3]
+    And shape2.point3 = parser.vertices[4]
 
   Scenario: Converting an OBJ file to a group
     Given file ← the file "triangles.obj"
     And parser ← parse_obj_file(file)
-    When g ← obj_to_group(parser)
-    Then g includes "FirstGroup" from parser
-    And g includes "SecondGroup" from parser
+    When group ← obj_to_group(parser)
+    Then group includes "FirstGroup" from parser
+    And group includes "SecondGroup" from parser
 
   Scenario: Vertex normal records
     Given file ← a file containing:
@@ -118,13 +118,13 @@ Feature: OBJ File
       f 1/0/3 2/102/1 3/14/2
       """
     When parser ← parse_obj_file(file)
-    And g ← parser.default_group
-    And tri1 ← first child of g
-    And tri2 ← second child of g
-    Then tri1.p1 = parser.vertices[1]
-    And tri1.p2 = parser.vertices[2]
-    And tri1.p3 = parser.vertices[3]
-    And tri1.n1 = parser.normals[3]
-    And tri1.n2 = parser.normals[1]
-    And tri1.n3 = parser.normals[2]
-    And tri2 = tri1
+    And group ← parser.default_group
+    And shape1 ← first child of group
+    And shape2 ← second child of group
+    Then shape1.point1 = parser.vertices[1]
+    And shape1.point2 = parser.vertices[2]
+    And shape1.point3 = parser.vertices[3]
+    And shape1.normal1 = parser.normals[3]
+    And shape1.normal2 = parser.normals[1]
+    And shape1.normal3 = parser.normals[2]
+    And shape2 = shape1

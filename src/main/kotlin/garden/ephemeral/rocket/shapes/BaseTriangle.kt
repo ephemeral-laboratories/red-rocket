@@ -6,36 +6,36 @@ import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.Tuple
 import kotlin.math.abs
 
-abstract class BaseTriangle(val p1: Tuple, val p2: Tuple, val p3: Tuple): Shape() {
-    val e1: Tuple = p2 - p1
-    val e2: Tuple = p3 - p1
+abstract class BaseTriangle(val point1: Tuple, val point2: Tuple, val point3: Tuple): Shape() {
+    val edge1: Tuple = point2 - point1
+    val edge2: Tuple = point3 - point1
 
-    override fun localIntersect(localRay: Ray): List<Intersection> {
-        val dirCrossE2 = localRay.direction.cross(e2)
-        val det = e1.dot(dirCrossE2)
+    final override fun localIntersect(localRay: Ray): List<Intersection> {
+        val dirCrossE2 = localRay.direction.cross(edge2)
+        val det = edge1.dot(dirCrossE2)
         if (abs(det) < epsilon) {
             return listOf()
         }
 
         val f = 1.0 / det
-        val p1ToOrigin = localRay.origin - p1
+        val p1ToOrigin = localRay.origin - point1
         val u = f * p1ToOrigin.dot(dirCrossE2)
         if (u < 0 || u > 1) {
             return listOf()
         }
 
-        val originCrossE1 = p1ToOrigin.cross(e1)
+        val originCrossE1 = p1ToOrigin.cross(edge1)
         val v = f * localRay.direction.dot(originCrossE1)
         if (v < 0 || (u + v) > 1) {
             return listOf()
         }
 
-        val t = f * e2.dot(originCrossE1)
+        val t = f * edge2.dot(originCrossE1)
         return listOf(Intersection(t, this, u, v))
     }
 
     override fun toStringParams(): String {
-        return "${super.toStringParams()}, p1=$p1, p2=$p2, p3=$p3, e1=$e1, e2=$e2"
+        return "${super.toStringParams()}, p1=$point1, p2=$point2, p3=$point3, e1=$edge1, e2=$edge2"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -43,18 +43,18 @@ abstract class BaseTriangle(val p1: Tuple, val p2: Tuple, val p3: Tuple): Shape(
         if (other !is BaseTriangle) return false
         if (!super.equals(other)) return false
 
-        if (p1 != other.p1) return false
-        if (p2 != other.p2) return false
-        if (p3 != other.p3) return false
+        if (point1 != other.point1) return false
+        if (point2 != other.point2) return false
+        if (point3 != other.point3) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + p1.hashCode()
-        result = 31 * result + p2.hashCode()
-        result = 31 * result + p3.hashCode()
+        result = 31 * result + point1.hashCode()
+        result = 31 * result + point2.hashCode()
+        result = 31 * result + point3.hashCode()
         return result
     }
 }

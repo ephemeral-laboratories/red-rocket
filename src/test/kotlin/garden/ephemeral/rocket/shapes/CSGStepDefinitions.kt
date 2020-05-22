@@ -2,15 +2,15 @@ package garden.ephemeral.rocket.shapes
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.cucumber.java8.En
 import garden.ephemeral.rocket.Intersection
-import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.xs
+import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersections
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
+import io.cucumber.java8.En
 
 class CSGStepDefinitions: En {
     companion object {
         var result: Boolean = false
-        lateinit var rxs: List<Intersection>
+        lateinit var resultIntersections: List<Intersection>
     }
     init {
         Given("{shape_var} ← csg\\({string}, {sphere}, {cube})") { sv: String, string: String, s1: Shape, s2: Shape ->
@@ -26,8 +26,8 @@ class CSGStepDefinitions: En {
             result = operationFromString(string).intersectionAllowed(lHit, inL, inR)
         }
 
-        When("result ← filter_intersections\\({shape_var}, xs)") { sv: String ->
-            rxs = (shapes[sv] as CSG).filterIntersections(xs)
+        When("result ← filter_intersections\\({shape_var}, intersections)") { sv: String ->
+            resultIntersections = (shapes[sv] as CSG).filterIntersections(intersections)
         }
 
         Then("{shape_var}.operation = {string}") { sv: String, string: String ->
@@ -42,9 +42,9 @@ class CSGStepDefinitions: En {
 
         Then("result = {boolean}") { e: Boolean -> assertThat(result).isEqualTo(e) }
 
-        Then("result.count = {int}") { e: Int -> assertThat(rxs.size).isEqualTo(e) }
-        Then("result[{int}] = xs[{int}]") { i1: Int, i2: Int ->
-            assertThat(rxs[i1]).isEqualTo(xs[i2])
+        Then("result.count = {int}") { e: Int -> assertThat(resultIntersections.size).isEqualTo(e) }
+        Then("result[{int}] = intersections[{int}]") { i1: Int, i2: Int ->
+            assertThat(resultIntersections[i1]).isEqualTo(intersections[i2])
         }
     }
 

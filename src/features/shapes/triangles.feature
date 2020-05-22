@@ -1,53 +1,53 @@
 Feature: Triangles
 
   Scenario: Constructing a triangle
-    Given p1 ← point(0, 1, 0)
-    And p2 ← point(-1, 0, 0)
-    And p3 ← point(1, 0, 0)
-    And t ← triangle(p1, p2, p3)
-    Then t.p1 = p1
-    And t.p2 = p2
-    And t.p3 = p3
-    And t.e1 = vector(-1, -1, 0)
-    And t.e2 = vector(1, -1, 0)
-    And t.normal = vector(0, 0, -1)
+    Given point1 ← point(0, 1, 0)
+    And point2 ← point(-1, 0, 0)
+    And point3 ← point(1, 0, 0)
+    And shape ← triangle(point1, point2, point3)
+    Then shape.point1 = point1
+    And shape.point2 = point2
+    And shape.point3 = point3
+    And shape.edge1 = vector(-1, -1, 0)
+    And shape.edge2 = vector(1, -1, 0)
+    And shape.normal = vector(0, 0, -1)
 
   Scenario: Finding the normal on a triangle
-    Given t ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
-    When n1 ← local_normal_at(t, point(0, 0.5, 0))
-    And n2 ← local_normal_at(t, point(-0.5, 0.75, 0))
-    And n3 ← local_normal_at(t, point(0.5, 0.25, 0))
-    Then n1 = t.normal
-    And n2 = t.normal
-    And n3 = t.normal
+    Given shape ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
+    When normal1 ← local_normal_at(shape, point(0, 0.5, 0))
+    And normal2 ← local_normal_at(shape, point(-0.5, 0.75, 0))
+    And normal3 ← local_normal_at(shape, point(0.5, 0.25, 0))
+    Then normal1 = shape.normal
+    And normal2 = shape.normal
+    And normal3 = shape.normal
 
   Scenario: Intersecting a ray parallel to the triangle
-    Given t ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
-    And r ← ray(point(0, -1, -2), vector(0, 1, 0))
-    When xs ← local_intersect(t, r)
-    Then xs is empty
+    Given shape ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
+    And ray ← ray(point(0, -1, -2), vector(0, 1, 0))
+    When intersections ← local_intersect(shape, ray)
+    Then intersections is empty
 
-  Scenario: A ray misses the p1-p3 edge
-    Given t ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
-    And r ← ray(point(1, 1, -2), vector(0, 0, 1))
-    When xs ← local_intersect(t, r)
-    Then xs is empty
+  Scenario: A ray misses the point1-point3 edge
+    Given shape ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
+    And ray ← ray(point(1, 1, -2), vector(0, 0, 1))
+    When intersections ← local_intersect(shape, ray)
+    Then intersections is empty
 
-  Scenario: A ray misses the p1-p2 edge
-    Given t ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
-    And r ← ray(point(-1, 1, -2), vector(0, 0, 1))
-    When xs ← local_intersect(t, r)
-    Then xs is empty
+  Scenario: A ray misses the point1-point2 edge
+    Given shape ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
+    And ray ← ray(point(-1, 1, -2), vector(0, 0, 1))
+    When intersections ← local_intersect(shape, ray)
+    Then intersections is empty
 
-  Scenario: A ray misses the p2-p3 edge
-    Given t ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
-    And r ← ray(point(0, -1, -2), vector(0, 0, 1))
-    When xs ← local_intersect(t, r)
-    Then xs is empty
+  Scenario: A ray misses the point2-point3 edge
+    Given shape ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
+    And ray ← ray(point(0, -1, -2), vector(0, 0, 1))
+    When intersections ← local_intersect(shape, ray)
+    Then intersections is empty
 
   Scenario: A ray strikes a triangle
-    Given t ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
-    And r ← ray(point(0, 0.5, -2), vector(0, 0, 1))
-    When xs ← local_intersect(t, r)
-    Then xs.count = 1
-    And xs[0].t = 2
+    Given shape ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
+    And ray ← ray(point(0, 0.5, -2), vector(0, 0, 1))
+    When intersections ← local_intersect(shape, ray)
+    Then intersections.count = 1
+    And intersections[0].t = 2

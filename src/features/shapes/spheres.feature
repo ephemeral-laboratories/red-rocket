@@ -1,123 +1,123 @@
 Feature: Spheres
 
   Scenario: A ray intersects a sphere at two points
-    Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
-    And s ← sphere()
-    When xs ← intersect(s, r)
-    Then xs.count = 2
-    And xs[0].t = 4.0
-    And xs[1].t = 6.0
+    Given ray ← ray(point(0, 0, -5), vector(0, 0, 1))
+    And shape ← sphere()
+    When intersections ← intersect(shape, ray)
+    Then intersections.count = 2
+    And intersections[0].t = 4
+    And intersections[1].t = 6
 
   Scenario: A ray intersects a sphere at a tangent
-    Given r ← ray(point(0, 1, -5), vector(0, 0, 1))
-    And s ← sphere()
-    When xs ← intersect(s, r)
-    Then xs.count = 2
-    And xs[0].t = 5.0
-    And xs[1].t = 5.0
+    Given ray ← ray(point(0, 1, -5), vector(0, 0, 1))
+    And shape ← sphere()
+    When intersections ← intersect(shape, ray)
+    Then intersections.count = 2
+    And intersections[0].t = 5
+    And intersections[1].t = 5
 
   Scenario: A ray misses a sphere
-    Given r ← ray(point(0, 2, -5), vector(0, 0, 1))
-    And s ← sphere()
-    When xs ← intersect(s, r)
-    Then xs.count = 0
+    Given ray ← ray(point(0, 2, -5), vector(0, 0, 1))
+    And shape ← sphere()
+    When intersections ← intersect(shape, ray)
+    Then intersections.count = 0
 
   Scenario: A ray originates inside a sphere
-    Given r ← ray(point(0, 0, 0), vector(0, 0, 1))
-    And s ← sphere()
-    When xs ← intersect(s, r)
-    Then xs.count = 2
-    And xs[0].t = -1.0
-    And xs[1].t = 1.0
+    Given ray ← ray(point(0, 0, 0), vector(0, 0, 1))
+    And shape ← sphere()
+    When intersections ← intersect(shape, ray)
+    Then intersections.count = 2
+    And intersections[0].t = -1
+    And intersections[1].t = 1
 
   Scenario: A sphere is behind a ray
-    Given r ← ray(point(0, 0, 5), vector(0, 0, 1))
-    And s ← sphere()
-    When xs ← intersect(s, r)
-    Then xs.count = 2
-    And xs[0].t = -6.0
-    And xs[1].t = -4.0
+    Given ray ← ray(point(0, 0, 5), vector(0, 0, 1))
+    And shape ← sphere()
+    When intersections ← intersect(shape, ray)
+    Then intersections.count = 2
+    And intersections[0].t = -6
+    And intersections[1].t = -4
 
   Scenario: Intersect sets the object on the intersection
-    Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
-    And s ← sphere()
-    When xs ← intersect(s, r)
-    Then xs.count = 2
-    And xs[0].object = s
-    And xs[1].object = s
+    Given ray ← ray(point(0, 0, -5), vector(0, 0, 1))
+    And shape ← sphere()
+    When intersections ← intersect(shape, ray)
+    Then intersections.count = 2
+    And intersections[0].object = shape
+    And intersections[1].object = shape
 
-  Scenario: A sphere's default transformation
-    Given s ← sphere()
-    Then s.transform = identity_matrix
+  Scenario: A sphere'shape default transformation
+    Given shape ← sphere()
+    Then shape.transform = identity_matrix
 
-  Scenario: Changing a sphere's transformation
-    Given s ← sphere()
-    And t ← translation(2, 3, 4)
-    When set_transform(s, t)
-    Then s.transform = t
+  Scenario: Changing a sphere'shape transformation
+    Given shape ← sphere()
+    And transform ← translation(2, 3, 4)
+    When set_transform(shape, transform)
+    Then shape.transform = transform
 
   Scenario: Intersecting a scaled sphere with a ray
-    Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
-    And s ← sphere()
-    When set_transform(s, scaling(2, 2, 2))
-    And xs ← intersect(s, r)
-    Then xs.count = 2
-    And xs[0].t = 3
-    And xs[1].t = 7
+    Given ray ← ray(point(0, 0, -5), vector(0, 0, 1))
+    And shape ← sphere()
+    When set_transform(shape, scaling(2, 2, 2))
+    And intersections ← intersect(shape, ray)
+    Then intersections.count = 2
+    And intersections[0].t = 3
+    And intersections[1].t = 7
 
   Scenario: Intersecting a translated sphere with a ray
-    Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
-    And s ← sphere()
-    When set_transform(s, translation(5, 0, 0))
-    And xs ← intersect(s, r)
-    Then xs.count = 0
+    Given ray ← ray(point(0, 0, -5), vector(0, 0, 1))
+    And shape ← sphere()
+    When set_transform(shape, translation(5, 0, 0))
+    And intersections ← intersect(shape, ray)
+    Then intersections.count = 0
 
   Scenario: The normal on a sphere at a point on the x axis
-    Given s ← sphere()
-    When n ← normal_at(s, point(1, 0, 0))
-    Then n = vector(1, 0, 0)
+    Given shape ← sphere()
+    When normal ← normal_at(shape, point(1, 0, 0))
+    Then normal = vector(1, 0, 0)
 
   Scenario: The normal on a sphere at a point on the y axis
-    Given s ← sphere()
-    When n ← normal_at(s, point(0, 1, 0))
-    Then n = vector(0, 1, 0)
+    Given shape ← sphere()
+    When normal ← normal_at(shape, point(0, 1, 0))
+    Then normal = vector(0, 1, 0)
 
   Scenario: The normal on a sphere at a point on the z axis
-    Given s ← sphere()
-    When n ← normal_at(s, point(0, 0, 1))
-    Then n = vector(0, 0, 1)
+    Given shape ← sphere()
+    When normal ← normal_at(shape, point(0, 0, 1))
+    Then normal = vector(0, 0, 1)
 
   Scenario: The normal on a sphere at a nonaxial point
-    Given s ← sphere()
-    When n ← normal_at(s, point(√3/3, √3/3, √3/3))
-    Then n = vector(√3/3, √3/3, √3/3)
+    Given shape ← sphere()
+    When normal ← normal_at(shape, point(√3/3, √3/3, √3/3))
+    Then normal = vector(√3/3, √3/3, √3/3)
 
   Scenario: The normal is a normalized vector
-    Given s ← sphere()
-    When n ← normal_at(s, point(√3/3, √3/3, √3/3))
-    Then n = normalize(n)
+    Given shape ← sphere()
+    When normal ← normal_at(shape, point(√3/3, √3/3, √3/3))
+    Then normal = normalize(normal)
 
   Scenario: Computing the normal on a translated sphere
-    Given s ← sphere()
-    And set_transform(s, translation(0, 1, 0))
-    When n ← normal_at(s, point(0, 1.70711, -0.70711))
-    Then n = vector(0, 0.70711, -0.70711)
+    Given shape ← sphere()
+    And set_transform(shape, translation(0, 1, 0))
+    When normal ← normal_at(shape, point(0, 1.70711, -0.70711))
+    Then normal = vector(0, 0.70711, -0.70711)
 
   Scenario: Computing the normal on a transformed sphere
-    Given s ← sphere()
-    And m ← scaling(1, 0.5, 1) * rotation_z(π/5)
-    And set_transform(s, m)
-    When n ← normal_at(s, point(0, √2/2, -√2/2))
-    Then n = vector(0, 0.97014, -0.24254)
+    Given shape ← sphere()
+    And transform ← scaling(1, 0.5, 1) * rotation_z(π/5)
+    And set_transform(shape, transform)
+    When normal ← normal_at(shape, point(0, √2/2, -√2/2))
+    Then normal = vector(0, 0.97014, -0.24254)
 
   Scenario: A sphere has a default material
-    Given s ← sphere()
-    When m ← s.material
-    Then m = material()
+    Given shape ← sphere()
+    When material ← shape.material
+    Then material = material()
 
   Scenario: A sphere may be assigned a material
-    Given s ← sphere()
-    And m ← material()
-    And m.ambient ← 1
-    When s.material ← m
-    Then s.material = m
+    Given shape ← sphere()
+    And material ← material()
+    And material.ambient ← 1
+    When shape.material ← material
+    Then shape.material = material

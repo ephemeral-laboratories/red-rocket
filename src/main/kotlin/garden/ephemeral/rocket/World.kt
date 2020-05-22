@@ -29,7 +29,7 @@ class World {
             val material = precomputed.obj.material
             val shadowed = isShadowed(precomputed.overPoint, light)
             val surface = material.lighting(
-                precomputed.obj, light, precomputed.overPoint, precomputed.eyeVector, precomputed.normal, shadowed)
+                precomputed.obj, light, precomputed.overPoint, precomputed.eyeline, precomputed.normal, shadowed)
 
             val reflected = reflectedColor(precomputed, recursionsAllowed)
             val refracted = refractedColor(precomputed, recursionsAllowed)
@@ -61,7 +61,7 @@ class World {
             return black
         }
 
-        val reflectRay = Ray(comps.overPoint, comps.reflectVector)
+        val reflectRay = Ray(comps.overPoint, comps.reflection)
         val color = colorAt(reflectRay, recursionsAllowed - 1)
         return color * comps.obj.material.reflective
     }
@@ -79,7 +79,7 @@ class World {
         // (Yup, this is inverted from the definition of Snell's Law.)
         val nRatio = comps.n1 / comps.n2
         // cos(theta_i) is the same as the dot product of the two vectors
-        val cosI = comps.eyeVector.dot(comps.normal)
+        val cosI = comps.eyeline.dot(comps.normal)
         // Find sin(theta_t)^2 via trigonometric identity
         val sin2t = nRatio * nRatio * (1 - cosI * cosI)
         if (sin2t > 1.0) {
@@ -89,7 +89,7 @@ class World {
 
         // Find cos(theta_t) via trigonometric identity
         val cosT = sqrt(1.0 - sin2t)
-        val direction = comps.normal * (nRatio * cosI - cosT) - comps.eyeVector * nRatio
+        val direction = comps.normal * (nRatio * cosI - cosT) - comps.eyeline * nRatio
         val refractRay = Ray(comps.underPoint, direction)
         // Find the color of the refracted ray, making sure to multiply
         // by the transparency value to account for any opacity

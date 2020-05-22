@@ -1,15 +1,15 @@
 Feature: Cubes
 
-  # Note: I had to change `c` variables for cubes to `s` because otherwise it clashes with
+  # Note: I had to change `c` variables for cubes to `shape` because otherwise it clashes with
   #       camera step definition `c.transform = {matrix_var}`.
 
   Scenario Outline: A ray intersects a cube
-    Given s ← cube()
-    And r ← ray(<origin>, <direction>)
-    When xs ← local_intersect(s, r)
-    Then xs.count = 2
-    And xs[0].t = <t1>
-    And xs[1].t = <t2>
+    Given shape ← cube()
+    And ray ← ray(<origin>, <direction>)
+    When intersections ← local_intersect(shape, ray)
+    Then intersections.count = 2
+    And intersections[0].t = <t1>
+    And intersections[1].t = <t2>
 
     Examples:
       |        | origin            | direction        | t1 | t2 |
@@ -22,10 +22,10 @@ Feature: Cubes
       | inside | point(0, 0.5, 0)  | vector(0, 0, 1)  | -1 |  1 |
 
   Scenario Outline: A ray misses a cube
-    Given s ← cube()
-    And r ← ray(<origin>, <direction>)
-    When xs ← local_intersect(s, r)
-    Then xs.count = 0
+    Given shape ← cube()
+    And ray ← ray(<origin>, <direction>)
+    When intersections ← local_intersect(shape, ray)
+    Then intersections.count = 0
 
     Examples:
       | origin          | direction                      |
@@ -37,9 +37,9 @@ Feature: Cubes
       | point(2, 2, 0)  | vector(-1, 0, 0)               |
 
   Scenario Outline: The normal on the surface of a cube
-    Given s ← cube()
-    And p ← <point>
-    When normal ← local_normal_at(s, p)
+    Given shape ← cube()
+    And point ← <point>
+    When normal ← local_normal_at(shape, point)
     Then normal = <normal>
 
     Examples:

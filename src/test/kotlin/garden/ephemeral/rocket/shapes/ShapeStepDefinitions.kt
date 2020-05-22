@@ -3,29 +3,32 @@ package garden.ephemeral.rocket.shapes
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
-import garden.ephemeral.rocket.CommonParameterTypes.Companion.realFromString
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersections
-import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.xs
-import garden.ephemeral.rocket.MaterialStepDefinitions.Companion.m
+import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.namedIntersections
+import garden.ephemeral.rocket.MaterialStepDefinitions.Companion.material
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
 import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.transformFromString
 import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
 import garden.ephemeral.rocket.Tuple
-import garden.ephemeral.rocket.Tuple.Companion.color
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.patterns.TestPattern
+import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 
 class ShapeStepDefinitions: En {
     companion object {
         val shapes: MutableMap<String, Shape> = mutableMapOf()
-        const val shapeVarRegex = "[gpst]\\d*|shape|outer|inner|lower|upper|object|floor|ball|cyl|tri\\d*"
+        const val shapeVarRegex = "(?:outer|inner|lower|upper|shape|group)\\d*"
 
         fun configureFromDataTable(shape: Shape, dataTable: DataTable) {
-            dataTable.asLists().forEach { row ->
+            configureFromDataTableRows(shape, dataTable.asLists())
+        }
+
+        fun configureFromDataTableRows(shape: Shape, rows: List<List<String>>) {
+            rows.forEach { row ->
                 when(row[0]) {
                     "material.color" -> {
                         val params = row[1].substring(1, row[1].length - 1).split(", ")
@@ -105,8 +108,8 @@ class ShapeStepDefinitions: En {
         When("set_transform\\({shape_var}, {matrix_var})") { sv: String, mv: String ->
             shapes[sv]!!.transform = matrices[mv]!!
         }
-        When("set_transform\\({shape_var}, {transform})") { sv: String, m: Matrix ->
-            shapes[sv]!!.transform = m
+        When("set_transform\\({shape_var}, {transform})") { sv: String, transform: Matrix ->
+            shapes[sv]!!.transform = transform
         }
 
         When("{tuple_var} ← normal_at\\({shape_var}, {point})") { tv: String, sv: String, p: Tuple ->
@@ -114,18 +117,18 @@ class ShapeStepDefinitions: En {
         }
         When("{tuple_var} ← normal_at\\({shape_var}, {point}, {intersection_var})") {
                 tv: String, sv: String, p: Tuple, iv: String ->
-            tuples[tv] = shapes[sv]!!.worldNormalAt(p, intersections[iv]!!)
+            tuples[tv] = shapes[sv]!!.worldNormalAt(p, namedIntersections[iv]!!)
         }
 
-        When("m ← {shape_var}.material") { sv: String ->
-            m = shapes[sv]!!.material
+        When("material ← {shape_var}.material") { sv: String ->
+            material = shapes[sv]!!.material
         }
-        When("{shape_var}.material ← m") { sv: String ->
-            shapes[sv]!!.material = m
+        When("{shape_var}.material ← material") { sv: String ->
+            shapes[sv]!!.material = material
         }
 
-        When("xs ← local_intersect\\({shape_var}, {ray_var})") { sv: String, rv: String ->
-            xs = shapes[sv]!!.localIntersect(rays[rv]!!)
+        When("intersections ← local_intersect\\({shape_var}, {ray_var})") { sv: String, rv: String ->
+            intersections = shapes[sv]!!.localIntersect(rays[rv]!!)
         }
         When("{tuple_var} ← local_normal_at\\({shape_var}, {point})") { tv: String, sv: String, p: Tuple ->
             tuples[tv] = shapes[sv]!!.localNormalAt(p, dummyIntersection())
@@ -152,8 +155,8 @@ class ShapeStepDefinitions: En {
             assertThat(shapes[sv]!!.transform).isEqualTo(e)
         }
 
-        Then("{shape_var}.material = m") { sv: String ->
-            assertThat(shapes[sv]!!.material).isEqualTo(m)
+        Then("{shape_var}.material = material") { sv: String ->
+            assertThat(shapes[sv]!!.material).isEqualTo(material)
         }
         Then("{tuple_var} = {shape_var}.material.color") { tv: String, sv: String ->
             assertThat(tuples[tv]!!).isEqualTo(shapes[sv]!!.material.color)

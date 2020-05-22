@@ -33,14 +33,12 @@ data class Tuple (val cells: DoubleArray) {
     }
 
     private fun unaryOp(op: (Double) -> Double): Tuple {
-        val result = DoubleArray(4)
-        (0 until 4).forEach { index -> result[index] = op(cells[index]) }
+        val result = DoubleArray(4) { index -> op(cells[index]) }
         return Tuple(result)
     }
 
     private fun binaryOp(their: Tuple, op: (Double, Double) -> Double): Tuple {
-        val result = DoubleArray(4)
-        (0 until 4).forEach { index -> result[index] = op(cells[index], their.cells[index]) }
+        val result = DoubleArray(4) { index -> op(cells[index], their.cells[index]) }
         return Tuple(result)
     }
 
