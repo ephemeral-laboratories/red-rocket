@@ -1,16 +1,17 @@
 package garden.ephemeral.rocket
 
 import garden.ephemeral.rocket.Tuple.Companion.black
-import garden.ephemeral.rocket.Tuple.Companion.color
+import garden.ephemeral.rocket.Tuple.Companion.grey
+import garden.ephemeral.rocket.Tuple.Companion.white
 import garden.ephemeral.rocket.patterns.Pattern
 import garden.ephemeral.rocket.shapes.Shape
 import kotlin.math.pow
 
 data class Material(
     val color: Tuple,
-    val ambient: Double,
-    val diffuse: Double,
-    val specular: Double,
+    val ambient: Tuple,
+    val diffuse: Tuple,
+    val specular: Tuple,
     val shininess: Double,
     val reflective: Double,
     val transparency: Double,
@@ -20,9 +21,9 @@ data class Material(
     companion object {
         class Builder(material: Material) {
             var color: Tuple            = material.color
-            var ambient: Double         = material.ambient
-            var diffuse: Double         = material.diffuse
-            var specular: Double        = material.specular
+            var ambient: Tuple          = material.ambient
+            var diffuse: Tuple          = material.diffuse
+            var specular: Tuple         = material.specular
             var shininess: Double       = material.shininess
             var reflective: Double      = material.reflective
             var transparency: Double    = material.transparency
@@ -41,7 +42,7 @@ data class Material(
             return default.build(callback)
         }
 
-        val default: Material = Material(color(1.0, 1.0, 1.0), 0.1, 0.9, 0.9, 200.0, 0.0, 0.0, 1.0, null)
+        val default: Material = Material(white, grey(0.1), grey(0.9), grey(0.9), 200.0, 0.0, 0.0, 1.0, null)
     }
 
     fun build(callback: Builder.() -> Unit): Material {

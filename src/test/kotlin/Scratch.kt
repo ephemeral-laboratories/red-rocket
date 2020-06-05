@@ -28,7 +28,7 @@ fun main() {
             pattern = CheckersPattern(white, black).apply {
                 transform = scaling(0.25, 0.25, 0.25)
             }
-            specular = 0.0
+            specular = black
             reflective = 0.1
         }
     }
@@ -36,14 +36,14 @@ fun main() {
     val leftWall = Plane().apply {
         transform = translation(0.0, 0.0, 5.0) * rotationX(PI / 2)
         material = Material.build {
-            specular = 0.0
+            specular = black
         }
     }
 
     val rightWall = Plane().apply {
         transform = translation(5.0, 0.0, 0.0) * rotationZ(PI / 2)
         material = Material.build {
-            specular = 0.0
+            specular = black
         }
     }
 
@@ -72,8 +72,8 @@ fun main() {
     val right = Sphere().apply {
         transform = translation(1.0, 0.5, -1.0) * scaling(0.5, 0.5, 0.5)
         material = Material.build {
-            ambient = 0.0
-            diffuse = 0.0
+            ambient = black
+            diffuse = black
             reflective = 0.1
             transparency = 1.0
             refractiveIndex = 1.5

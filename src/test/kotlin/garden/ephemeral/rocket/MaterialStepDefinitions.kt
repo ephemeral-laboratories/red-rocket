@@ -3,6 +3,7 @@ package garden.ephemeral.rocket
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import garden.ephemeral.rocket.LightStepDefinitions.Companion.light
+import garden.ephemeral.rocket.Tuple.Companion.grey
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.patterns.StripePattern
 import garden.ephemeral.rocket.shapes.Sphere
@@ -26,17 +27,17 @@ class MaterialStepDefinitions: En {
         }
         Given("material.ambient ← {real}") { v: Double ->
             material = material.build {
-                ambient = v
+                ambient = grey(v)
             }
         }
         Given("material.diffuse ← {real}") { v: Double ->
             material = material.build {
-                diffuse = v
+                diffuse = grey(v)
             }
         }
         Given("material.specular ← {real}") { v: Double ->
             material = material.build {
-                specular = v
+                specular = grey(v)
             }
         }
         Given("material.shininess ← {real}") { v: Double ->
@@ -74,9 +75,9 @@ class MaterialStepDefinitions: En {
         Then("^material = material\\(\\)") { assertThat(material).isEqualTo(Material.default) }
 
         Then("material.color = {color}")           { e: Tuple -> assertThat(material.color).isEqualTo(e) }
-        Then("material.ambient = {real}")          { e: Double -> assertThat(material.ambient).isEqualTo(e) }
-        Then("material.diffuse = {real}")          { e: Double -> assertThat(material.diffuse).isEqualTo(e) }
-        Then("material.specular = {real}")         { e: Double -> assertThat(material.specular).isEqualTo(e) }
+        Then("material.ambient = {real}")          { e: Double -> assertThat(material.ambient).isEqualTo(grey(e)) }
+        Then("material.diffuse = {real}")          { e: Double -> assertThat(material.diffuse).isEqualTo(grey(e)) }
+        Then("material.specular = {real}")         { e: Double -> assertThat(material.specular).isEqualTo(grey(e)) }
         Then("material.shininess = {real}")        { e: Double -> assertThat(material.shininess).isEqualTo(e) }
         Then("material.reflective = {real}")       { e: Double -> assertThat(material.reflective).isEqualTo(e) }
         Then("material.transparency = {real}")     { e: Double -> assertThat(material.transparency).isEqualTo(e) }

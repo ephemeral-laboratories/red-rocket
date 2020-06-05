@@ -5,7 +5,9 @@ import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.rotationY
 import garden.ephemeral.rocket.Transforms.Companion.translation
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
+import garden.ephemeral.rocket.Tuple.Companion.black
 import garden.ephemeral.rocket.Tuple.Companion.color
+import garden.ephemeral.rocket.Tuple.Companion.grey
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.World
@@ -22,14 +24,14 @@ fun mappedCube(): Shape {
         material = Material.build {
             pattern = CubeMap(
                 UVAlignCheck(color(1.0, 1.0, 0.0), color(0.0, 1.0, 1.0), color(1.0, 0.0, 0.0), color(0.0, 0.0, 1.0), color(1.0, 0.5, 0.0)),
-                UVAlignCheck(color(1.0, 0.0, 0.0), color(1.0, 1.0, 0.0), color(1.0, 0.0, 1.0), color(0.0, 1.0, 0.0), color(1.0, 1.0, 1.0)),
                 UVAlignCheck(color(0.0, 1.0, 1.0), color(1.0, 0.0, 0.0), color(1.0, 1.0, 0.0), color(1.0, 0.5, 0.0), color(0.0, 1.0, 0.0)),
+                UVAlignCheck(color(1.0, 0.0, 0.0), color(1.0, 1.0, 0.0), color(1.0, 0.0, 1.0), color(0.0, 1.0, 0.0), color(1.0, 1.0, 1.0)),
                 UVAlignCheck(color(0.0, 1.0, 0.0), color(1.0, 0.0, 1.0), color(0.0, 1.0, 1.0), color(1.0, 1.0, 1.0), color(0.0, 0.0, 1.0)),
                 UVAlignCheck(color(1.0, 0.5, 0.0), color(0.0, 1.0, 1.0), color(1.0, 0.0, 1.0), color(1.0, 0.0, 0.0), color(1.0, 1.0, 0.0)),
-                UVAlignCheck(color(1.0, 0.0, 1.0), color(1.0, 0.5, 0.0), color(0.0, 1.0, 0.0), color(0.0, 0.0, 1.0), color(1.0, 1.0, 1.0)))
-            ambient = 0.2
-            specular = 0.0
-            diffuse = 0.8
+                UVAlignCheck(color(1.0, 0.0, 1.0), color(1.0, 0.5, 0.0), color(0.0, 1.0, 0.0) , color(0.0, 0.0, 1.0), color(1.0, 1.0, 1.0)))
+            ambient = grey(0.2)
+            specular = black
+            diffuse = grey(0.8)
         }
     }
 }

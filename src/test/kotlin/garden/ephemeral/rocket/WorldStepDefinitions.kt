@@ -8,6 +8,7 @@ import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.comps
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersections
 import garden.ephemeral.rocket.LightStepDefinitions.Companion.light
 import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
+import garden.ephemeral.rocket.Tuple.Companion.grey
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import garden.ephemeral.rocket.shapes.Sphere
@@ -90,8 +91,8 @@ class WorldStepDefinitions: En {
             objects.add(Sphere().apply {
                 material = Material.build {
                     color = Tuple.color(0.8, 1.0, 0.6)
-                    diffuse = 0.7
-                    specular = 0.2
+                    diffuse = grey(0.7)
+                    specular = grey(0.2)
                 }
             })
             objects.add(Sphere().apply {

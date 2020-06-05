@@ -6,7 +6,9 @@ import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.scaling
 import garden.ephemeral.rocket.Transforms.Companion.translation
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
+import garden.ephemeral.rocket.Tuple.Companion.black
 import garden.ephemeral.rocket.Tuple.Companion.color
+import garden.ephemeral.rocket.Tuple.Companion.grey
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.Tuple.Companion.white
@@ -22,9 +24,9 @@ import kotlin.math.PI
 fun main() {
     val whiteMaterial = Material.build {
         color = white
-        diffuse = 0.7
-        ambient = 0.1
-        specular = 0.0
+        diffuse = grey(0.7)
+        ambient = grey(0.1)
+        specular = black
         reflective = 0.1
     }
 
@@ -54,18 +56,18 @@ fun main() {
             Plane().apply {
                 material = Material.build {
                     color = white
-                    ambient = 1.0
-                    diffuse = 0.0
-                    specular = 0.0
+                    ambient = white
+                    diffuse = black
+                    specular = black
                 }
                 transform = translation(0.0, 0.0, 500.0) * rotationX(PI / 2)
             },
             Sphere().apply {
                 material = Material.build {
                     color = color(0.373, 0.404, 0.550)
-                    diffuse = 0.2
-                    ambient = 0.0
-                    specular = 1.0
+                    diffuse = grey(0.2)
+                    ambient = black
+                    specular = white
                     shininess = 200.0
                     reflective = 0.7
                     transparency = 0.7

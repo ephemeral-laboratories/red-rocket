@@ -30,6 +30,7 @@ data class Tuple (val cells: DoubleArray) {
         // Feels real dirty to default this to 0.0 but it's passing the tests
         fun color(r: Double, g: Double, b: Double) : Tuple { return Tuple(r, g, b, 0.0) }
         fun color(cells: DoubleArray) : Tuple { return Tuple(cells) }
+        fun grey(v: Double): Tuple { return Tuple(v, v, v, 0.0) }
     }
 
     private fun unaryOp(op: (Double) -> Double): Tuple {

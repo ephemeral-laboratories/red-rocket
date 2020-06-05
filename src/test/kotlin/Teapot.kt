@@ -1,5 +1,7 @@
 
-import garden.ephemeral.rocket.*
+import garden.ephemeral.rocket.Camera
+import garden.ephemeral.rocket.Material
+import garden.ephemeral.rocket.PointLight
 import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.rotationZ
 import garden.ephemeral.rocket.Transforms.Companion.scaling
@@ -10,6 +12,7 @@ import garden.ephemeral.rocket.Tuple.Companion.color
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.Tuple.Companion.white
+import garden.ephemeral.rocket.World
 import garden.ephemeral.rocket.importers.ObjFileParser
 import garden.ephemeral.rocket.patterns.CheckersPattern
 import garden.ephemeral.rocket.shapes.Plane
@@ -24,7 +27,7 @@ fun main() {
             pattern = CheckersPattern(white, black).apply {
                 transform = scaling(0.25, 0.25, 0.25)
             }
-            specular = 0.0
+            specular = black
             reflective = 0.1
         }
     }
@@ -32,14 +35,14 @@ fun main() {
     val leftWall = Plane().apply {
         transform = translation(0.0, 0.0, 5.0) * rotationX(PI / 2)
         material = Material.build {
-            specular = 0.0
+            specular = black
         }
     }
 
     val rightWall = Plane().apply {
         transform = translation(5.0, 0.0, 0.0) * rotationZ(PI / 2)
         material = Material.build {
-            specular = 0.0
+            specular = black
         }
     }
 

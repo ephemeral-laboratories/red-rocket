@@ -12,6 +12,7 @@ import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
 import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.transformFromString
 import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
 import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.Tuple.Companion.grey
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.patterns.TestPattern
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
@@ -51,17 +52,17 @@ class ShapeStepDefinitions: En {
                     }
                     "material.ambient" -> {
                         shape.material = shape.material.build {
-                            ambient = realFromString(row[1])
+                            ambient = grey(realFromString(row[1]))
                         }
                     }
                     "material.diffuse" -> {
                         shape.material = shape.material.build {
-                            diffuse = realFromString(row[1])
+                            diffuse = grey(realFromString(row[1]))
                         }
                     }
                     "material.specular" -> {
                         shape.material = shape.material.build {
-                            specular = realFromString(row[1])
+                            specular = grey(realFromString(row[1]))
                         }
                     }
                     "material.reflective" -> {
@@ -101,7 +102,7 @@ class ShapeStepDefinitions: En {
 
         Given("{shape_var}.material.ambient ← {real}") { sv: String, v: Double ->
             shapes[sv]!!.material = shapes[sv]!!.material.build {
-                ambient = v
+                ambient = grey(v)
             }
         }
 
