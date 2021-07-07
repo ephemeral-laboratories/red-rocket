@@ -16,42 +16,22 @@ data class Material(
     val reflective: Tuple,
     val transparency: Tuple,
     val refractiveIndex: Double,
-    val pattern: Pattern?
+    val pattern: Pattern?,
+    val dissolve: Double,
+    var illuminationModel: Int
 ) {
     companion object {
-        class Builder(material: Material) {
-            var color: Tuple             = material.color
-            var ambient: Tuple           = material.ambient
-            var diffuse: Tuple           = material.diffuse
-            var specular: Tuple          = material.specular
-            var shininess: Double        = material.shininess
-            var reflective: Tuple        = material.reflective
-            var transparency: Tuple      = material.transparency
-            var refractiveIndex: Double  = material.refractiveIndex
-            var pattern: Pattern?        = material.pattern
-
-            var dissolve: Double        = 0.0
-
-            // TODO: Big thonk
-            var illuminationModel: Int  = 0
-
-            fun build(): Material {
-                return Material(
-                    color, ambient, diffuse, specular, shininess,
-                    reflective, transparency, refractiveIndex, pattern)
-            }
-
-            fun build(callback: Builder.() -> Unit): Material {
-                callback(this)
-                return build()
-            }
-        }
+        val default: Material = Material(
+            white, grey(0.1), grey(0.9), grey(0.9), 200.0,
+            black, black, 1.0, null, 1.0, -1)
 
         fun build(callback: Builder.() -> Unit) : Material {
             return default.build(callback)
         }
 
-        val default: Material = Material(white, grey(0.1), grey(0.9), grey(0.9), 200.0, black, black, 1.0, null)
+        fun builder(): Builder {
+            return Builder(default)
+        }
     }
 
     fun build(callback: Builder.() -> Unit): Material {
@@ -112,5 +92,31 @@ data class Material(
         }
 
         return result
+    }
+
+    class Builder(material: Material) {
+        var color: Tuple             = material.color
+        var ambient: Tuple           = material.ambient
+        var diffuse: Tuple           = material.diffuse
+        var specular: Tuple          = material.specular
+        var shininess: Double        = material.shininess
+        var reflective: Tuple        = material.reflective
+        var transparency: Tuple      = material.transparency
+        var refractiveIndex: Double  = material.refractiveIndex
+        var pattern: Pattern?        = material.pattern
+        var dissolve: Double         = 0.0
+        var illuminationModel: Int   = 0
+
+        fun build(): Material {
+            return Material(
+                color, ambient, diffuse, specular, shininess,
+                reflective, transparency, refractiveIndex, pattern,
+                dissolve, illuminationModel)
+        }
+
+        fun build(callback: Builder.() -> Unit): Material {
+            callback(this)
+            return build()
+        }
     }
 }

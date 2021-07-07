@@ -74,14 +74,58 @@ class MaterialStepDefinitions: En {
 
         Then("^material = material\\(\\)") { assertThat(material).isEqualTo(Material.default) }
 
-        Then("material.color = {color}")           { e: Tuple -> assertThat(material.color).isEqualTo(e) }
-        Then("material.ambient = {real}")          { e: Double -> assertThat(material.ambient).isEqualTo(grey(e)) }
-        Then("material.ambient = {color}")         { e: Double -> assertThat(material.ambient).isEqualTo(e) }
-        Then("material.diffuse = {real}")          { e: Double -> assertThat(material.diffuse).isEqualTo(grey(e)) }
-        Then("material.specular = {real}")         { e: Double -> assertThat(material.specular).isEqualTo(grey(e)) }
-        Then("material.shininess = {real}")        { e: Double -> assertThat(material.shininess).isEqualTo(e) }
-        Then("material.reflective = {real}")       { e: Double -> assertThat(material.reflective).isEqualTo(grey(e)) }
-        Then("material.transparency = {real}")     { e: Double -> assertThat(material.transparency).isEqualTo(grey(e)) }
-        Then("material.refractive_index = {real}") { e: Double -> assertThat(material.refractiveIndex).isEqualTo(e) }
+        Then("material.color = {color}")            { e: Tuple  -> assertThat(material.color).isEqualTo(e) }
+
+        Then("material.ambient = {real}")           { e: Double -> assertThat(material.ambient).isEqualTo(grey(e)) }
+
+        Then("material.ambient = {color}")          { e: Tuple  -> assertThat(material.ambient).isEqualTo(e) }
+
+        Then("material.diffuse = {real}") { e: Double ->
+            assertThat(material.diffuse).isEqualTo(grey(e))
+        }
+
+        Then("material.diffuse = {color}") { e: Tuple ->
+            assertThat(material.diffuse).isEqualTo(e)
+        }
+
+        Then("material.specular = {real}") { e: Double ->
+            assertThat(material.specular).isEqualTo(grey(e))
+        }
+
+        Then("material.specular = {color}") { e: Tuple ->
+            assertThat(material.specular).isEqualTo(e)
+        }
+
+        Then("material.shininess = {real}") { e: Double ->
+            assertThat(material.shininess).isEqualTo(e)
+        }
+
+        Then("material.reflective = {real}") { e: Double ->
+            assertThat(material.reflective).isEqualTo(grey(e))
+        }
+
+        Then("material.reflective = {color}") { e: Tuple ->
+            assertThat(material.reflective).isEqualTo(e)
+        }
+
+        Then("material.transparency = {real}") { e: Double ->
+            assertThat(material.transparency).isEqualTo(grey(e))
+        }
+
+        Then("material.transparency = {color}") { e: Tuple ->
+            assertThat(material.transparency).isEqualTo(e)
+        }
+
+        Then("material.refractive_index = {real}") { e: Double ->
+            assertThat(material.refractiveIndex).isEqualTo(e)
+        }
+
+        Then("material.dissolve = {real}") { e: Double ->
+            assertThat(material.dissolve).isEqualTo(e)
+        }
+
+        Then("material.illumination_model = {int}") { e: Int ->
+            assertThat(material.illuminationModel).isEqualTo(e)
+        }
     }
 }
