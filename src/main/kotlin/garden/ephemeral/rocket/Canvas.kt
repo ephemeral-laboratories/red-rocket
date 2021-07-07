@@ -23,15 +23,16 @@ class Canvas(val width: Int, val height: Int) {
     }
 
     fun getPixel(x: Int, y: Int): Color {
-        return Color(raster.getPixel(x, y, null as DoubleArray?))
+        val rgb = raster.getPixel(x, y, null as DoubleArray?)
+        return Color(rgb[0], rgb[1], rgb[2])
     }
 
     fun setPixel(x: Int, y: Int, color: Color) {
-        raster.setPixel(x, y, color.cells)
+        raster.setPixel(x, y, color.toDoubleArray())
     }
 
     fun fill(color: Color) {
-        val doubles = color.cells
+        val doubles = color.toDoubleArray()
         (0 until height).forEach { y ->
             (0 until width).forEach { x ->
                 raster.setPixel(x, y, doubles)

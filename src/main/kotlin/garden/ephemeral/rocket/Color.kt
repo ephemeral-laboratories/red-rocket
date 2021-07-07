@@ -2,14 +2,9 @@ package garden.ephemeral.rocket
 
 import kotlin.math.abs
 
-data class Color(val cells: DoubleArray) {
-    val r: Double  get() = cells[0]
-    val g: Double  get() = cells[1]
-    val b: Double  get() = cells[2]
+data class Color(val r: Double, val g: Double, val b: Double) {
     val isBlack:     Boolean get() = r == 0.0 && g == 0.0 && b == 0.0
     val isNonBlack:  Boolean get() = !isBlack
-
-    constructor(r: Double, g: Double, b: Double) : this(doubleArrayOf(r, g, b))
 
     companion object {
         val black = Color(0.0, 0.0, 0.0)
@@ -19,29 +14,23 @@ data class Color(val cells: DoubleArray) {
     }
 
     operator fun plus(their: Color): Color {
-        return binaryOp(their) { a, b -> a + b }
+        return Color(r + their.r, b + their.b, g + their.g)
     }
 
     operator fun minus(their: Color): Color {
-        return binaryOp(their) { a, b -> a - b }
+        return Color(r - their.r, b - their.b, g - their.g)
     }
 
     operator fun times(scalar: Double): Color {
-        return unaryOp { a -> a * scalar }
+        return Color(r * scalar, g * scalar, b * scalar)
     }
 
     operator fun times(their: Color): Color {
-        return binaryOp(their) { a, b -> a * b }
+        return Color(r * their.r, g * their.g, b * their.b)
     }
 
-    private fun unaryOp(op: (Double) -> Double): Color {
-        val result = DoubleArray(3) { index -> op(cells[index]) }
-        return Color(result)
-    }
-
-    private fun binaryOp(their: Color, op: (Double, Double) -> Double): Color {
-        val result = DoubleArray(3) { index -> op(cells[index], their.cells[index]) }
-        return Color(result)
+    fun toDoubleArray(): DoubleArray {
+        return doubleArrayOf(r, g, b)
     }
 
     fun toIntArray(): IntArray {
@@ -56,20 +45,5 @@ data class Color(val cells: DoubleArray) {
         return abs(r - their.r) <= delta
                 && abs(g - their.g) <= delta
                 && abs(b - their.b) <= delta
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Color
-
-        if (!cells.contentEquals(other.cells)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return cells.contentHashCode()
     }
 }
