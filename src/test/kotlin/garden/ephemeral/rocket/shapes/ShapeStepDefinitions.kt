@@ -67,12 +67,12 @@ class ShapeStepDefinitions: En {
                     }
                     "material.reflective" -> {
                         shape.material = shape.material.build {
-                            reflective = realFromString(row[1])
+                            reflective = grey(realFromString(row[1]))
                         }
                     }
                     "material.transparency" -> {
                         shape.material = shape.material.build {
-                            transparency = realFromString(row[1])
+                            transparency = grey(realFromString(row[1]))
                         }
                     }
                     "material.refractive_index" -> {
@@ -163,7 +163,7 @@ class ShapeStepDefinitions: En {
             assertThat(tuples[tv]!!).isEqualTo(shapes[sv]!!.material.color)
         }
         Then("{shape_var}.material.transparency = {real}") { sv: String, e: Double ->
-            assertThat(shapes[sv]!!.material.transparency).isEqualTo(e)
+            assertThat(shapes[sv]!!.material.transparency).isEqualTo(grey(e))
         }
         Then("{shape_var}.material.refractive_index = {real}") { sv: String, e: Double ->
             assertThat(shapes[sv]!!.material.refractiveIndex).isEqualTo(e)

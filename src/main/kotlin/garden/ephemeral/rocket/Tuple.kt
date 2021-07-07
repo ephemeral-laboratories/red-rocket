@@ -3,6 +3,8 @@ package garden.ephemeral.rocket
 import kotlin.math.sqrt
 
 data class Tuple (val cells: DoubleArray) {
+    val isZero:     Boolean get() = x == 0.0 && y == 0.0 && z == 0.0
+    val isNonZero:  Boolean get() = !isZero
     val point:      Boolean get() = w == 1.0
     val vector:     Boolean get() = w == 0.0
     val magnitude:  Double  get() = sqrt(cells.sumByDouble { cell -> cell * cell })

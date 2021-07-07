@@ -34,7 +34,7 @@ class World {
             val reflected = reflectedColor(precomputed, recursionsAllowed)
             val refracted = refractedColor(precomputed, recursionsAllowed)
 
-            val reflectRefract = if (material.reflective > 0.0 && material.transparency > 0.0) {
+            val reflectRefract = if (material.reflective.isNonZero && material.transparency.isNonZero) {
                 val reflectance = precomputed.schlick()
                 reflected * reflectance + refracted * (1.0 - reflectance)
             } else {
@@ -57,7 +57,7 @@ class World {
             return black
         }
 
-        if (comps.obj.material.reflective == 0.0) {
+        if (comps.obj.material.reflective.isZero) {
             return black
         }
 
@@ -71,7 +71,7 @@ class World {
             return black
         }
 
-        if (comps.obj.material.transparency == 0.0) {
+        if (comps.obj.material.transparency.isZero) {
             return black
         }
 

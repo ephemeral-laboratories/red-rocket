@@ -47,7 +47,7 @@ class MaterialStepDefinitions: En {
         }
         Given("material.reflective ← {real}") { v: Double ->
             material = material.build {
-                reflective = v
+                reflective = grey(v)
             }
         }
 
@@ -76,11 +76,12 @@ class MaterialStepDefinitions: En {
 
         Then("material.color = {color}")           { e: Tuple -> assertThat(material.color).isEqualTo(e) }
         Then("material.ambient = {real}")          { e: Double -> assertThat(material.ambient).isEqualTo(grey(e)) }
+        Then("material.ambient = {color}")         { e: Double -> assertThat(material.ambient).isEqualTo(e) }
         Then("material.diffuse = {real}")          { e: Double -> assertThat(material.diffuse).isEqualTo(grey(e)) }
         Then("material.specular = {real}")         { e: Double -> assertThat(material.specular).isEqualTo(grey(e)) }
         Then("material.shininess = {real}")        { e: Double -> assertThat(material.shininess).isEqualTo(e) }
-        Then("material.reflective = {real}")       { e: Double -> assertThat(material.reflective).isEqualTo(e) }
-        Then("material.transparency = {real}")     { e: Double -> assertThat(material.transparency).isEqualTo(e) }
+        Then("material.reflective = {real}")       { e: Double -> assertThat(material.reflective).isEqualTo(grey(e)) }
+        Then("material.transparency = {real}")     { e: Double -> assertThat(material.transparency).isEqualTo(grey(e)) }
         Then("material.refractive_index = {real}") { e: Double -> assertThat(material.refractiveIndex).isEqualTo(e) }
     }
 }

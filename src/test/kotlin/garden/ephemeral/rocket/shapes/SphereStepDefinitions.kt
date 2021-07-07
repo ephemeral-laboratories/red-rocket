@@ -1,6 +1,7 @@
 package garden.ephemeral.rocket.shapes
 
 import garden.ephemeral.rocket.Material
+import garden.ephemeral.rocket.Tuple.Companion.white
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.configureFromDataTable
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.datatable.DataTable
@@ -30,7 +31,7 @@ class SphereStepDefinitions: En {
     private fun glassSphere(): Sphere {
         return Sphere().apply {
             material = Material.build {
-                transparency = 1.0
+                transparency = white
                 refractiveIndex = 1.5
             }
         }

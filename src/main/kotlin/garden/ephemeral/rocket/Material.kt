@@ -13,22 +13,27 @@ data class Material(
     val diffuse: Tuple,
     val specular: Tuple,
     val shininess: Double,
-    val reflective: Double,
-    val transparency: Double,
+    val reflective: Tuple,
+    val transparency: Tuple,
     val refractiveIndex: Double,
     val pattern: Pattern?
 ) {
     companion object {
         class Builder(material: Material) {
-            var color: Tuple            = material.color
-            var ambient: Tuple          = material.ambient
-            var diffuse: Tuple          = material.diffuse
-            var specular: Tuple         = material.specular
-            var shininess: Double       = material.shininess
-            var reflective: Double      = material.reflective
-            var transparency: Double    = material.transparency
-            var refractiveIndex: Double = material.refractiveIndex
-            var pattern: Pattern?       = material.pattern
+            var color: Tuple             = material.color
+            var ambient: Tuple           = material.ambient
+            var diffuse: Tuple           = material.diffuse
+            var specular: Tuple          = material.specular
+            var shininess: Double        = material.shininess
+            var reflective: Tuple        = material.reflective
+            var transparency: Tuple      = material.transparency
+            var refractiveIndex: Double  = material.refractiveIndex
+            var pattern: Pattern?        = material.pattern
+
+            var dissolve: Double        = 0.0
+
+            // TODO: Big thonk
+            var illuminationModel: Int  = 0
 
             fun build(callback: Builder.() -> Unit): Material {
                 callback(this)
@@ -42,7 +47,7 @@ data class Material(
             return default.build(callback)
         }
 
-        val default: Material = Material(white, grey(0.1), grey(0.9), grey(0.9), 200.0, 0.0, 0.0, 1.0, null)
+        val default: Material = Material(white, grey(0.1), grey(0.9), grey(0.9), 200.0, black, black, 1.0, null)
     }
 
     fun build(callback: Builder.() -> Unit): Material {

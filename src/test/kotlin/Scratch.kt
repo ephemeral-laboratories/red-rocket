@@ -10,6 +10,7 @@ import garden.ephemeral.rocket.Transforms.Companion.translation
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
 import garden.ephemeral.rocket.Tuple.Companion.black
 import garden.ephemeral.rocket.Tuple.Companion.color
+import garden.ephemeral.rocket.Tuple.Companion.grey
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.Tuple.Companion.white
@@ -29,7 +30,7 @@ fun main() {
                 transform = scaling(0.25, 0.25, 0.25)
             }
             specular = black
-            reflective = 0.1
+            reflective = grey(0.1)
         }
     }
 
@@ -74,8 +75,8 @@ fun main() {
         material = Material.build {
             ambient = black
             diffuse = black
-            reflective = 0.1
-            transparency = 1.0
+            reflective = grey(0.1)
+            transparency = grey(1.0)
             refractiveIndex = 1.5
         }
     }
@@ -83,7 +84,7 @@ fun main() {
     val left = Sphere().apply {
         transform = translation(-1.0, 0.5, -1.0) * scaling(0.5, 0.5, 0.5)
         material = Material.build {
-            reflective = 1.0
+            reflective = grey(1.0)
         }
     }
 

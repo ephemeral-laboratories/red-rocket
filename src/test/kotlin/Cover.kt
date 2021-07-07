@@ -27,7 +27,7 @@ fun main() {
         diffuse = grey(0.7)
         ambient = grey(0.1)
         specular = black
-        reflective = 0.1
+        reflective = grey(0.1)
     }
 
     val blueMaterial = whiteMaterial.build {
@@ -69,8 +69,8 @@ fun main() {
                     ambient = black
                     specular = white
                     shininess = 200.0
-                    reflective = 0.7
-                    transparency = 0.7
+                    reflective = grey(0.7)
+                    transparency = grey(0.7)
                     refractiveIndex = 1.5
                 }
                 transform = largeObject
