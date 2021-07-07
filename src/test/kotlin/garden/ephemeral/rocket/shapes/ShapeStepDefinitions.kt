@@ -3,6 +3,9 @@ package garden.ephemeral.rocket.shapes
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
+import garden.ephemeral.rocket.Color
+import garden.ephemeral.rocket.Color.Companion.grey
+import garden.ephemeral.rocket.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersections
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.namedIntersections
@@ -12,7 +15,6 @@ import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
 import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.transformFromString
 import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
 import garden.ephemeral.rocket.Tuple
-import garden.ephemeral.rocket.Tuple.Companion.grey
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.patterns.TestPattern
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
@@ -34,11 +36,8 @@ class ShapeStepDefinitions: En {
                     "material.color" -> {
                         val params = row[1].substring(1, row[1].length - 1).split(", ")
                         shape.material = shape.material.build {
-                            color = Tuple.color(
-                                realFromString(params[0]),
-                                realFromString(params[1]),
-                                realFromString(params[2])
-                            )
+                            color = Color(realFromString(params[0]), realFromString(params[1]),
+                                realFromString(params[2]))
                         }
                     }
                     "material.pattern" -> {
@@ -159,8 +158,8 @@ class ShapeStepDefinitions: En {
         Then("{shape_var}.material = material") { sv: String ->
             assertThat(shapes[sv]!!.material).isEqualTo(material)
         }
-        Then("{tuple_var} = {shape_var}.material.color") { tv: String, sv: String ->
-            assertThat(tuples[tv]!!).isEqualTo(shapes[sv]!!.material.color)
+        Then("{color_var} = {shape_var}.material.color") { cv: String, sv: String ->
+            assertThat(colors[cv]!!).isEqualTo(shapes[sv]!!.material.color)
         }
         Then("{shape_var}.material.transparency = {real}") { sv: String, e: Double ->
             assertThat(shapes[sv]!!.material.transparency).isEqualTo(grey(e))

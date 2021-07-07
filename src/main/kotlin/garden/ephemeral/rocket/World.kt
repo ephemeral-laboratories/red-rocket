@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket
 
-import garden.ephemeral.rocket.Tuple.Companion.black
+import garden.ephemeral.rocket.Color.Companion.black
 import garden.ephemeral.rocket.shapes.Shape
 import kotlin.math.sqrt
 
@@ -24,7 +24,7 @@ class World {
         return h != null && h.t < distance
     }
 
-    fun shadeHit(precomputed: Intersection.Precomputed, recursionsAllowed: Int = 5): Tuple {
+    fun shadeHit(precomputed: Intersection.Precomputed, recursionsAllowed: Int = 5): Color {
         return lights.fold(black) { color, light ->
             val material = precomputed.obj.material
             val shadowed = isShadowed(precomputed.overPoint, light)
@@ -34,7 +34,7 @@ class World {
             val reflected = reflectedColor(precomputed, recursionsAllowed)
             val refracted = refractedColor(precomputed, recursionsAllowed)
 
-            val reflectRefract = if (material.reflective.isNonZero && material.transparency.isNonZero) {
+            val reflectRefract = if (material.reflective.isNonBlack && material.transparency.isNonBlack) {
                 val reflectance = precomputed.schlick()
                 reflected * reflectance + refracted * (1.0 - reflectance)
             } else {
@@ -45,19 +45,19 @@ class World {
         }
     }
 
-    fun colorAt(ray: Ray, recursionsAllowed: Int = 5): Tuple {
+    fun colorAt(ray: Ray, recursionsAllowed: Int = 5): Color {
         val intersections = intersect(ray)
         val hit = Intersection.hit(intersections) ?: return black
         val precomputed = hit.prepareComputations(ray, intersections)
         return shadeHit(precomputed, recursionsAllowed)
     }
 
-    fun reflectedColor(comps: Intersection.Precomputed, recursionsAllowed: Int = 5): Tuple {
+    fun reflectedColor(comps: Intersection.Precomputed, recursionsAllowed: Int = 5): Color {
         if (recursionsAllowed == 0) {
             return black
         }
 
-        if (comps.obj.material.reflective.isZero) {
+        if (comps.obj.material.reflective.isBlack) {
             return black
         }
 
@@ -66,12 +66,12 @@ class World {
         return color * comps.obj.material.reflective
     }
 
-    fun refractedColor(comps: Intersection.Precomputed, recursionsAllowed: Int = 5): Tuple {
+    fun refractedColor(comps: Intersection.Precomputed, recursionsAllowed: Int = 5): Color {
         if (recursionsAllowed == 0) {
             return black
         }
 
-        if (comps.obj.material.transparency.isZero) {
+        if (comps.obj.material.transparency.isBlack) {
             return black
         }
 

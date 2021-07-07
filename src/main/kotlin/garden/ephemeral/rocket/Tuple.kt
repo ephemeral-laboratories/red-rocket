@@ -1,10 +1,9 @@
 package garden.ephemeral.rocket
 
+import kotlin.math.abs
 import kotlin.math.sqrt
 
-data class Tuple (val cells: DoubleArray) {
-    val isZero:     Boolean get() = x == 0.0 && y == 0.0 && z == 0.0
-    val isNonZero:  Boolean get() = !isZero
+data class Tuple(val cells: DoubleArray) {
     val point:      Boolean get() = w == 1.0
     val vector:     Boolean get() = w == 0.0
     val magnitude:  Double  get() = sqrt(cells.sumByDouble { cell -> cell * cell })
@@ -12,10 +11,6 @@ data class Tuple (val cells: DoubleArray) {
     val y:          Double  get() = cells[1]
     val z:          Double  get() = cells[2]
     val w:          Double  get() = cells[3]
-    val r:          Double  get() = cells[0]
-    val g:          Double  get() = cells[1]
-    val b:          Double  get() = cells[2]
-    val a:          Double  get() = cells[3]
 
     constructor(x: Double, y: Double, z: Double) : this(doubleArrayOf(x, y, z))
     constructor(x: Double, y: Double, z: Double, w: Double) : this(doubleArrayOf(x, y, z, w))
@@ -23,16 +18,9 @@ data class Tuple (val cells: DoubleArray) {
     companion object {
         val zero = vector(0.0, 0.0, 0.0)
         val origin = point(0.0, 0.0, 0.0)
-        val black = color(0.0, 0.0, 0.0)
-        val white = color(1.0, 1.0, 1.0)
 
         fun point(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 1.0) }
         fun vector(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 0.0) }
-        fun color(r: Double, g: Double, b: Double, a: Double) : Tuple { return Tuple(r, g, b, a) }
-        // Feels real dirty to default this to 0.0 but it's passing the tests
-        fun color(r: Double, g: Double, b: Double) : Tuple { return Tuple(r, g, b, 0.0) }
-        fun color(cells: DoubleArray) : Tuple { return Tuple(cells) }
-        fun grey(v: Double): Tuple { return Tuple(v, v, v, 0.0) }
     }
 
     private fun unaryOp(op: (Double) -> Double): Tuple {
@@ -78,10 +66,10 @@ data class Tuple (val cells: DoubleArray) {
     }
 
     fun isCloseTo(their: Tuple, delta: Double) : Boolean {
-        return Math.abs(x - their.x) <= delta
-                && Math.abs(y - their.y) <= delta
-                && Math.abs(z - their.z) <= delta
-                && Math.abs(w - their.w) <= delta
+        return abs(x - their.x) <= delta
+                && abs(y - their.y) <= delta
+                && abs(z - their.z) <= delta
+                && abs(w - their.w) <= delta
     }
 
     fun dot(their: Tuple): Double {
@@ -101,14 +89,6 @@ data class Tuple (val cells: DoubleArray) {
 
     fun reflect(normal: Tuple): Tuple {
         return this - normal * 2.0 * dot(normal)
-    }
-
-    fun toIntArray(): IntArray {
-        return intArrayOf(floatToClampedInt(r), floatToClampedInt(g), floatToClampedInt(b), floatToClampedInt(a))
-    }
-
-    private fun floatToClampedInt(f: Double): Int {
-        return (f * 256).toInt().coerceIn(0, 255)
     }
 
     override fun equals(other: Any?): Boolean {

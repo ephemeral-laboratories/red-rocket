@@ -1,11 +1,11 @@
 package garden.ephemeral.rocket.patterns
 
 import garden.ephemeral.rocket.Canvas
-import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.Color
 import kotlin.math.round
 
 class UVImage(val canvas: Canvas) : UVPattern() {
-    override fun uvPatternAt(u: Double, v: Double): Tuple {
+    override fun uvPatternAt(u: Double, v: Double): Color {
         val x = u * (canvas.width - 1)
         // V is bottom to top, image data is top to bottom
         val y = (1 - v) * (canvas.height - 1)

@@ -1,7 +1,7 @@
 package garden.ephemeral.rocket.patterns
 
-import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.Color
 
 abstract class UVPattern {
-    abstract fun uvPatternAt(u: Double, v: Double): Tuple;
+    abstract fun uvPatternAt(u: Double, v: Double): Color;
 }

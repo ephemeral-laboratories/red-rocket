@@ -4,11 +4,15 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import garden.ephemeral.rocket.Color.Companion.grey
+import garden.ephemeral.rocket.Color.Companion.white
+import garden.ephemeral.rocket.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.comps
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersections
 import garden.ephemeral.rocket.LightStepDefinitions.Companion.light
 import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
-import garden.ephemeral.rocket.Tuple.Companion.grey
+import garden.ephemeral.rocket.Transforms.Companion.scaling
+import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import garden.ephemeral.rocket.shapes.Sphere
@@ -27,7 +31,7 @@ class WorldStepDefinitions: En {
             world = defaultWorld()
         }
 
-        Given("world.light ← point_light\\({point}, {color})") { p: Tuple, c: Tuple ->
+        Given("world.light ← point_light\\({point}, {color})") { p: Tuple, c: Color ->
             world.lights = mutableListOf(PointLight(p, c))
         }
 
@@ -45,25 +49,25 @@ class WorldStepDefinitions: En {
             intersections = world.intersect(rays[rv]!!)
         }
 
-        When("{tuple_var} ← shade_hit\\(world, comps)") { tv: String ->
-            tuples[tv] = world.shadeHit(comps)
+        When("{color_var} ← shade_hit\\(world, comps)") { cv: String ->
+            colors[cv] = world.shadeHit(comps)
         }
-        When("{tuple_var} ← shade_hit\\(world, comps, {int})") { tv: String, i: Int ->
-            tuples[tv] = world.shadeHit(comps, i)
-        }
-
-        When("{tuple_var} ← color_at\\(world, {ray_var})") { tv: String, rv: String ->
-            tuples[tv] = world.colorAt(rays[rv]!!)
+        When("{color_var} ← shade_hit\\(world, comps, {int})") { cv: String, i: Int ->
+            colors[cv] = world.shadeHit(comps, i)
         }
 
-        When("{tuple_var} ← reflected_color\\(world, comps)") { tv: String ->
-            tuples[tv] = world.reflectedColor(comps)
+        When("{color_var} ← color_at\\(world, {ray_var})") { cv: String, rv: String ->
+            colors[cv] = world.colorAt(rays[rv]!!)
         }
-        When("{tuple_var} ← reflected_color\\(world, comps, {int})") { tv: String, i: Int ->
-            tuples[tv] = world.reflectedColor(comps, i)
+
+        When("{color_var} ← reflected_color\\(world, comps)") { cv: String ->
+            colors[cv] = world.reflectedColor(comps)
         }
-        When("{tuple_var} ← refracted_color\\(world, comps, {int})") { tv: String, i: Int ->
-            tuples[tv] = world.refractedColor(comps, i)
+        When("{color_var} ← reflected_color\\(world, comps, {int})") { cv: String, i: Int ->
+            colors[cv] = world.reflectedColor(comps, i)
+        }
+        When("{color_var} ← refracted_color\\(world, comps, {int})") { cv: String, i: Int ->
+            colors[cv] = world.refractedColor(comps, i)
         }
 
         Then("world contains no objects") { assertThat(world.objects).isEmpty() }
@@ -87,16 +91,16 @@ class WorldStepDefinitions: En {
 
     private fun defaultWorld(): World {
         return World().apply {
-            lights.add(PointLight(Tuple.point(-10.0, 10.0, -10.0), Tuple.white))
+            lights.add(PointLight(point(-10.0, 10.0, -10.0), white))
             objects.add(Sphere().apply {
                 material = Material.build {
-                    color = Tuple.color(0.8, 1.0, 0.6)
+                    color = Color(0.8, 1.0, 0.6)
                     diffuse = grey(0.7)
                     specular = grey(0.2)
                 }
             })
             objects.add(Sphere().apply {
-                transform = Transforms.scaling(0.5, 0.5, 0.5)
+                transform = scaling(0.5, 0.5, 0.5)
             })
         }
     }

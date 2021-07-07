@@ -1,20 +1,16 @@
 
-import garden.ephemeral.rocket.Camera
-import garden.ephemeral.rocket.Material
-import garden.ephemeral.rocket.PointLight
+import garden.ephemeral.rocket.*
+import garden.ephemeral.rocket.Color.Companion.black
+import garden.ephemeral.rocket.Color.Companion.grey
+import garden.ephemeral.rocket.Color.Companion.white
 import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.rotationY
 import garden.ephemeral.rocket.Transforms.Companion.rotationZ
 import garden.ephemeral.rocket.Transforms.Companion.scaling
 import garden.ephemeral.rocket.Transforms.Companion.translation
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
-import garden.ephemeral.rocket.Tuple.Companion.black
-import garden.ephemeral.rocket.Tuple.Companion.color
-import garden.ephemeral.rocket.Tuple.Companion.grey
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
-import garden.ephemeral.rocket.Tuple.Companion.white
-import garden.ephemeral.rocket.World
 import garden.ephemeral.rocket.patterns.CheckersPattern
 import garden.ephemeral.rocket.shapes.Cylinder
 import garden.ephemeral.rocket.shapes.Group
@@ -91,8 +87,8 @@ fun main() {
     val world = World().apply {
         objects = mutableListOf(floor, leftWall, rightWall, middle, right, left)
         lights = mutableListOf(
-            PointLight(point(-12.0, 10.0, -10.0), color(1.0, 0.0, 1.0)),
-            PointLight(point(-8.0, 10.0, -10.0), color(0.0, 1.0, 1.0))
+            PointLight(point(-12.0, 10.0, -10.0), Color(1.0, 0.0, 1.0)),
+            PointLight(point(-8.0, 10.0, -10.0), Color(0.0, 1.0, 1.0))
         )
     }
 

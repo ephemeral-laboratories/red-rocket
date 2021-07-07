@@ -9,7 +9,7 @@ import kotlin.math.sqrt
 class Sphere : Shape() {
 
     override fun localIntersect(localRay: Ray): List<Intersection> {
-        val sphereToRay = localRay.origin - Tuple.point(0.0, 0.0, 0.0)
+        val sphereToRay = localRay.origin - point(0.0, 0.0, 0.0)
         val a = localRay.direction.dot(localRay.direction)
         val b = 2 * localRay.direction.dot(sphereToRay)
         val c = sphereToRay.dot(sphereToRay) - 1

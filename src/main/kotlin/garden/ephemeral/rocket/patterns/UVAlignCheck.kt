@@ -1,9 +1,9 @@
 package garden.ephemeral.rocket.patterns
 
-import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.Color
 
-class UVAlignCheck(val main: Tuple, val ul: Tuple, val ur: Tuple, val bl: Tuple, val br: Tuple): UVPattern() {
-    override fun uvPatternAt(u: Double, v: Double): Tuple {
+class UVAlignCheck(val main: Color, val ul: Color, val ur: Color, val bl: Color, val br: Color): UVPattern() {
+    override fun uvPatternAt(u: Double, v: Double): Color {
         if (v > 0.8) {
             if (u < 0.2) {
                 return ul

@@ -177,5 +177,5 @@ class MatrixStepDefinitions: En {
 }
 
 private fun Assert<Matrix>.isCloseTo(expected: Matrix, delta: Double) {
-    matchesPredicate { m : Matrix -> m.isCloseTo(expected, delta) }
+    this.matchesPredicate { m : Matrix -> m.isCloseTo(expected, delta) }
 }

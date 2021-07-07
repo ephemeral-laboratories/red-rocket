@@ -7,7 +7,6 @@ import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import assertk.assertions.matchesPredicate
 import garden.ephemeral.rocket.Constants.Companion.epsilon
-import garden.ephemeral.rocket.Tuple.Companion.color
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
@@ -23,8 +22,7 @@ class TupleStepDefinitions: En {
         ParameterType(
             "tuple_var",
             "(?:tuple|point|position|vector|origin|direction|reflection|refraction|eyeline|normal|zero" +
-                    "|intensity|from|to|up|result" +
-                    "|red|blue|green|cyan|magenta|yellow|brown|purple|black|white|color)\\d?"
+                    "|from|to|up)\\d?"
         ) { string ->
             string
         }
@@ -49,15 +47,9 @@ class TupleStepDefinitions: En {
             vector(realFromString(s1), realFromString(s2), realFromString(s3))
         }
 
-        ParameterType("color", "color\\(($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
-                s1: String, s2: String, s3: String ->
-            color(realFromString(s1), realFromString(s2), realFromString(s3))
-        }
-
         Given("{tuple_var} ← {tuple}")  { tv: String, v: Tuple -> tuples[tv] = v }
         Given("{tuple_var} ← {point}")  { tv: String, v: Tuple -> tuples[tv] = v }
         Given("{tuple_var} ← {vector}") { tv: String, v: Tuple -> tuples[tv] = v }
-        Given("{tuple_var} ← {color}")  { tv: String, v: Tuple -> tuples[tv] = v }
 
         When("{tuple_var} ← normalize\\({vector})") { tv1: String, v: Tuple -> tuples[tv1] = v.normalize() }
         When("{tuple_var} ← normalize\\({tuple_var})") { tv1: String, tv2: String -> tuples[tv1] = tuples[tv2]!!.normalize() }
@@ -80,7 +72,6 @@ class TupleStepDefinitions: En {
         Then("{tuple_var} = {tuple}")  { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
         Then("{tuple_var} = {point}")  { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
         Then("{tuple_var} = {vector}") { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
-        Then("{tuple_var} = {color}")  { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
 
         Then("{tuple_var} = {tuple_var}")  { tv1: String, tv2: String ->
             assertThat(tuples[tv1]!!).isCloseTo(tuples[tv2]!!, epsilon)
@@ -136,26 +127,6 @@ class TupleStepDefinitions: En {
                 tuples[tv1]!!.cross(tuples[tv2]!!)).isCloseTo(e, epsilon)
         }
 
-        Then("{tuple_var}.red = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.r).isCloseTo(e, epsilon) }
-        Then("{tuple_var}.green = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.g).isCloseTo(e, epsilon) }
-        Then("{tuple_var}.blue = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.b).isCloseTo(e, epsilon) }
-
-        Then("{tuple_var} + {tuple_var} = {color}") { tv1: String, tv2: String, e: Tuple ->
-            assertThat(tuples[tv1]!! + tuples[tv2]!!).isCloseTo(e, epsilon)
-        }
-
-        Then("{tuple_var} - {tuple_var} = {color}") { tv1: String, tv2: String, e: Tuple ->
-            assertThat(tuples[tv1]!! - tuples[tv2]!!).isCloseTo(e, epsilon)
-        }
-
-        Then("{tuple_var} * {real} = {color}") { tv: String, s: Double, e: Tuple ->
-            assertThat(tuples[tv]!! * s).isCloseTo(e, epsilon)
-        }
-
-        Then("{tuple_var} * {tuple_var} = {color}") { tv1: String, tv2: String, e: Tuple ->
-            assertThat(tuples[tv1]!! * tuples[tv2]!!).isCloseTo(e, epsilon)
-        }
-
         Then("{tuple_var} = normalize\\({tuple_var})") { tv1: String, tv2: String ->
             assertThat(tuples[tv1]!!).isCloseTo(
                 tuples[tv2]!!.normalize(), epsilon)
@@ -164,5 +135,5 @@ class TupleStepDefinitions: En {
 }
 
 fun Assert<Tuple>.isCloseTo(expected: Tuple, delta: Double) {
-    matchesPredicate { t : Tuple -> t.isCloseTo(expected, delta) }
+    this.matchesPredicate { t : Tuple -> t.isCloseTo(expected, delta) }
 }

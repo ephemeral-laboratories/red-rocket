@@ -4,10 +4,9 @@ import assertk.assertThat
 import assertk.assertions.endsWith
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
+import garden.ephemeral.rocket.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.FileStepDefinitions.Companion.files
-import garden.ephemeral.rocket.Tuple.Companion.color
-import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import io.cucumber.java8.En
 
 class CanvasStepDefinitions: En {
@@ -28,23 +27,23 @@ class CanvasStepDefinitions: En {
             canvas = Canvas.fromPPM(files[fv]!!)
         }
 
-        When("write_pixel\\(canvas, {int}, {int}, {tuple_var})") { x: Int, y: Int, v: String ->
-            canvas.setPixel(x, y, tuples[v]!!)
+        When("write_pixel\\(canvas, {int}, {int}, {color_var})") { x: Int, y: Int, v: String ->
+            canvas.setPixel(x, y, colors[v]!!)
         }
 
         When("every pixel of canvas is set to color\\({real}, {real}, {real})") { r: Double, g: Double, b: Double ->
-            canvas.fill(color(r, g, b))
+            canvas.fill(Color(r, g, b))
         }
 
         Then("canvas.width = {int}") { e: Int -> assertThat(canvas.width).isEqualTo(e) }
         Then("canvas.height = {int}") { e: Int -> assertThat(canvas.height).isEqualTo(e) }
 
-        Then("every pixel of canvas is {color}") { e: Tuple ->
-            canvas.pixels.forEach { pixel: Tuple -> assertThat(pixel).isEqualTo(e) }
+        Then("every pixel of canvas is {color}") { e: Color ->
+            canvas.pixels.forEach { pixel: Color -> assertThat(pixel).isCloseTo(e, epsilon) }
         }
 
-        Then("pixel_at\\(canvas, {int}, {int}) = {tuple_var}") { x: Int, y: Int, v: String ->
-            assertThat(canvas.getPixel(x, y)).isEqualTo(tuples[v]!!)
+        Then("pixel_at\\(canvas, {int}, {int}) = {color_var}") { x: Int, y: Int, v: String ->
+            assertThat(canvas.getPixel(x, y)).isCloseTo(colors[v]!!, epsilon)
         }
 
         Then("lines {int}-{int} of ppm are") { start: Int, end: Int, expected: String ->
@@ -61,7 +60,7 @@ class CanvasStepDefinitions: En {
             assertThat { Canvas.fromPPM(files[fv]!!) }.isFailure()
         }
 
-        Then("pixel_at\\(canvas, {int}, {int}) = {color}") { x: Int, y: Int, e: Tuple ->
+        Then("pixel_at\\(canvas, {int}, {int}) = {color}") { x: Int, y: Int, e: Color ->
             assertThat(canvas.getPixel(x, y)).isCloseTo(e, epsilon)
         }
     }

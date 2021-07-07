@@ -1,7 +1,8 @@
 package garden.ephemeral.rocket.importers
 
+import garden.ephemeral.rocket.Color
+import garden.ephemeral.rocket.Color.Companion.grey
 import garden.ephemeral.rocket.Material
-import garden.ephemeral.rocket.Tuple
 import java.io.File
 
 class MtlFileParser(file: File) {
@@ -46,14 +47,14 @@ class MtlFileParser(file: File) {
         finishCurrentMaterial()
     }
 
-    private fun colorFromCommand(command: List<String>): Tuple {
+    private fun colorFromCommand(command: List<String>): Color {
         if (command[1].toDoubleOrNull() == null) {
             throw UnsupportedMtlException("Unsupported colour specifier: ${command[1]}")
         }
         return if (command.size == 2) {
-            Tuple.grey(command[1].toDouble())
+            grey(command[1].toDouble())
         } else {
-            Tuple.color(command[1].toDouble(), command[2].toDouble(), command[3].toDouble())
+            Color(command[1].toDouble(), command[2].toDouble(), command[3].toDouble())
         }
     }
 

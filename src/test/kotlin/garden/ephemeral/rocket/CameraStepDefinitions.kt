@@ -57,7 +57,7 @@ class CameraStepDefinitions: En {
             assertThat(camera.pixelSize).isCloseTo(e, epsilon)
         }
 
-        Then("pixel_at\\(image, {int}, {int}) = {color}") { x: Int, y: Int, e: Tuple ->
+        Then("pixel_at\\(image, {int}, {int}) = {color}") { x: Int, y: Int, e: Color ->
             assertThat(image.getPixel(x, y)).isCloseTo(e, epsilon)
         }
     }

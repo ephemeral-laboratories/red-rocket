@@ -1,5 +1,6 @@
 package garden.ephemeral.rocket.patterns
 
+import garden.ephemeral.rocket.Color
 import garden.ephemeral.rocket.Tuple
 import java.util.*
 import kotlin.math.abs
@@ -16,7 +17,7 @@ class CubeMap(left: UVPattern, front: UVPattern, right: UVPattern, back: UVPatte
         Face.DOWN to down
     )
 
-    override fun patternAt(patternPoint: Tuple): Tuple {
+    override fun patternAt(patternPoint: Tuple): Color {
         val face = faceFromPoint(patternPoint)
         val (u, v) = (faceUvMaps[face] ?: error("Missing face UV map entry"))(patternPoint)
         return (faceUvPatterns[face] ?: error("Missing face UV pattern entry")).uvPatternAt(u, v)

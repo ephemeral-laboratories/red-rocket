@@ -1,16 +1,13 @@
-import garden.ephemeral.rocket.Camera
-import garden.ephemeral.rocket.Material
-import garden.ephemeral.rocket.PointLight
+
+import garden.ephemeral.rocket.*
+import garden.ephemeral.rocket.Color.Companion.black
+import garden.ephemeral.rocket.Color.Companion.grey
 import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.rotationY
 import garden.ephemeral.rocket.Transforms.Companion.translation
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
-import garden.ephemeral.rocket.Tuple.Companion.black
-import garden.ephemeral.rocket.Tuple.Companion.color
-import garden.ephemeral.rocket.Tuple.Companion.grey
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
-import garden.ephemeral.rocket.World
 import garden.ephemeral.rocket.patterns.CubeMap
 import garden.ephemeral.rocket.patterns.UVAlignCheck
 import garden.ephemeral.rocket.shapes.Cube
@@ -23,12 +20,12 @@ fun mappedCube(): Shape {
     return Cube().apply {
         material = Material.build {
             pattern = CubeMap(
-                UVAlignCheck(color(1.0, 1.0, 0.0), color(0.0, 1.0, 1.0), color(1.0, 0.0, 0.0), color(0.0, 0.0, 1.0), color(1.0, 0.5, 0.0)),
-                UVAlignCheck(color(0.0, 1.0, 1.0), color(1.0, 0.0, 0.0), color(1.0, 1.0, 0.0), color(1.0, 0.5, 0.0), color(0.0, 1.0, 0.0)),
-                UVAlignCheck(color(1.0, 0.0, 0.0), color(1.0, 1.0, 0.0), color(1.0, 0.0, 1.0), color(0.0, 1.0, 0.0), color(1.0, 1.0, 1.0)),
-                UVAlignCheck(color(0.0, 1.0, 0.0), color(1.0, 0.0, 1.0), color(0.0, 1.0, 1.0), color(1.0, 1.0, 1.0), color(0.0, 0.0, 1.0)),
-                UVAlignCheck(color(1.0, 0.5, 0.0), color(0.0, 1.0, 1.0), color(1.0, 0.0, 1.0), color(1.0, 0.0, 0.0), color(1.0, 1.0, 0.0)),
-                UVAlignCheck(color(1.0, 0.0, 1.0), color(1.0, 0.5, 0.0), color(0.0, 1.0, 0.0) , color(0.0, 0.0, 1.0), color(1.0, 1.0, 1.0)))
+                UVAlignCheck(Color(1.0, 1.0, 0.0), Color(0.0, 1.0, 1.0), Color(1.0, 0.0, 0.0), Color(0.0, 0.0, 1.0), Color(1.0, 0.5, 0.0)),
+                UVAlignCheck(Color(0.0, 1.0, 1.0), Color(1.0, 0.0, 0.0), Color(1.0, 1.0, 0.0), Color(1.0, 0.5, 0.0), Color(0.0, 1.0, 0.0)),
+                UVAlignCheck(Color(1.0, 0.0, 0.0), Color(1.0, 1.0, 0.0), Color(1.0, 0.0, 1.0), Color(0.0, 1.0, 0.0), Color(1.0, 1.0, 1.0)),
+                UVAlignCheck(Color(0.0, 1.0, 0.0), Color(1.0, 0.0, 1.0), Color(0.0, 1.0, 1.0), Color(1.0, 1.0, 1.0), Color(0.0, 0.0, 1.0)),
+                UVAlignCheck(Color(1.0, 0.5, 0.0), Color(0.0, 1.0, 1.0), Color(1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0), Color(1.0, 1.0, 0.0)),
+                UVAlignCheck(Color(1.0, 0.0, 1.0), Color(1.0, 0.5, 0.0), Color(0.0, 1.0, 0.0), Color(0.0, 0.0, 1.0), Color(1.0, 1.0, 1.0)))
             ambient = grey(0.2)
             specular = black
             diffuse = grey(0.8)
@@ -45,10 +42,10 @@ fun main() {
     val world = World().apply {
 
         lights = mutableListOf(
-            PointLight(point(0.0, 100.0, -100.0), color(0.25, 0.25, 0.25)),
-            PointLight(point(0.0, -100.0, -100.0), color(0.25, 0.25, 0.25)),
-            PointLight(point(-100.0, 0.0, -100.0), color(0.25, 0.25, 0.25)),
-            PointLight(point(100.0, 0.0, -100.0), color(0.25, 0.25, 0.25))
+            PointLight(point(0.0, 100.0, -100.0), Color(0.25, 0.25, 0.25)),
+            PointLight(point(0.0, -100.0, -100.0), Color(0.25, 0.25, 0.25)),
+            PointLight(point(-100.0, 0.0, -100.0), Color(0.25, 0.25, 0.25)),
+            PointLight(point(100.0, 0.0, -100.0), Color(0.25, 0.25, 0.25))
         )
 
         objects = mutableListOf(

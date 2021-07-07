@@ -1,24 +1,24 @@
 package garden.ephemeral.rocket
 
-import garden.ephemeral.rocket.Tuple.Companion.black
-import garden.ephemeral.rocket.Tuple.Companion.grey
-import garden.ephemeral.rocket.Tuple.Companion.white
+import garden.ephemeral.rocket.Color.Companion.black
+import garden.ephemeral.rocket.Color.Companion.grey
+import garden.ephemeral.rocket.Color.Companion.white
 import garden.ephemeral.rocket.patterns.Pattern
 import garden.ephemeral.rocket.shapes.Shape
 import kotlin.math.pow
 
 data class Material(
-    val color: Tuple,
-    val ambient: Tuple,
-    val diffuse: Tuple,
-    val specular: Tuple,
+    val color: Color,
+    val ambient: Color,
+    val diffuse: Color,
+    val specular: Color,
     val shininess: Double,
-    val reflective: Tuple,
-    val transparency: Tuple,
+    val reflective: Color,
+    val transparency: Color,
     val refractiveIndex: Double,
     val pattern: Pattern?,
     val dissolve: Double,
-    var illuminationModel: Int
+    val illuminationModel: Int
 ) {
     companion object {
         val default: Material = Material(
@@ -45,12 +45,12 @@ data class Material(
         worldEyeDirection: Tuple,
         worldNormal: Tuple,
         inShadow: Boolean
-    ) : Tuple {
+    ) : Color {
 
         val color = pattern?.patternAtShape(shape, worldPoint) ?: color
 
         // Combine the surface color with the light's color/intensity
-        val effectiveColor: Tuple = color * light.intensity
+        val effectiveColor = color * light.intensity
 
         // Direction to the light source
         val lightDirection = (light.position - worldPoint).normalize()
@@ -64,8 +64,8 @@ data class Material(
             // light is on the other side of the surface.
             val lightDotNormal = lightDirection.dot(worldNormal)
 
-            val diffuseColor: Tuple
-            val specularColor: Tuple
+            val diffuseColor: Color
+            val specularColor: Color
 
             if (lightDotNormal < 0) {
                 diffuseColor = black
@@ -95,13 +95,13 @@ data class Material(
     }
 
     class Builder(material: Material) {
-        var color: Tuple             = material.color
-        var ambient: Tuple           = material.ambient
-        var diffuse: Tuple           = material.diffuse
-        var specular: Tuple          = material.specular
+        var color: Color             = material.color
+        var ambient: Color           = material.ambient
+        var diffuse: Color           = material.diffuse
+        var specular: Color          = material.specular
         var shininess: Double        = material.shininess
-        var reflective: Tuple        = material.reflective
-        var transparency: Tuple      = material.transparency
+        var reflective: Color        = material.reflective
+        var transparency: Color      = material.transparency
         var refractiveIndex: Double  = material.refractiveIndex
         var pattern: Pattern?        = material.pattern
         var dissolve: Double         = 0.0
