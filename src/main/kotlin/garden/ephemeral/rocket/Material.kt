@@ -35,11 +35,15 @@ data class Material(
             // TODO: Big thonk
             var illuminationModel: Int  = 0
 
-            fun build(callback: Builder.() -> Unit): Material {
-                callback(this)
+            fun build(): Material {
                 return Material(
                     color, ambient, diffuse, specular, shininess,
                     reflective, transparency, refractiveIndex, pattern)
+            }
+
+            fun build(callback: Builder.() -> Unit): Material {
+                callback(this)
+                return build()
             }
         }
 
