@@ -4,7 +4,7 @@ import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.Tuple
 
-class CSG(val operation: CSG.Operation, val left: Shape, val right: Shape): Shape() {
+class CSG(val operation: Operation, val left: Shape, val right: Shape): Shape() {
     init {
         left.parent = this
         right.parent = this

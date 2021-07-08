@@ -4,7 +4,7 @@ plugins {
     id ("org.jetbrains.kotlin.jvm") version "1.3.72"
 }
 
-group = "org.trypticon.raytracer"
+group = "garden.ephemeral.rocket"
 version = "0.1.0"
 
 repositories {

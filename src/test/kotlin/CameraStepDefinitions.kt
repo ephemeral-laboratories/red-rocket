@@ -12,11 +12,11 @@ import garden.ephemeral.rocket.WorldStepDefinitions.Companion.world
 import io.cucumber.java8.En
 
 class CameraStepDefinitions: En {
-    var hSize: Int = 0
-    var vSize: Int = 0
-    var fieldOfView: Double = 0.0
-    lateinit var camera: Camera
-    lateinit var image: Canvas
+    private var hSize: Int = 0
+    private var vSize: Int = 0
+    private var fieldOfView: Double = 0.0
+    private lateinit var camera: Camera
+    private lateinit var image: Canvas
 
     init {
         Given("hsize ← {int}") { v: Int -> hSize = v }

@@ -1,5 +1,7 @@
 package garden.ephemeral.rocket.util
 
+import kotlin.math.sqrt
+
 class RealParser {
     companion object {
         private const val doubleTermRegex = "\\d+(?:\\.\\d+)?"
@@ -8,13 +10,11 @@ class RealParser {
 
         fun realFromString(string: String): Double {
             // How long until we need a proper parser here just to parse numbers?
-            if (string.contains("/")) {
+            return if (string.contains("/")) {
                 val rational = string.split("/")
-                return realTermFromString(
-                    rational[0].trim()
-                ) / realTermFromString(rational[1].trim())
+                realTermFromString(rational[0].trim()) / realTermFromString(rational[1].trim())
             } else {
-                return realTermFromString(string)
+                realTermFromString(string)
             }
         }
 
@@ -40,7 +40,7 @@ class RealParser {
             }
 
             if (root) {
-                n = Math.sqrt(n)
+                n = sqrt(n)
             }
             if (negative) {
                 n = -n

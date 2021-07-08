@@ -1,6 +1,5 @@
 package garden.ephemeral.rocket
 
-import garden.ephemeral.rocket.*
 import garden.ephemeral.rocket.Color.Companion.black
 import garden.ephemeral.rocket.Color.Companion.grey
 import garden.ephemeral.rocket.Transforms.Companion.rotationX

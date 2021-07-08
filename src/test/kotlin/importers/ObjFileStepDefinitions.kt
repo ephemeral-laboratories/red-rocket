@@ -12,7 +12,7 @@ import garden.ephemeral.rocket.shapes.SmoothTriangle
 import io.cucumber.java8.En
 
 class ObjFileStepDefinitions: En {
-    lateinit var parser: ObjFileParser
+    private lateinit var parser: ObjFileParser
 
     init {
         When("parser ← parse_obj_file\\({file_var})") { fv: String ->

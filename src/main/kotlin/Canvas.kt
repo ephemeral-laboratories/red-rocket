@@ -61,7 +61,7 @@ class Canvas(val width: Int, val height: Int) {
     }
 
     private fun toPPM(writer: PrintWriter) {
-        val maximumLineLength: Int = 70
+        val maximumLineLength = 70
         val lineBuffer = StringBuilder(80)
         writer.println("P3")
         writer.println("$width $height")

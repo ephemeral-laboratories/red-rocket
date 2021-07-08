@@ -73,7 +73,7 @@ data class Tuple(val cells: DoubleArray) {
     }
 
     fun dot(their: Tuple): Double {
-        return x * their.x + y * their.y + z * their.z + w * their.w;
+        return x * their.x + y * their.y + z * their.z + w * their.w
     }
 
     fun cross(their: Tuple): Tuple {

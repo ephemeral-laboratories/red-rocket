@@ -10,7 +10,7 @@ import io.cucumber.java8.En
 
 
 class MtlFileStepDefinitions: En {
-    lateinit var parser: MtlFileParser
+    private lateinit var parser: MtlFileParser
 
     init {
         When("parser ← parse_mtl_file\\({file_var})") { fv: String ->

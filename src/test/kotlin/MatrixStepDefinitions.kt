@@ -38,7 +38,7 @@ class MatrixStepDefinitions: En {
                 "rotation_y" -> { rotationY(realFromString(params[0])) }
                 "rotation_z" -> { rotationZ(realFromString(params[0])) }
                 else -> {
-                    throw IllegalArgumentException("Unknown transform: " + string)
+                    throw IllegalArgumentException("Unknown transform: $string")
                 }
             }
         }
@@ -171,7 +171,7 @@ class MatrixStepDefinitions: En {
         }
     }
 
-    fun matrixFromDataTable(dataTable: DataTable): Matrix {
+    private fun matrixFromDataTable(dataTable: DataTable): Matrix {
         return Matrix.fromLists(dataTable.asLists(Double::class.java))
     }
 }

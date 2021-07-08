@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket
 
-import java.lang.Math.abs
+import kotlin.math.abs
 
 data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArray) {
     val determinant: Double by lazy {
@@ -56,14 +56,14 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
     }
 
     fun getCell(rowIndex: Int, columnIndex: Int): Double {
-        return cells[rowIndex * columnCount + columnIndex];
+        return cells[rowIndex * columnCount + columnIndex]
     }
 
-    fun getRow(rowIndex: Int): Tuple {
+    private fun getRow(rowIndex: Int): Tuple {
         return Tuple(cells.sliceArray(rowIndex * columnCount until (rowIndex + 1) * columnCount))
     }
 
-    fun getColumn(columnIndex: Int): Tuple {
+    private fun getColumn(columnIndex: Int): Tuple {
         return Tuple(cells.sliceArray((0 until rowCount).map { row -> row * columnCount + columnIndex }))
     }
 
@@ -163,12 +163,12 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
 
     fun isCloseTo(their: Matrix, delta: Double): Boolean {
         if (their.rowCount != rowCount || their.columnCount != columnCount) {
-            return false;
+            return false
         }
 
         cells.forEachIndexed { index, value ->
             if (abs(their.cells[index] - value) > delta) {
-                return false;
+                return false
             }
         }
 
