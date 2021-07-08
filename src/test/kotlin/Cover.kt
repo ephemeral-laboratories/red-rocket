@@ -1,3 +1,4 @@
+package garden.ephemeral.rocket
 
 import garden.ephemeral.rocket.*
 import garden.ephemeral.rocket.Color.Companion.black
