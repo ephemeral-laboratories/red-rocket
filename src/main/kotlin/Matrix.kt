@@ -59,14 +59,6 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         return cells[rowIndex * columnCount + columnIndex]
     }
 
-    private fun getRow(rowIndex: Int): Tuple {
-        return Tuple(cells.sliceArray(rowIndex * columnCount until (rowIndex + 1) * columnCount))
-    }
-
-    private fun getColumn(columnIndex: Int): Tuple {
-        return Tuple(cells.sliceArray((0 until rowCount).map { row -> row * columnCount + columnIndex }))
-    }
-
     fun transpose(): Matrix {
         val transposedCells = DoubleArray(cells.size)
         (0 until rowCount).forEach { rowIndex: Int ->
@@ -128,9 +120,11 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         }
 
         val resultCells = DoubleArray(rowCount * their.columnCount)
-        for (rowIndex in 0 until rowCount) {
-            for (columnIndex in 0 until their.columnCount) {
-                resultCells[rowIndex * their.columnCount + columnIndex] = getRow(rowIndex).dot(their.getColumn(columnIndex))
+        (0 until rowCount).forEach { rowIndex ->
+            (0 until their.columnCount).forEach { columnIndex ->
+                resultCells[rowIndex * their.columnCount + columnIndex] = (0 until columnCount).sumByDouble { index ->
+                    getCell(rowIndex, index) * their.getCell(index,columnIndex)
+                }
             }
         }
         return Matrix(rowCount, their.columnCount, resultCells)
@@ -143,7 +137,9 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
 
         val resultCells = DoubleArray(rowCount)
         for (rowIndex in 0 until rowCount) {
-            resultCells[rowIndex] = getRow(rowIndex).dot(their)
+            resultCells[rowIndex] = (0 until columnCount).sumByDouble { index ->
+                getCell(rowIndex, index) * their.cells[index]
+            }
         }
         return Tuple(resultCells)
     }
