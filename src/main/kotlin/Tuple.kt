@@ -23,12 +23,12 @@ data class Tuple(val cells: DoubleArray) {
         fun vector(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 0.0) }
     }
 
-    private fun unaryOp(op: (Double) -> Double): Tuple {
+    private inline fun unaryOp(op: (Double) -> Double): Tuple {
         val result = DoubleArray(4) { index -> op(cells[index]) }
         return Tuple(result)
     }
 
-    private fun binaryOp(their: Tuple, op: (Double, Double) -> Double): Tuple {
+    private inline fun binaryOp(their: Tuple, op: (Double, Double) -> Double): Tuple {
         val result = DoubleArray(4) { index -> op(cells[index], their.cells[index]) }
         return Tuple(result)
     }
