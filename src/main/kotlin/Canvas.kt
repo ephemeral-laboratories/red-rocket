@@ -1,53 +1,51 @@
 package garden.ephemeral.rocket
 
-import java.awt.Transparency
-import java.awt.color.ColorSpace
-import java.awt.image.*
+import java.awt.image.BufferedImage
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
 import java.util.regex.Pattern
+import java.util.stream.Stream
 import javax.imageio.ImageIO
 
 
 class Canvas(val width: Int, val height: Int) {
-    private val raster: WritableRaster
+    private val data = DoubleArray(width * height * 3)
 
-    init {
-        val bands = 3
-        val bandOffsets = intArrayOf(0, 1, 2) // length == bands, 0 == R, 1 == G and 2 == B
-        val sampleModel: SampleModel = PixelInterleavedSampleModel(DataBuffer.TYPE_DOUBLE, width, height, bands, width * bands, bandOffsets)
-        val buffer: DataBuffer = DataBufferDouble(width * height * bands)
-        raster = Raster.createWritableRaster(sampleModel, buffer, null)
-    }
+    private fun getOffset(x: Int, y: Int): Int = (y * width + x) * 3
 
     fun getPixel(x: Int, y: Int): Color {
-        val rgb = raster.getPixel(x, y, null as DoubleArray?)
-        return Color(rgb[0], rgb[1], rgb[2])
+        val offset = getOffset(x, y)
+        return Color(data[offset], data[offset + 1], data[offset + 2])
     }
 
     fun setPixel(x: Int, y: Int, color: Color) {
-        raster.setPixel(x, y, color.toDoubleArray())
+        val offset = getOffset(x, y)
+        System.arraycopy(color.toDoubleArray(), 0, data, offset, 3)
     }
 
     fun fill(color: Color) {
         val doubles = color.toDoubleArray()
         (0 until height).forEach { y ->
             (0 until width).forEach { x ->
-                raster.setPixel(x, y, doubles)
+                val offset = getOffset(x, y)
+                System.arraycopy(doubles, 0, data, offset, 3)
             }
         }
     }
 
-    fun toBufferedImage(): BufferedImage {
-        val colorSpace = ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)
-        val colorModel = ComponentColorModel(colorSpace, true, false, Transparency.OPAQUE, DataBuffer.TYPE_DOUBLE)
-        return BufferedImage(colorModel, raster, colorModel.isAlphaPremultiplied, null)
-    }
-
     fun toPNG(file: File) {
-        ImageIO.write(toBufferedImage(), "PNG", file)
+        val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+        (0 until height).forEach { y ->
+            (0 until width).forEach { x ->
+                val (r, g, b) = getPixel(x, y).toSRgbInts()
+                image.setRGB(x, y, 0xff000000.toInt() + r.shl(16) + g.shl(8) + b)
+            }
+        }
+        if (!ImageIO.write(image, "PNG", file)) {
+            throw IllegalStateException("Couldn't find a suitable writer")
+        }
     }
 
     fun toPPM(file: File) {
@@ -69,7 +67,7 @@ class Canvas(val width: Int, val height: Int) {
         (0 until height).forEach { y: Int ->
             lineBuffer.clear()
             (0 until width).forEach { x: Int ->
-                getPixel(x, y).toIntArray().forEach { i: Int ->
+                getPixel(x, y).toSRgbInts().forEach { i: Int ->
                     val nextValue = i.toString()
                     if (lineBuffer.length + 1 + nextValue.length >= maximumLineLength) {
                         writer.println(lineBuffer)
@@ -87,10 +85,11 @@ class Canvas(val width: Int, val height: Int) {
         }
     }
 
-    val pixels: Iterable<Color>
+    val pixels: Stream<Color>
         get() {
             return IntRange(0, width - 1)
                 .zip(IntRange(0, height - 1))
+                .stream()
                 .map {(x: Int, y: Int) -> getPixel(x, y)}
         }
 
@@ -98,7 +97,14 @@ class Canvas(val width: Int, val height: Int) {
         fun fromPNG(file: File): Canvas {
             val image = ImageIO.read(file)
             return Canvas(image.width, image.height).apply {
-                raster.setRect(image.raster)
+                (0 until height).forEach { y: Int ->
+                    (0 until width).forEach { x: Int ->
+                        val rgb = image.getRGB(x, y)
+                        setPixel(x, y, Color.fromSRgbInts(rgb.shr(16).and(0xff),
+                            rgb.shr(8).and(0xff),
+                            rgb.and(0xFF)))
+                    }
+                }
             }
         }
 
@@ -117,18 +123,18 @@ class Canvas(val width: Int, val height: Int) {
                 scanner.skip(comments)
                 val height = scanner.nextInt()
                 scanner.skip(comments)
-                val scale = scanner.nextInt().toDouble()
+                val scale = scanner.nextInt()
 
                 Canvas(width, height).apply {
                     (0 until height).forEach { y ->
                         (0 until width).forEach { x ->
                             scanner.skip(comments)
-                            val r = scanner.nextInt() / scale
+                            val r = scanner.nextInt()
                             scanner.skip(comments)
-                            val g = scanner.nextInt() / scale
+                            val g = scanner.nextInt()
                             scanner.skip(comments)
-                            val b = scanner.nextInt() / scale
-                            setPixel(x, y, Color(r, g, b))
+                            val b = scanner.nextInt()
+                            setPixel(x, y, Color.fromSRgbInts(r, g, b, scale))
                         }
                     }
                 }

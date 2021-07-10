@@ -155,5 +155,6 @@ fun main() {
     val t1 = Instant.now()
     println("Render time: " + Duration.between(t0, t1))
 
-    File("out.ppm").writeText(canvas.toPPM())
+    canvas.toPPM(File("out.ppm"))
+    canvas.toPNG(File("out.png"))
 }

@@ -1,6 +1,8 @@
 package garden.ephemeral.rocket
 
 import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 data class Color(val r: Double, val g: Double, val b: Double) {
     val isBlack:     Boolean get() = r == 0.0 && g == 0.0 && b == 0.0
@@ -11,6 +13,24 @@ data class Color(val r: Double, val g: Double, val b: Double) {
         val white = Color(1.0, 1.0, 1.0)
 
         fun grey(v: Double): Color { return Color(v, v, v) }
+
+        fun fromSRgbDoubles(r: Double, g: Double, b: Double): Color {
+            fun convert(v: Double): Double {
+                return if (v < 0.04045) {
+                    v / 12.92
+                } else {
+                    ((v + 0.055) / 1.055).pow(2.4)
+                }
+            }
+            return Color(convert(r), convert(g), convert(b))
+        }
+
+        fun fromSRgbInts(r: Int, g: Int, b: Int, scale: Int = 255): Color {
+            fun convert(v: Int): Double {
+                return v / scale.toDouble()
+            }
+           return fromSRgbDoubles(convert(r), convert(g), convert(b))
+        }
     }
 
     operator fun plus(their: Color): Color {
@@ -33,12 +53,23 @@ data class Color(val r: Double, val g: Double, val b: Double) {
         return doubleArrayOf(r, g, b)
     }
 
-    fun toIntArray(): IntArray {
-        return intArrayOf(floatToClampedInt(r), floatToClampedInt(g), floatToClampedInt(b))
+    fun toSRgbDoubles(): DoubleArray {
+        fun convert(v: Double): Double {
+            return if (v <= 0.0031308) {
+                12.92 * v
+            } else {
+                1.055 * v.pow(1 / 2.4) - 0.055
+            }
+        }
+        return doubleArrayOf(convert(r), convert(g), convert(b))
     }
 
-    private fun floatToClampedInt(f: Double): Int {
-        return (f * 256).toInt().coerceIn(0, 255)
+    fun toSRgbInts(): IntArray {
+        fun convert(v: Double): Int {
+            return (v * 255).roundToInt().coerceIn(0, 255)
+        }
+        val (r, g, b) = toSRgbDoubles()
+        return intArrayOf(convert(r), convert(g), convert(b))
     }
 
     fun isCloseTo(their: Color, delta: Double) : Boolean {
