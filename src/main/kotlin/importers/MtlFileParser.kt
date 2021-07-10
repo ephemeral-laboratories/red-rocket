@@ -33,6 +33,7 @@ class MtlFileParser(file: File) {
                 "Ka" -> currentBuilder.ambient = colorFromCommand(command)
                 "Kd" -> currentBuilder.diffuse = colorFromCommand(command)
                 "Ks" -> currentBuilder.specular = colorFromCommand(command)
+                "Ke" -> currentBuilder.emission = colorFromCommand(command)
                 "Ns" -> currentBuilder.shininess = command[1].toDouble()
                 "Tf" -> currentBuilder.transparency = colorFromCommand(command)
                 "Ni" -> currentBuilder.refractiveIndex = command[1].toDouble()

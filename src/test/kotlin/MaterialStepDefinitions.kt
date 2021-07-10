@@ -136,5 +136,9 @@ class MaterialStepDefinitions: En {
         Then("material.illumination_model = {int}") { e: Int ->
             assertThat(material.illuminationModel).isEqualTo(e)
         }
+
+        Then("material.emission = {color}") { e: Color ->
+            assertThat(material.emission).isEqualTo(e)
+        }
     }
 }

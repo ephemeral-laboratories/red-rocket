@@ -145,6 +145,8 @@ Feature: Material Library (MTL) File
       Ks spectral file.rfl factor
       """
 
+  # TODO: CIEXYZ support
+  @wip
   Scenario: A material specifies the specular reflectivity using CIEXYZ values
     Given file ← a file containing:
       """
@@ -170,11 +172,40 @@ Feature: Material Library (MTL) File
       Tf spectral file.rfl factor
       """
 
+  # TODO: CIEXYZ support
+  @wip
   Scenario: A material specifies the transmission filter using CIEXYZ values
     Given file ← a file containing:
       """
       newmtl invar
       Tf xyz x y z
+      """
+
+  Scenario: A material specifies the emission using RGB values [non-standard extension]
+    Given file ← a file containing:
+      """
+      newmtl invar
+      Ke 1.0 0.0 1.0
+      """
+    When parser ← parse_mtl_file(file)
+    Then material.emission = color(1.0, 0.0, 1.0)
+
+  # TODO: RFL file support
+  @wip
+  Scenario: A material specifies the emission using an RFL file [non-standard extension]
+    Given file ← a file containing:
+      """
+      newmtl invar
+      Ke spectral file.rfl factor
+      """
+
+  # TODO: CIEXYZ support
+  @wip
+  Scenario: A material specifies the emission using CIEXYZ values [non-standard extension]
+    Given file ← a file containing:
+      """
+      newmtl invar
+      Ke xyz x y z
       """
 
   ### TODO MORE SCENARIOS ###

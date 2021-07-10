@@ -17,13 +17,14 @@ data class Material(
     val transparency: Color,
     val refractiveIndex: Double,
     val pattern: Pattern?,
+    val emission: Color,
     val dissolve: Double,
     val illuminationModel: Int
 ) {
     companion object {
         val default: Material = Material(
             white, grey(0.1), grey(0.9), grey(0.9), 200.0,
-            black, black, 1.0, null, 1.0, -1)
+            black, black, 1.0, null, black, 1.0, -1)
 
         fun build(callback: Builder.() -> Unit) : Material {
             return default.build(callback)
@@ -91,6 +92,8 @@ data class Material(
             result += diffuseColor + specularColor
         }
 
+        result += emission
+
         return result
     }
 
@@ -104,6 +107,7 @@ data class Material(
         var transparency: Color      = material.transparency
         var refractiveIndex: Double  = material.refractiveIndex
         var pattern: Pattern?        = material.pattern
+        var emission: Color          = material.emission
         var dissolve: Double         = 0.0
         var illuminationModel: Int   = 0
 
@@ -111,7 +115,7 @@ data class Material(
             return Material(
                 color, ambient, diffuse, specular, shininess,
                 reflective, transparency, refractiveIndex, pattern,
-                dissolve, illuminationModel)
+                emission, dissolve, illuminationModel)
         }
 
         fun build(callback: Builder.() -> Unit): Material {

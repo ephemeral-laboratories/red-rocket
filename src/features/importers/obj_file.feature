@@ -128,3 +128,32 @@ Feature: OBJ File
     And shape1.normal2 = parser.normals[1]
     And shape1.normal3 = parser.normals[2]
     And shape2 = shape1
+
+  Scenario: Faces with materials
+    Given mtl_file ← a file named 'thing.mtl' containing:
+      """
+      newmtl Red
+      Kd 1 0 0
+      newmtl Blue
+      Kd 0 0 1
+      """
+    And obj_file ← a file named 'thing.obj' containing:
+      """
+      mtllib thing.mtl
+      v 0 1 0
+      v -1 0 0
+      v 1 0 0
+      vn -1 0 0
+      vn 1 0 0
+      vn 0 1 0
+      usemtl Red
+      f 1//3 2//1 3//2
+      usemtl Blue
+      f 1/0/3 2/102/1 3/14/2
+      """
+    When parser ← parse_obj_file(obj_file)
+    And group ← parser.default_group
+    And shape1 ← first child of group
+    And shape2 ← second child of group
+    Then shape1.material.diffuse = color(1, 0, 0)
+    And shape2.material.diffuse = color(0, 0, 1)

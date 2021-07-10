@@ -1,5 +1,6 @@
 package garden.ephemeral.rocket.importers
 
+import garden.ephemeral.rocket.Material
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
@@ -16,11 +17,21 @@ class ObjFileParser(file: File) {
     private val normals: MutableList<Tuple> = mutableListOf()
     var ignoredLines: Int = 0
     private val whitespace = Regex("\\s+")
+    private lateinit var materialLibrary: Map<String, Material>
+    private var currentMaterial: Material = Material.default
 
     init {
         file.forEachLine { line ->
             val command = line.trim().split(whitespace)
             when (command[0]) {
+                "mtllib" -> {
+                    materialLibrary = MtlFileParser(file.resolveSibling(command[1])).materials
+                }
+                "usemtl" -> {
+                    currentMaterial = materialLibrary[command[1]]
+                        ?: throw IllegalArgumentException("OBJ file refers to material ${command[1]} " +
+                                "which does not exist in the material library")
+                }
                 "v" -> {
                     vertices.add(point(command[1].toDouble(), command[2].toDouble(), command[3].toDouble()))
                 }
@@ -45,6 +56,8 @@ class ObjFileParser(file: File) {
                                 SmoothTriangle(p1Data[0], p2Data[0], p3Data[0], p1Data[1], p2Data[1], p3Data[1])
                             } else {
                                 Triangle(p1Data[0], p2Data[0], p3Data[0])
+                            }.apply {
+                                material = currentMaterial
                             }
                         )
                     }
