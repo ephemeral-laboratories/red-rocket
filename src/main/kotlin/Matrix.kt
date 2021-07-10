@@ -7,9 +7,7 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         if (rowCount == 2 && columnCount == 2) {
             cells[0] * cells[3] - cells[1] * cells[2]
         } else {
-            (0 until columnCount)
-                .map { columnIndex -> getCell(0, columnIndex) * cofactor(0, columnIndex) }
-                .sum()
+            (0 until columnCount).sumOf { columnIndex -> getCell(0, columnIndex) * cofactor(0, columnIndex) }
         }
     }
 

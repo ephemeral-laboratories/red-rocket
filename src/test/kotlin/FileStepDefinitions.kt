@@ -9,7 +9,7 @@ class FileStepDefinitions: En {
         val files: MutableMap<String, File> = mutableMapOf()
     }
 
-    val tempDir: File by lazy {
+    private val tempDir: File by lazy {
         // Safe Path.toFile call because Files.createTempDirectory is guaranteed to produce
         // a path on the default filesystem.
         Files.createTempDirectory("temp").toFile().also { t ->

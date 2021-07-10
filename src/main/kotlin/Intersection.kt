@@ -10,7 +10,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
         fun hit(intersections: List<Intersection>): Intersection? {
             return intersections
                 .filter { intersection -> intersection.t > 0 }
-                .minBy { intersection -> intersection.t }
+                .minByOrNull { intersection -> intersection.t }
         }
     }
 
