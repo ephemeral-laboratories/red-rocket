@@ -3,15 +3,17 @@ package garden.ephemeral.rocket
 import garden.ephemeral.rocket.Color.Companion.black
 import garden.ephemeral.rocket.shapes.Shape
 import kotlin.math.sqrt
+import kotlin.streams.toList
 
 class World {
     var objects : MutableList<Shape> = mutableListOf()
     var lights : MutableList<PointLight> = mutableListOf()
 
     fun intersect(ray: Ray): List<Intersection> {
-        return objects
-            .flatMap { obj -> obj.intersect(ray) }
-            .sortedBy { intersection -> intersection.t }
+        return objects.stream()
+            .flatMap { obj -> obj.intersect(ray).stream() }
+            .sorted(Comparator.comparing(Intersection::t))
+            .toList()
     }
 
     fun isShadowed(point: Tuple, light: PointLight): Boolean {
