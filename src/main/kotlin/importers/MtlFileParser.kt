@@ -2,8 +2,9 @@ package garden.ephemeral.rocket.importers
 
 import garden.ephemeral.rocket.Material
 import garden.ephemeral.rocket.color.Color
-import garden.ephemeral.rocket.color.Color.Companion.linearRgb
+import garden.ephemeral.rocket.color.Color.Companion.cieXyz
 import garden.ephemeral.rocket.color.Color.Companion.grey
+import garden.ephemeral.rocket.color.Color.Companion.linearRgb
 import java.io.File
 
 class MtlFileParser(file: File) {
@@ -50,13 +51,25 @@ class MtlFileParser(file: File) {
     }
 
     private fun colorFromCommand(command: List<String>): Color {
-        if (command[1].toDoubleOrNull() == null) {
-            throw UnsupportedMtlException("Unsupported colour specifier: ${command[1]}")
-        }
-        return if (command.size == 2) {
-            grey(command[1].toDouble())
-        } else {
-            linearRgb(command[1].toDouble(), command[2].toDouble(), command[3].toDouble())
+        return when (command[1]) {
+            "xyz" -> {
+                if (command.size == 3) {
+                    val value = command[2].toDouble()
+                    cieXyz(value, value, value)
+                } else {
+                    cieXyz(command[2].toDouble(), command[3].toDouble(), command[4].toDouble())
+                }
+            }
+            else -> {
+                if (command[1].toDoubleOrNull() == null) {
+                    throw UnsupportedMtlException("Unsupported colour specifier: ${command[1]}")
+                }
+                if (command.size == 2) {
+                    grey(command[1].toDouble())
+                } else {
+                    linearRgb(command[1].toDouble(), command[2].toDouble(), command[3].toDouble())
+                }
+            }
         }
     }
 

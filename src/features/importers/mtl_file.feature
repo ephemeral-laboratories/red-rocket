@@ -59,7 +59,7 @@ Feature: Material Library (MTL) File
       Ka 1.0 0.0 1.0
       """
     When parser ← parse_mtl_file(file)
-    And material.ambient = linear_rgb_color(1, 0, 1)
+    Then material.ambient = linear_rgb_color(1, 0, 1)
 
   Scenario: A material specifies the ambient reflectivity using only the R value
     Given file ← a file containing:
@@ -68,7 +68,25 @@ Feature: Material Library (MTL) File
       Ka 0.5
       """
     When parser ← parse_mtl_file(file)
-    And material.ambient = linear_rgb_color(0.5, 0.5, 0.5)
+    Then material.ambient = linear_rgb_color(0.5, 0.5, 0.5)
+
+  Scenario: A material specifies the ambient reflectivity using CIEXYZ values
+    Given file ← a file containing:
+      """
+      newmtl invar
+      Ka xyz 0.4 0.7 0.3
+      """
+    When parser ← parse_mtl_file(file)
+    Then material.ambient = cie_xyz_color(0.4, 0.7, 0.3)
+
+  Scenario: A material specifies the ambient reflectivity using CIEXYZ values but only the X value
+    Given file ← a file containing:
+      """
+      newmtl invar
+      Ka xyz 0.4
+      """
+    When parser ← parse_mtl_file(file)
+    Then material.ambient = cie_xyz_color(0.4, 0.4, 0.4)
 
   # TODO: RFL file support
   @wip
@@ -82,24 +100,6 @@ Feature: Material Library (MTL) File
       # "factor" is a multiplier for the values in the .rfl file and defaults to 1.0, if not specified.
       """
 
-  # TODO: CIEXYZ support
-  @wip
-  Scenario: A material specifies the ambient reflectivity using CIEXYZ values
-    Given file ← a file containing:
-      """
-      newmtl invar
-      Ka xyz 0.4 0.7 0.3
-      """
-
-  # TODO: CIEXYZ support
-  @wip
-  Scenario: A material specifies the ambient reflectivity using CIEXYZ values but only the X value
-    Given file ← a file containing:
-      """
-      newmtl invar
-      Ka xyz 0.4
-      """
-
   Scenario: A material specifies the diffuse reflectivity using RGB values
     Given file ← a file containing:
       """
@@ -109,6 +109,15 @@ Feature: Material Library (MTL) File
     When parser ← parse_mtl_file(file)
     Then material.diffuse = linear_rgb_color(1.0, 0.0, 1.0)
 
+  Scenario: A material specifies the diffuse reflectivity using CIEXYZ values
+    Given file ← a file containing:
+      """
+      newmtl invar
+      Kd xyz 0.4 0.7 0.3
+      """
+    When parser ← parse_mtl_file(file)
+    Then material.diffuse = cie_xyz_color(0.4, 0.7, 0.3)
+
   # TODO: RFL file support
   @wip
   Scenario: A material specifies the diffuse reflectivity using an RFL file
@@ -116,15 +125,6 @@ Feature: Material Library (MTL) File
       """
       newmtl invar
       Kd spectral file.rfl factor
-      """
-
-  # TODO: CIEXYZ support
-  @wip
-  Scenario: A material specifies the diffuse reflectivity using CIEXYZ values
-    Given file ← a file containing:
-      """
-      newmtl invar
-      Kd xyz x y z
       """
 
   Scenario: A material specifies the specular reflectivity using RGB values
@@ -136,6 +136,15 @@ Feature: Material Library (MTL) File
     When parser ← parse_mtl_file(file)
     Then material.specular = linear_rgb_color(1.0, 0.0, 1.0)
 
+  Scenario: A material specifies the specular reflectivity using CIEXYZ values
+    Given file ← a file containing:
+      """
+      newmtl invar
+      Ks xyz 0.4 0.7 0.3
+      """
+    When parser ← parse_mtl_file(file)
+    Then material.specular = cie_xyz_color(0.4, 0.7, 0.3)
+
   # TODO: RFL file support
   @wip
   Scenario: A material specifies the specular reflectivity using an RFL file
@@ -143,15 +152,6 @@ Feature: Material Library (MTL) File
       """
       newmtl invar
       Ks spectral file.rfl factor
-      """
-
-  # TODO: CIEXYZ support
-  @wip
-  Scenario: A material specifies the specular reflectivity using CIEXYZ values
-    Given file ← a file containing:
-      """
-      newmtl invar
-      Ks xyz x y z
       """
 
   Scenario: A material specifies the transmission filter using RGB values
@@ -163,6 +163,15 @@ Feature: Material Library (MTL) File
     When parser ← parse_mtl_file(file)
     Then material.transparency = linear_rgb_color(1.0, 0.0, 1.0)
 
+  Scenario: A material specifies the transmission filter using CIEXYZ values
+    Given file ← a file containing:
+      """
+      newmtl invar
+      Tf xyz 0.4 0.7 0.3
+      """
+    When parser ← parse_mtl_file(file)
+    Then material.transparency = cie_xyz_color(0.4, 0.7, 0.3)
+
   # TODO: RFL file support
   @wip
   Scenario: A material specifies the transmission filter using an RFL file
@@ -170,15 +179,6 @@ Feature: Material Library (MTL) File
       """
       newmtl invar
       Tf spectral file.rfl factor
-      """
-
-  # TODO: CIEXYZ support
-  @wip
-  Scenario: A material specifies the transmission filter using CIEXYZ values
-    Given file ← a file containing:
-      """
-      newmtl invar
-      Tf xyz x y z
       """
 
   Scenario: A material specifies the emission using RGB values [non-standard extension]
@@ -190,6 +190,15 @@ Feature: Material Library (MTL) File
     When parser ← parse_mtl_file(file)
     Then material.emission = linear_rgb_color(1.0, 0.0, 1.0)
 
+  Scenario: A material specifies the emission using CIEXYZ values [non-standard extension]
+    Given file ← a file containing:
+      """
+      newmtl invar
+      Ke xyz 0.4 0.7 0.3
+      """
+    When parser ← parse_mtl_file(file)
+    Then material.emission = cie_xyz_color(0.4, 0.7, 0.3)
+
   # TODO: RFL file support
   @wip
   Scenario: A material specifies the emission using an RFL file [non-standard extension]
@@ -197,15 +206,6 @@ Feature: Material Library (MTL) File
       """
       newmtl invar
       Ke spectral file.rfl factor
-      """
-
-  # TODO: CIEXYZ support
-  @wip
-  Scenario: A material specifies the emission using CIEXYZ values [non-standard extension]
-    Given file ← a file containing:
-      """
-      newmtl invar
-      Ke xyz x y z
       """
 
   ### TODO MORE SCENARIOS ###
@@ -260,66 +260,71 @@ Feature: Material Library (MTL) File
     Then material.refractive_index = 1.2
 
   # TODO: Texture map support
-#  Scenario: A material specifies an ambient texture map
-#    Given file ← a file containing:
-#      """
-#      newmtl invar
-#      map_Ka ambient_map.png
-#      """
+  @wip
+  Scenario: A material specifies an ambient texture map
+    Given file ← a file containing:
+      """
+      newmtl invar
+      map_Ka ambient_map.png
+      """
 
   # TODO: Texture map support
-#  Scenario: A material specifies a diffuse texture map
-#    Given file ← a file containing:
-#      """
-#      newmtl invar
-#      map_Kd diffuse_map.png
-#      """
+  @wip
+  Scenario: A material specifies a diffuse texture map
+    Given file ← a file containing:
+      """
+      newmtl invar
+      map_Kd diffuse_map.png
+      """
 
   # TODO: Texture map support
-#  Scenario: A material specifies a specular texture map
-#    Given file ← a file containing:
-#      """
-#      newmtl invar
-#      map_Ks specular_map.png
-#      """
+  @wip
+  Scenario: A material specifies a specular texture map
+    Given file ← a file containing:
+      """
+      newmtl invar
+      map_Ks specular_map.png
+      """
 
   # TODO: Texture map support
-#  Scenario: A material specifies a specular exponent texture map
-#    Given file ← a file containing:
-#      """
-#      newmtl invar
-#      map_Ns specular_exponent_map.png
-#      """
+  @wip
+  Scenario: A material specifies a specular exponent texture map
+    Given file ← a file containing:
+      """
+      newmtl invar
+      map_Ns specular_exponent_map.png
+      """
 
   # TODO: Texture map support
-#  Scenario: A material specifies a dissolve texture map
-#    Given file ← a file containing:
-#      """
-#      newmtl invar
-#      map_d dissolve_map.png
-#      """
+  @wip
+  Scenario: A material specifies a dissolve texture map
+    Given file ← a file containing:
+      """
+      newmtl invar
+      map_d dissolve_map.png
+      """
 
   # TODO: Texture map support
-#  Scenario: A material has anti-aliasing of its textures enabled
-#    Given file ← a file containing:
-#      """
-#      newmtl invar
-#      map_aat on
-#      """
+  @wip
+  Scenario: A material has anti-aliasing of its textures enabled
+    Given file ← a file containing:
+      """
+      newmtl invar
+      map_aat on
+      """
 
   # TODO: Texture map support
-#  Scenario: A material specifies a decal texture map
-#    Given file ← a file containing:
-#      """
-#      newmtl invar
-#      decal decal.png
-#      """
-#    Then the decal is applied according to the following incredibly ambiguous formula
-
-  # TODO Figure out what on earth was meant here
-  #       During rendering, the Ka, Kd, and Ks values and the map_Ka, map_Kd, and map_Ks values are blended according to the following formula:
-  #       result_color=tex_color(tv)*decal(tv)+mtl_color*(1.0-decal(tv))
-  #       where tv is the texture vertex.
+  @wip
+  Scenario: A material specifies a decal texture map
+    Given file ← a file containing:
+      """
+      newmtl invar
+      decal decal.png
+      """
+    # Then the decal is applied according to the following incredibly ambiguous formula:
+    #   During rendering, the Ka, Kd, and Ks values and the map_Ka, map_Kd, and map_Ks values are blended according to the following formula:
+    #   result_color=tex_color(tv)*decal(tv)+mtl_color*(1.0-decal(tv))
+    #   where tv is the texture vertex.
 
   # Displacement map
   #   disp -options args filename
@@ -431,7 +436,6 @@ Feature: Material Library (MTL) File
     When parser ← parse_mtl_file(file)
     Then parser.materials.size = 1
 
-
   Scenario: Example 5. Green mirror
   This is a reflective green material. When applied to an object, it reflects other objects in the same scene.
     Given file ← a file containing:
@@ -512,209 +516,158 @@ Feature: Material Library (MTL) File
     When parser ← parse_mtl_file(file)
     Then parser.materials.size = 1
 
+  # TODO: Spectral curve support
+  @wip
+  Scenario: Example 10. Tin
+  This material is based on spectral reflectance samples taken from an actual piece of tin. These samples are
+  stored in a separate .rfl file that is referred to by name in the material. Spectral sample files (.rfl) can
+  be used in any type of material as an alternative to RGB values.
+    Given file ← a file containing:
+      """
+      newmtl tin
+      Ka spectral tin.rfl
+      Kd spectral tin.rfl
+      Ks spectral tin.rfl
+      Ns 200
+      illum 3
+      """
+#    When parser ← parse_mtl_file(file)
+#    Then parser.materials.size = 1
 
   # TODO: Spectral curve support
-#  Scenario: Example 10. Tin
-#  This material is based on spectral reflectance samples taken from an actual piece of tin. These samples are
-#  stored in a separate .rfl file that is referred to by name in the material. Spectral sample files (.rfl) can
-#  be used in any type of material as an alternative to RGB values.
-#    Given file ← a file containing:
-#      """
-#      newmtl tin
-#      Ka spectral tin.rfl
-#      Kd spectral tin.rfl
-#      Ks spectral tin.rfl
-#      Ns 200
-#      illum 3
-#      """
+  @wip
+  Scenario: Example 11. Pine Wood
+  This material includes a texture map of a pine pattern. The material color is set to "ident" to preserve the
+  texture's true color. When applied to an object, this texture map will affect only the ambient and diffuse
+  regions of that object's surface.
+  The color information for the texture is stored in a separate .mpc file that is referred to in the material
+  by its name, "pine.mpc". If you use different .mpc files for ambient and diffuse, you will get unrealistic results.
+    Given file ← a file containing:
+      """
+      newmtl pine_wood
+      Ka spectral ident.rfl 1
+      Kd spectral ident.rfl 1
+      illum 1
+      map_Ka pine.mpc
+      map_Kd pine.mpc
+      """
 #    When parser ← parse_mtl_file(file)
 #    Then parser.materials.size = 1
-#
-#  Scenario: Example 11. Pine Wood
-#  This material includes a texture map of a pine pattern. The material color is set to "ident" to preserve the
-#  texture's true color. When applied to an object, this texture map will affect only the ambient and diffuse
-#  regions of that object's surface.
-#  The color information for the texture is stored in a separate .mpc file that is referred to in the material
-#  by its name, "pine.mpc". If you use different .mpc files for ambient and diffuse, you will get unrealistic results.
-#    Given file ← a file containing:
-#      """
-#      newmtl pine_wood
-#      Ka spectral ident.rfl 1
-#      Kd spectral ident.rfl 1
-#      illum 1
-#      map_Ka pine.mpc
-#      map_Kd pine.mpc
-#      """
-#    When parser ← parse_mtl_file(file)
-#    Then parser.materials.size = 1
-#
-#  Scenario: Example 12. Bumpy leather
-#  This material includes a texture map of a leather pattern. The material color is set to "ident" to preserve the
-#  texture's true color. When applied to an object, it affects both the color of the object's surface and its
-#  apparent bumpiness.
-#  The color information for the texture is stored in a separate .mpc file that is referred to in the material by its
-#  name, "brown.mpc". The bump information is stored in a separate .mpb file that is referred to in the material by
-#  its name, "leath.mpb". The -bm option is used to raise the apparent height of the leather bumps.
-#    Given file ← a file containing:
-#      """
-#      newmtl bumpy_leath
-#      Ka spectral ident.rfl 1
-#      Kd spectral ident.rfl 1
-#      Ks spectral ident.rfl 1
-#      illum 2
-#      map_Ka brown.mpc
-#      map_Kd brown.mpc
-#      map_Ks brown.mpc
-#      bump -bm 2.000 leath.mpb
-#      """
+
+  # TODO: Spectral curve support, bump map support
+  @wip
+  Scenario: Example 12. Bumpy leather
+  This material includes a texture map of a leather pattern. The material color is set to "ident" to preserve the
+  texture's true color. When applied to an object, it affects both the color of the object's surface and its
+  apparent bumpiness.
+  The color information for the texture is stored in a separate .mpc file that is referred to in the material by its
+  name, "brown.mpc". The bump information is stored in a separate .mpb file that is referred to in the material by
+  its name, "leath.mpb". The -bm option is used to raise the apparent height of the leather bumps.
+    Given file ← a file containing:
+      """
+      newmtl bumpy_leath
+      Ka spectral ident.rfl 1
+      Kd spectral ident.rfl 1
+      Ks spectral ident.rfl 1
+      illum 2
+      map_Ka brown.mpc
+      map_Kd brown.mpc
+      map_Ks brown.mpc
+      bump -bm 2.000 leath.mpb
+      """
 #    When parser ← parse_mtl_file(file)
 #    Then parser.materials.size = 1
 
   # TODO: Texture map support
-#  Scenario: Example 13. Frosted window
-#  This material includes a texture map used to alter the opacity of an object's surface. The material color is set
-#  to "ident" to preserve the texture's true color. When applied to an object, the object becomes transparent in
-#  certain areas and opaque in others.
-#  The variation between opaque and transparent regions is controlled by scalar information stored in a separate
-#  .mps file that is referred to in the material by its name, "window.mps". The "-mm" option is used to shift and
-#  compress the range of opacity.
-#    Given file ← a file containing:
-#      """
-#      newmtl frost_wind
-#      Ka 0.2 0.2 0.2
-#      Kd 0.6 0.6 0.6
-#      Ks 0.1 0.1 0.1
-#      d 1
-#      Ns 200
-#      illum 2
-#      map_d -mm 0.200 0.800 window.mps
-#      """
+  @wip
+  Scenario: Example 13. Frosted window
+  This material includes a texture map used to alter the opacity of an object's surface. The material color is set
+  to "ident" to preserve the texture's true color. When applied to an object, the object becomes transparent in
+  certain areas and opaque in others.
+  The variation between opaque and transparent regions is controlled by scalar information stored in a separate
+  .mps file that is referred to in the material by its name, "window.mps". The "-mm" option is used to shift and
+  compress the range of opacity.
+    Given file ← a file containing:
+      """
+      newmtl frost_wind
+      Ka 0.2 0.2 0.2
+      Kd 0.6 0.6 0.6
+      Ks 0.1 0.1 0.1
+      d 1
+      Ns 200
+      illum 2
+      map_d -mm 0.200 0.800 window.mps
+      """
 #    When parser ← parse_mtl_file(file)
 #    Then parser.materials.size = 1
-#
-#  Scenario: Example 14. Shifted logo
-#  This material includes a texture map which illustrates how a texture's origin may be shifted left/right
-#  (the "u" direction) or up/down (the "v" direction). The material color is set to "ident" to preserve the
-#  texture's true color.
-#  In this example, the original image of the logo is off-center to the left. To compensate, the texture's origin
-#  is shifted back to the right (the positive "u" direction) using the "-o" option to modify the origin.
-#    Given file ← a file containing:
-#      """
-#      newmtl shifted_logo
-#      Ka spectral ident.rfl 1
-#      Kd spectral ident.rfl 1
-#      Ks spectral ident.rfl 1
-#      illum 2
-#      map_Ka -o 0.200 0.000 0.000 logo.mpc
-#      map_Kd -o 0.200 0.000 0.000 logo.mpc
-#      map_Ks -o 0.200 0.000 0.000 logo.mpc
-#      """
+
+  # TODO: Texture map support
+  @wip
+  Scenario: Example 14. Shifted logo
+  This material includes a texture map which illustrates how a texture's origin may be shifted left/right
+  (the "u" direction) or up/down (the "v" direction). The material color is set to "ident" to preserve the
+  texture's true color.
+  In this example, the original image of the logo is off-center to the left. To compensate, the texture's origin
+  is shifted back to the right (the positive "u" direction) using the "-o" option to modify the origin.
+    Given file ← a file containing:
+      """
+      newmtl shifted_logo
+      Ka spectral ident.rfl 1
+      Kd spectral ident.rfl 1
+      Ks spectral ident.rfl 1
+      illum 2
+      map_Ka -o 0.200 0.000 0.000 logo.mpc
+      map_Kd -o 0.200 0.000 0.000 logo.mpc
+      map_Ks -o 0.200 0.000 0.000 logo.mpc
+      """
 #    When parser ← parse_mtl_file(file)
 #    Then parser.materials.size = 1
-#
-#  Scenario: Example 15. Scaled logo
-#  This material includes a texture map showing how a texture may be scaled left or right (in the "u" direction)
-#  or up and down (in the "v" direction). The material color is set to "ident" to preserve the texture's true color.
-#  In this example, the original image of the logo is too small. To compensate, the texture is scaled slightly to the
-#  right (in the positive "u" direction) and up (in the positive "v" direction) using the "-s" option to modify the
-#  scale.
-#    Given file ← a file containing:
-#      """
-#      newmtl scaled_logo
-#      Ka spectral ident.rfl 1
-#      Kd spectral ident.rfl 1
-#      Ks spectral ident.rfl 1
-#      illum 2
-#      map_Ka -s 1.200 1.200 0.000 logo.mpc
-#      map_Kd -s 1.200 1.200 0.000 logo.mpc
-#      map_Ks -s 1.200 1.200 0.000 logo.mpc
-#      """
+
+  # TODO: Texture map support
+  @wip
+  Scenario: Example 15. Scaled logo
+  This material includes a texture map showing how a texture may be scaled left or right (in the "u" direction)
+  or up and down (in the "v" direction). The material color is set to "ident" to preserve the texture's true color.
+  In this example, the original image of the logo is too small. To compensate, the texture is scaled slightly to the
+  right (in the positive "u" direction) and up (in the positive "v" direction) using the "-s" option to modify the
+  scale.
+    Given file ← a file containing:
+      """
+      newmtl scaled_logo
+      Ka spectral ident.rfl 1
+      Kd spectral ident.rfl 1
+      Ks spectral ident.rfl 1
+      illum 2
+      map_Ka -s 1.200 1.200 0.000 logo.mpc
+      map_Kd -s 1.200 1.200 0.000 logo.mpc
+      map_Ks -s 1.200 1.200 0.000 logo.mpc
+      """
 #    When parser ← parse_mtl_file(file)
 #    Then parser.materials.size = 1
 
   # TODO: Reflection map support
-#  Scenario: Example 16. Chrome with spherical reflection map
-#  This illustrates a common use for local reflection maps (defined in a material).
-#  This material is highly reflective with no diffuse or ambient contribution. Its reflection map is an image
-#  with silver streaks that yields a chrome appearance when viewed as a reflection.
-#    Given file ← a file containing:
-#        """
-#        newmtl chrome
-#        Ka 0 0 0
-#        Kd 0 0 0
-#        Ks .7 .7 .7
-#        illum 1
-#        refl -type sphere chrome.rla
-#      """
+  @wip
+  Scenario: Example 16. Chrome with spherical reflection map
+  This illustrates a common use for local reflection maps (defined in a material).
+  This material is highly reflective with no diffuse or ambient contribution. Its reflection map is an image
+  with silver streaks that yields a chrome appearance when viewed as a reflection.
+    Given file ← a file containing:
+        """
+        newmtl chrome
+        Ka 0 0 0
+        Kd 0 0 0
+        Ks .7 .7 .7
+        illum 1
+        refl -type sphere chrome.rla
+      """
 #    When parser ← parse_mtl_file(file)
 #    Then parser.materials.size = 1
 
 
+# TODO: Tip These statements (RGB vs CIEXYZ vs spectral) are mutually exclusive.
+#       They cannot be used concurrently in the same material.
 
-#
-# "x y z" are the values of the CIEXYZ color space. The y and z arguments are optional. If only x is specified,
-# then y and z are assumed to be equal to x. The x y z values are normally in the range of 0 to 1. Values outside
-# this range increase or decrease the reflectivity accordingly.
-#
-#
-#Tf r g b
-#Tf spectral file.rfl factor
-#Tf xyz x y z
-#
-#To specify the transmission filter of the current material, you can use the "Tf" statement, the "Tf spectral" statement, or the "Tf xyz" statement.
-#
-#Any light passing through the object is filtered by the transmission filter, which only allows the specifiec colors to pass through. For example, Tf 0 1 0 allows all the green to pass through and filters out all the red and blue.
-#
-#Tip These statements are mutually exclusive. They cannot be used concurrently in the same material.
-#
-#Tf r g b
-#
-#The Tf statement specifies the transmission filter using RGB values.
-#
-#"r g b" are the values for the red, green, and blue components of the atmosphere. The g and b arguments are optional. If only r is specified, then g, and b are assumed to be equal to r. The r g b values are normally in the range of 0.0 to 1.0. Values outside this range increase or decrease the relectivity accordingly.
-#
-#Tf spectral file.rfl factor
-#
-#The "Tf spectral" statement specifies the transmission filterusing a spectral curve.
-#
-#"file.rfl" is the name of the .rfl file.
-#"factor" is an optional argument.
-#"factor" is a multiplier for the values in the .rfl file and defaults to 1.0, if not specified.
-#
-#Tf xyz x y z
-#
-#The "Ks xyz" statement specifies the specular reflectivity using CIEXYZ values.
-#
-#"x y z" are the values of the CIEXYZ color space. The y and z arguments are optional. If only x is specified, then y and z are assumed to be equal to x. The x y z values are normally in the range of 0 to 1. Values outside this range will increase or decrease the intensity of the light transmission accordingly.
-#
-#
 
-#
-#d factor
-#
-#Specifies the dissolve for the current material.
-#
-#"factor" is the amount this material dissolves into the background. A factor of 1.0 is fully opaque. This is the default when a new material is created. A factor of 0.0 is fully dissolved (completely transparent).
-#
-#Unlike a real transparent material, the dissolve does not depend upon material thickness nor does it have any spectral character. Dissolve works on all illumination models.
-#
-#d -halo factor
-#
-#Specifies that a dissolve is dependent on the surface orientation relative to the viewer. For example, a sphere with the following dissolve, d -halo 0.0, will be fully dissolved at its center and will appear gradually more opaque toward its edge.
-#
-#"factor" is the minimum amount of dissolve applied to the material. The amount of dissolve will vary between 1.0 (fully opaque) and the specified "factor". The formula is:
-#
-#dissolve = 1.0 - (N*v)(1.0-factor)
-#
-#For a definition of terms, see "Illumination models" on page 5-30.
-#
-#
-#Ns exponent
-#
-#Specifies the specular exponent for the current material. This defines the focus of the specular highlight.
-#
-#"exponent" is the value for the specular exponent. A high exponent results in a tight, concentrated highlight. Ns values normally range from 0 to 1000.
-#
 #
 #sharpness value
 #
@@ -724,13 +677,7 @@ Feature: Material Library (MTL) File
 #
 #Tip Sharpness values greater than 100 map introduce aliasing effects in flat surfaces that are viewed at a sharp angle
 #
-#
-#Ni optical_density
-#
-#Specifies the optical density for the surface. This is also known as index of refraction.
-#
-#"optical_density" is the value for the optical density. The values can range from 0.001 to 10. A value of 1.0 means that light does not bend as it passes through an object. Increasing the optical_density increases the amount of bending. Glass has an index of refraction of about 1.5. Values of less than 1.0 produce bizarre results and are not recommended.
-#
+
 #
 #Material texture map
 #
@@ -751,26 +698,27 @@ Feature: Material Library (MTL) File
 #In addition to the material parameters, the surface normal can be modified.
 #
 #
-#Image file types
+# Image file types
 #
-#You can link any image file type that is currently supported. Supported image file types are listed in the chapter "About Image" in the "Advanced Visualizer User's Guide". You can also use the "im_info -a" command to list Image file types, among other things.
-#
-#
-#Texture file types
-#
-#The texture file types you can use are:
-#
-#- mip-mapped texture files (.mpc, .mps, .mpb)
-#- compiled procedural texture files (.cxc, .cxs, .cxb)
+# You can link any image file type that is currently supported. Supported image file types are listed in the chapter
+# "About Image" in the "Advanced Visualizer User's Guide". You can also use the "im_info -a" command to list Image
+# file types, among other things.
 #
 #
-#Mip-mapped texture files
+# Texture file types
 #
-#Mip-mapped texture files are created from images using the Create Textures panel in the Director or the "texture2D" program. There are three types of texture files:
+# The texture file types you can use are:
+# - mip-mapped texture files (.mpc, .mps, .mpb)
+# - compiled procedural texture files (.cxc, .cxs, .cxb)
+
+# Mip-mapped texture files
 #
-#- color texture files (.mpc)
-#- scalar texture files (.mps)
-#- bump texture files (.mpb)
+# Mip-mapped texture files are created from images using the Create Textures panel in the Director or the
+# "texture2D" program. There are three types of texture files:
+#
+# - color texture files (.mpc)
+# - scalar texture files (.mps)
+# - bump texture files (.mpb)
 #
 #Color textures. Color texture files are designated by an extension of ".mpc" in the filename, such as "chrome.mpc". Color textures modify the material color as follows:
 #
