@@ -1,8 +1,8 @@
 Feature: Patterns
 
   Background:
-    Given black ← color(0, 0, 0)
-    And white ← color(1, 1, 1)
+    Given black ← linear_rgb_color(0, 0, 0)
+    And white ← linear_rgb_color(1, 1, 1)
 
   Scenario: Creating a stripe pattern
     Given pattern ← stripe_pattern(white, black)
@@ -66,14 +66,14 @@ Feature: Patterns
     And set_transform(shape, scaling(2, 2, 2))
     And pattern ← test_pattern()
     When color ← pattern_at_shape(pattern, shape, point(2, 3, 4))
-    Then color = color(1, 1.5, 2)
+    Then color = linear_rgb_color(1, 1.5, 2)
 
   Scenario: A pattern with a pattern transformation
     Given shape ← sphere()
     And pattern ← test_pattern()
     And set_pattern_transform(pattern, scaling(2, 2, 2))
     When color ← pattern_at_shape(pattern, shape, point(2, 3, 4))
-    Then color = color(1, 1.5, 2)
+    Then color = linear_rgb_color(1, 1.5, 2)
 
   Scenario: A pattern with both an object and a pattern transformation
     Given shape ← sphere()
@@ -81,14 +81,14 @@ Feature: Patterns
     And pattern ← test_pattern()
     And set_pattern_transform(pattern, translation(0.5, 1, 1.5))
     When color ← pattern_at_shape(pattern, shape, point(2.5, 3, 3.5))
-    Then color = color(0.75, 0.5, 0.25)
+    Then color = linear_rgb_color(0.75, 0.5, 0.25)
 
   Scenario: A gradient linearly interpolates between colors
     Given pattern ← gradient_pattern(white, black)
     Then pattern_at(pattern, point(0, 0, 0)) = white
-    And pattern_at(pattern, point(0.25, 0, 0)) = color(0.75, 0.75, 0.75)
-    And pattern_at(pattern, point(0.5, 0, 0)) = color(0.5, 0.5, 0.5)
-    And pattern_at(pattern, point(0.75, 0, 0)) = color(0.25, 0.25, 0.25)
+    And pattern_at(pattern, point(0.25, 0, 0)) = linear_rgb_color(0.75, 0.75, 0.75)
+    And pattern_at(pattern, point(0.5, 0, 0)) = linear_rgb_color(0.5, 0.5, 0.5)
+    And pattern_at(pattern, point(0.75, 0, 0)) = linear_rgb_color(0.25, 0.25, 0.25)
 
   Scenario: A ring should extend in both x and z
     Given pattern ← ring_pattern(white, black)
@@ -217,11 +217,11 @@ Feature: Patterns
       | point(-0.70711, 0.5, -0.70711) | 0.875 | 0.5  |
 
   Scenario Outline: Layout of the "align check" pattern
-    Given color0 ← color(1, 1, 1)
-    And color1 ← color(1, 0, 0)
-    And color2 ← color(1, 1, 0)
-    And color3 ← color(0, 1, 0)
-    And color4 ← color(0, 1, 1)
+    Given color0 ← linear_rgb_color(1, 1, 1)
+    And color1 ← linear_rgb_color(1, 0, 0)
+    And color2 ← linear_rgb_color(1, 1, 0)
+    And color3 ← linear_rgb_color(0, 1, 0)
+    And color4 ← linear_rgb_color(0, 1, 1)
     And uv_pattern ← uv_align_check(color0, color1, color2, color3, color4)
     When color ← uv_pattern_at(uv_pattern, <u>, <v>)
     Then color = <expected>
@@ -308,14 +308,14 @@ Feature: Patterns
       | point(0.5, -1, -0.5) | 0.75 | 0.25 |
 
   Scenario Outline: Finding the colors on a mapped cube (<id>)
-    When red ← color(1, 0, 0)
-    And yellow ← color(1, 1, 0)
-    And brown ← color(1, 0.5, 0)
-    And green ← color(0, 1, 0)
-    And cyan ← color(0, 1, 1)
-    And blue ← color(0, 0, 1)
-    And purple ← color(1, 0, 1)
-    And white ← color(1, 1, 1)
+    When red ← linear_rgb_color(1, 0, 0)
+    And yellow ← linear_rgb_color(1, 1, 0)
+    And brown ← linear_rgb_color(1, 0.5, 0)
+    And green ← linear_rgb_color(0, 1, 0)
+    And cyan ← linear_rgb_color(0, 1, 1)
+    And blue ← linear_rgb_color(0, 0, 1)
+    And purple ← linear_rgb_color(1, 0, 1)
+    And white ← linear_rgb_color(1, 1, 1)
     And uv_left ← uv_align_check(yellow, cyan, red, blue, brown)
     And uv_front ← uv_align_check(cyan, red, yellow, brown, green)
     And uv_right ← uv_align_check(red, yellow, purple, green, white)
@@ -381,8 +381,8 @@ Feature: Patterns
     Then color = <expected>
 
     Examples:
-      | u   | v   | expected                      |
-      | 0   | 0   | color(0.7874, 0.7874, 0.7874) |
-      | 0.3 | 0   | color(0.0331, 0.0331, 0.0331) |
-      | 0.6 | 0.3 | color(0.0100, 0.0100, 0.0100) |
-      | 1   | 1   | color(0.7874, 0.7874, 0.7874) |
+      | u   | v   | expected                                 |
+      | 0   | 0   | linear_rgb_color(0.7874, 0.7874, 0.7874) |
+      | 0.3 | 0   | linear_rgb_color(0.0331, 0.0331, 0.0331) |
+      | 0.6 | 0.3 | linear_rgb_color(0.0100, 0.0100, 0.0100) |
+      | 1   | 1   | linear_rgb_color(0.7874, 0.7874, 0.7874) |

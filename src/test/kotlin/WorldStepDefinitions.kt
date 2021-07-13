@@ -4,9 +4,6 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import garden.ephemeral.rocket.color.Color.Companion.grey
-import garden.ephemeral.rocket.color.Color.Companion.white
-import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.comps
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersections
 import garden.ephemeral.rocket.LightStepDefinitions.Companion.light
@@ -15,6 +12,10 @@ import garden.ephemeral.rocket.Transforms.Companion.scaling
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.Color.Companion.grey
+import garden.ephemeral.rocket.color.Color.Companion.linearRgb
+import garden.ephemeral.rocket.color.Color.Companion.white
+import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import garden.ephemeral.rocket.shapes.Sphere
 import io.cucumber.java8.En
@@ -95,7 +96,7 @@ class WorldStepDefinitions: En {
             lights.add(PointLight(point(-10.0, 10.0, -10.0), white))
             objects.add(Sphere().apply {
                 material = Material.build {
-                    color = Color(0.8, 1.0, 0.6)
+                    color = linearRgb(0.8, 1.0, 0.6)
                     diffuse = grey(0.7)
                     specular = grey(0.2)
                 }

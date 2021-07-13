@@ -1,57 +1,21 @@
 package garden.ephemeral.rocket.color
 
-import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-data class Color(val r: Double, val g: Double, val b: Double) {
-    val isBlack:     Boolean get() = r == 0.0 && g == 0.0 && b == 0.0
-    val isNonBlack:  Boolean get() = !isBlack
+abstract class Color {
+    abstract val isBlack: Boolean
+    val isNonBlack: Boolean get() = !isBlack
 
-    companion object {
-        val black = Color(0.0, 0.0, 0.0)
-        val white = Color(1.0, 1.0, 1.0)
+    abstract operator fun plus(their: Color): Color
 
-        fun grey(v: Double): Color { return Color(v, v, v) }
+    abstract operator fun minus(their: Color): Color
 
-        fun fromSRgbDoubles(r: Double, g: Double, b: Double): Color {
-            fun convert(v: Double): Double {
-                return if (v < 0.04045) {
-                    v / 12.92
-                } else {
-                    ((v + 0.055) / 1.055).pow(2.4)
-                }
-            }
-            return Color(convert(r), convert(g), convert(b))
-        }
+    abstract operator fun times(scalar: Double): Color
 
-        fun fromSRgbInts(r: Int, g: Int, b: Int, scale: Int = 255): Color {
-            fun convert(v: Int): Double {
-                return v / scale.toDouble()
-            }
-           return fromSRgbDoubles(convert(r), convert(g), convert(b))
-        }
-    }
+    abstract operator fun times(their: Color): Color
 
-    operator fun plus(their: Color): Color {
-        return Color(r + their.r, g + their.g, b + their.b)
-    }
-
-    operator fun minus(their: Color): Color {
-        return Color(r - their.r, g - their.g, b - their.b)
-    }
-
-    operator fun times(scalar: Double): Color {
-        return Color(r * scalar, g * scalar, b * scalar)
-    }
-
-    operator fun times(their: Color): Color {
-        return Color(r * their.r, g * their.g, b * their.b)
-    }
-
-    fun toDoubleArray(): DoubleArray {
-        return doubleArrayOf(r, g, b)
-    }
+    abstract fun toLinearRgbDoubles(): DoubleArray
 
     fun toSRgbDoubles(): DoubleArray {
         fun convert(v: Double): Double {
@@ -61,6 +25,7 @@ data class Color(val r: Double, val g: Double, val b: Double) {
                 1.055 * v.pow(1 / 2.4) - 0.055
             }
         }
+        val (r, g, b) = toLinearRgbDoubles()
         return doubleArrayOf(convert(r), convert(g), convert(b))
     }
 
@@ -70,5 +35,34 @@ data class Color(val r: Double, val g: Double, val b: Double) {
         }
         val (r, g, b) = toSRgbDoubles()
         return intArrayOf(convert(r), convert(g), convert(b))
+    }
+
+    companion object {
+        val black: Color = RgbColor(0.0, 0.0, 0.0)
+        val white: Color = RgbColor(1.0, 1.0, 1.0)
+
+        fun grey(v: Double): Color = RgbColor(v, v, v)
+
+        fun srgb(r: Double, g: Double, b: Double): Color {
+            fun convert(v: Double): Double {
+                return if (v < 0.04045) {
+                    v / 12.92
+                } else {
+                    ((v + 0.055) / 1.055).pow(2.4)
+                }
+            }
+            return RgbColor(convert(r), convert(g), convert(b))
+        }
+
+        fun fromSRgbInts(r: Int, g: Int, b: Int, scale: Int = 255): Color {
+            fun convert(v: Int): Double {
+                return v / scale.toDouble()
+            }
+            return srgb(convert(r), convert(g), convert(b))
+        }
+
+        fun linearRgb(r: Double, g: Double, b: Double): Color {
+            return RgbColor(r, g, b)
+        }
     }
 }

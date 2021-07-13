@@ -33,8 +33,8 @@ class CanvasStepDefinitions: En {
             canvas.setPixel(x, y, colors[v]!!)
         }
 
-        When("every pixel of canvas is set to color\\({real}, {real}, {real})") { r: Double, g: Double, b: Double ->
-            canvas.fill(Color(r, g, b))
+        When("every pixel of canvas is set to {color}") { c: Color ->
+            canvas.fill(c)
         }
 
         Then("canvas.width = {int}") { e: Int -> assertThat(canvas.width).isEqualTo(e) }

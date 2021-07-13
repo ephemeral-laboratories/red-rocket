@@ -155,5 +155,5 @@ Feature: OBJ File
     And group ← parser.default_group
     And shape1 ← first child of group
     And shape2 ← second child of group
-    Then shape1.material.diffuse = color(1, 0, 0)
-    And shape2.material.diffuse = color(0, 0, 1)
+    Then shape1.material.diffuse = linear_rgb_color(1, 0, 0)
+    And shape2.material.diffuse = linear_rgb_color(0, 0, 1)

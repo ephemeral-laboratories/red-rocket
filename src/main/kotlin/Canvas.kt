@@ -1,6 +1,7 @@
 package garden.ephemeral.rocket
 
 import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.Color.Companion.linearRgb
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.PrintWriter
@@ -18,16 +19,16 @@ class Canvas(val width: Int, val height: Int) {
 
     fun getPixel(x: Int, y: Int): Color {
         val offset = getOffset(x, y)
-        return Color(data[offset], data[offset + 1], data[offset + 2])
+        return linearRgb(data[offset], data[offset + 1], data[offset + 2])
     }
 
     fun setPixel(x: Int, y: Int, color: Color) {
         val offset = getOffset(x, y)
-        System.arraycopy(color.toDoubleArray(), 0, data, offset, 3)
+        System.arraycopy(color.toLinearRgbDoubles(), 0, data, offset, 3)
     }
 
     fun fill(color: Color) {
-        val doubles = color.toDoubleArray()
+        val doubles = color.toLinearRgbDoubles()
         (0 until height).forEach { y ->
             (0 until width).forEach { x ->
                 val offset = getOffset(x, y)

@@ -6,7 +6,7 @@ Feature: World
     And world has no light source
 
   Scenario: The default world
-    Given light ← point_light(point(-10, 10, -10), color(1, 1, 1))
+    Given light ← point_light(point(-10, 10, -10), linear_rgb_color(1, 1, 1))
     And shape1 ← sphere() with:
       | material.color    | (0.8, 1.0, 0.6) |
       | material.diffuse  | 0.7             |
@@ -35,29 +35,29 @@ Feature: World
     And intersection ← intersection(4, shape)
     When comps ← prepare_computations(intersection, ray)
     And color ← shade_hit(world, comps)
-    Then color = color(0.38066, 0.47583, 0.2855)
+    Then color = linear_rgb_color(0.38066, 0.47583, 0.2855)
 
   Scenario: Shading an intersection from the inside
     Given world ← default_world()
-    And world.light ← point_light(point(0, 0.25, 0), color(1, 1, 1))
+    And world.light ← point_light(point(0, 0.25, 0), linear_rgb_color(1, 1, 1))
     And ray ← ray(point(0, 0, 0), vector(0, 0, 1))
     And shape ← the second object in world
     And intersection ← intersection(0.5, shape)
     When comps ← prepare_computations(intersection, ray)
     And color ← shade_hit(world, comps)
-    Then color = color(0.90498, 0.90498, 0.90498)
+    Then color = linear_rgb_color(0.90498, 0.90498, 0.90498)
 
   Scenario: The color when a ray misses
     Given world ← default_world()
     And ray ← ray(point(0, 0, -5), vector(0, 1, 0))
     When color ← color_at(world, ray)
-    Then color = color(0, 0, 0)
+    Then color = linear_rgb_color(0, 0, 0)
 
   Scenario: The color when a ray hits
     Given world ← default_world()
     And ray ← ray(point(0, 0, -5), vector(0, 0, 1))
     When color ← color_at(world, ray)
-    Then color = color(0.38066, 0.47583, 0.2855)
+    Then color = linear_rgb_color(0.38066, 0.47583, 0.2855)
 
   Scenario: The color with an intersection behind the ray
     Given world ← default_world()
@@ -91,7 +91,7 @@ Feature: World
 
   Scenario: shade_hit() is given an intersection in shadow
     Given world ← world()
-    And world.light ← point_light(point(0, 0, -10), color(1, 1, 1))
+    And world.light ← point_light(point(0, 0, -10), linear_rgb_color(1, 1, 1))
     And shape1 ← sphere()
     And shape1 is added to world
     And shape2 ← sphere() with:
@@ -101,7 +101,7 @@ Feature: World
     And intersection ← intersection(4, shape2)
     When comps ← prepare_computations(intersection, ray)
     And color ← shade_hit(world, comps)
-    Then color = color(0.1, 0.1, 0.1)
+    Then color = linear_rgb_color(0.1, 0.1, 0.1)
 
   Scenario: The reflected color for a nonreflective material
     Given world ← default_world()
@@ -111,7 +111,7 @@ Feature: World
     And intersection ← intersection(1, shape)
     When comps ← prepare_computations(intersection, ray)
     And color ← reflected_color(world, comps)
-    Then color = color(0, 0, 0)
+    Then color = linear_rgb_color(0, 0, 0)
 
   Scenario: The reflected color for a reflective material
     Given world ← default_world()
@@ -123,7 +123,7 @@ Feature: World
     And intersection ← intersection(√2, shape)
     When comps ← prepare_computations(intersection, ray)
     And color ← reflected_color(world, comps)
-    Then color = color(0.19032, 0.2379, 0.14274)
+    Then color = linear_rgb_color(0.19032, 0.2379, 0.14274)
 
   Scenario: shade_hit() with a reflective material
     Given world ← default_world()
@@ -135,11 +135,11 @@ Feature: World
     And intersection ← intersection(√2, shape)
     When comps ← prepare_computations(intersection, ray)
     And color ← shade_hit(world, comps)
-    Then color = color(0.87677, 0.92436, 0.82918)
+    Then color = linear_rgb_color(0.87677, 0.92436, 0.82918)
 
   Scenario: color_at() with mutually reflective surfaces
     Given world ← world()
-    And world.light ← point_light(point(0, 0, 0), color(1, 1, 1))
+    And world.light ← point_light(point(0, 0, 0), linear_rgb_color(1, 1, 1))
     And lower ← plane() with:
       | material.reflective | 1                     |
       | transform           | translation(0, -1, 0) |
@@ -161,7 +161,7 @@ Feature: World
     And intersection ← intersection(√2, shape)
     When comps ← prepare_computations(intersection, ray)
     And color ← reflected_color(world, comps, 0)
-    Then color = color(0, 0, 0)
+    Then color = linear_rgb_color(0, 0, 0)
 
   Scenario: The refracted color with an opaque surface
     Given world ← default_world()
@@ -170,7 +170,7 @@ Feature: World
     And intersections ← intersections(4:shape, 6:shape)
     When comps ← prepare_computations(intersections[0], ray, intersections)
     And color ← refracted_color(world, comps, 5)
-    Then color = color(0, 0, 0)
+    Then color = linear_rgb_color(0, 0, 0)
 
   Scenario: The refracted color at the maximum recursive depth
     Given world ← default_world()
@@ -182,7 +182,7 @@ Feature: World
     And intersections ← intersections(4:shape, 6:shape)
     When comps ← prepare_computations(intersections[0], ray, intersections)
     And color ← refracted_color(world, comps, 0)
-    Then color = color(0, 0, 0)
+    Then color = linear_rgb_color(0, 0, 0)
 
   Scenario: The refracted color under total internal reflection
     Given world ← default_world()
@@ -196,7 +196,7 @@ Feature: World
     # to look at the second intersection, intersections[1], not intersections[0]
     When comps ← prepare_computations(intersections[1], ray, intersections)
     And color ← refracted_color(world, comps, 5)
-    Then color = color(0, 0, 0)
+    Then color = linear_rgb_color(0, 0, 0)
 
   Scenario: The refracted color with a refracted ray
     Given world ← default_world()
@@ -212,7 +212,7 @@ Feature: World
     And intersections ← intersections(-0.9899:shape1, -0.4899:shape2, 0.4899:shape2, 0.9899:shape1)
     When comps ← prepare_computations(intersections[2], ray, intersections)
     And color ← refracted_color(world, comps, 5)
-    Then color = color(0, 0.99888, 0.04725)
+    Then color = linear_rgb_color(0, 0.99888, 0.04725)
 
   Scenario: shade_hit() with a transparent material
     Given world ← default_world()
@@ -230,7 +230,7 @@ Feature: World
     And intersections ← intersections(√2:shape1)
     When comps ← prepare_computations(intersections[0], ray, intersections)
     And color ← shade_hit(world, comps, 5)
-    Then color = color(0.93642, 0.68642, 0.68642)
+    Then color = linear_rgb_color(0.93642, 0.68642, 0.68642)
 
   Scenario: shade_hit() with a reflective, transparent material
     Given world ← default_world()
@@ -249,4 +249,4 @@ Feature: World
     And intersections ← intersections(√2:shape1)
     When comps ← prepare_computations(intersections[0], ray, intersections)
     And color ← shade_hit(world, comps, 5)
-    Then color = color(0.93391, 0.69643, 0.69243)
+    Then color = linear_rgb_color(0.93391, 0.69643, 0.69243)

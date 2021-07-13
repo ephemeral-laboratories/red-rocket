@@ -3,9 +3,6 @@ package garden.ephemeral.rocket.shapes
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
-import garden.ephemeral.rocket.color.Color
-import garden.ephemeral.rocket.color.Color.Companion.grey
-import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersections
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.namedIntersections
@@ -16,6 +13,9 @@ import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.transformFromStri
 import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
+import garden.ephemeral.rocket.color.Color.Companion.grey
+import garden.ephemeral.rocket.color.Color.Companion.linearRgb
+import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.patterns.TestPattern
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import io.cucumber.datatable.DataTable
@@ -36,7 +36,8 @@ class ShapeStepDefinitions: En {
                     "material.color" -> {
                         val params = row[1].substring(1, row[1].length - 1).split(", ")
                         shape.material = shape.material.build {
-                            color = Color(realFromString(params[0]), realFromString(params[1]),
+                            color = linearRgb(
+                                realFromString(params[0]), realFromString(params[1]),
                                 realFromString(params[2]))
                         }
                     }

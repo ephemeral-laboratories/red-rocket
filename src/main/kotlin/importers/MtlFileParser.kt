@@ -1,8 +1,9 @@
 package garden.ephemeral.rocket.importers
 
-import garden.ephemeral.rocket.color.Color
-import garden.ephemeral.rocket.color.Color.Companion.grey
 import garden.ephemeral.rocket.Material
+import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.Color.Companion.linearRgb
+import garden.ephemeral.rocket.color.Color.Companion.grey
 import java.io.File
 
 class MtlFileParser(file: File) {
@@ -55,7 +56,7 @@ class MtlFileParser(file: File) {
         return if (command.size == 2) {
             grey(command[1].toDouble())
         } else {
-            Color(command[1].toDouble(), command[2].toDouble(), command[3].toDouble())
+            linearRgb(command[1].toDouble(), command[2].toDouble(), command[3].toDouble())
         }
     }
 

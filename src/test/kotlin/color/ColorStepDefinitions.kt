@@ -3,8 +3,11 @@ package garden.ephemeral.rocket.color
 import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.isCloseTo
+import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
 import assertk.assertions.matchesPredicate
 import garden.ephemeral.rocket.Constants.Companion.epsilon
+import garden.ephemeral.rocket.color.Color.Companion.linearRgb
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.java8.En
@@ -24,9 +27,18 @@ class ColorStepDefinitions: En {
             string
         }
 
-        ParameterType("color", "color\\(($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
+        ParameterType("color", "(linear_rgb_color|srgb_color)\\(($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
+                type, s1: String, s2: String, s3: String ->
+            when (type) {
+                "linear_rgb_color" -> linearRgb(realFromString(s1), realFromString(s2), realFromString(s3))
+                "srgb_color" -> Color.srgb(realFromString(s1), realFromString(s2), realFromString(s3))
+                else -> throw UnsupportedOperationException("Missing case")
+            }
+        }
+
+        ParameterType("array3", "\\(($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
                 s1: String, s2: String, s3: String ->
-            Color(realFromString(s1), realFromString(s2), realFromString(s3))
+            doubleArrayOf(realFromString(s1), realFromString(s2), realFromString(s3))
         }
 
         Given("{color_var} ← {color}")  { cv: String, v: Color -> colors[cv] = v }
@@ -53,9 +65,29 @@ class ColorStepDefinitions: En {
             assertThat(colors[cv1]!! * colors[cv2]!!).isCloseTo(t, epsilon)
         }
 
-        Then("{color_var}.red = {real}") { cv: String, e: Double -> assertThat(colors[cv]!!.r).isCloseTo(e, epsilon) }
-        Then("{color_var}.green = {real}") { cv: String, e: Double -> assertThat(colors[cv]!!.g).isCloseTo(e, epsilon) }
-        Then("{color_var}.blue = {real}") { cv: String, e: Double -> assertThat(colors[cv]!!.b).isCloseTo(e, epsilon) }
+        Then("{color_var}.red = {real}") { cv: String, e: Double ->
+            val c = colors[cv]!!
+            assertThat(c).isInstanceOf(RgbColor::class)
+            assertThat((c as RgbColor).r).isCloseTo(e, epsilon)
+        }
+        Then("{color_var}.green = {real}") { cv: String, e: Double ->
+            val c = colors[cv]!!
+            assertThat(c).isInstanceOf(RgbColor::class)
+            assertThat((c as RgbColor).g).isCloseTo(e, epsilon)
+        }
+        Then("{color_var}.blue = {real}") { cv: String, e: Double ->
+            val c = colors[cv]!!
+            assertThat(c).isInstanceOf(RgbColor::class)
+            assertThat((c as RgbColor).b).isCloseTo(e, epsilon)
+        }
+
+        Then("color_to_srgb_doubles\\({color_var}) = {array3}") { cv: String, array: DoubleArray ->
+            val srgb = colors[cv]!!.toSRgbDoubles()
+            assertThat(srgb.size).isEqualTo(3)
+            assertThat(srgb[0]).isCloseTo(array[0], epsilon)
+            assertThat(srgb[1]).isCloseTo(array[1], epsilon)
+            assertThat(srgb[2]).isCloseTo(array[2], epsilon)
+        }
     }
 }
 
@@ -64,7 +96,21 @@ fun Assert<Color>.isCloseTo(expected: Color, delta: Double) {
 }
 
 fun Color.isCloseTo(their: Color, delta: Double) : Boolean {
-    return abs(r - their.r) <= delta
-            && abs(g - their.g) <= delta
-            && abs(b - their.b) <= delta
+    if (javaClass != their.javaClass) {
+        return false
+    }
+
+    val rgb = toLinearRgbDoubles()
+    val theirRgb = their.toLinearRgbDoubles()
+    if (rgb.size != theirRgb.size) {
+        return false
+    }
+
+    rgb.indices.forEach { i ->
+        if (abs(rgb[i] - theirRgb[i]) > delta) {
+            return false
+        }
+    }
+
+    return true
 }

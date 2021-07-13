@@ -1,15 +1,15 @@
 package garden.ephemeral.rocket
 
-import garden.ephemeral.rocket.color.Color.Companion.black
-import garden.ephemeral.rocket.color.Color.Companion.grey
-import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.scaling
 import garden.ephemeral.rocket.Transforms.Companion.translation
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
-import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.Color.Companion.black
+import garden.ephemeral.rocket.color.Color.Companion.grey
+import garden.ephemeral.rocket.color.Color.Companion.linearRgb
+import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.shapes.Cube
 import garden.ephemeral.rocket.shapes.Plane
 import garden.ephemeral.rocket.shapes.Sphere
@@ -28,15 +28,15 @@ fun main() {
     }
 
     val blueMaterial = whiteMaterial.build {
-        color = Color(0.537, 0.831, 0.914)
+        color = linearRgb(0.537, 0.831, 0.914)
     }
 
     val redMaterial = whiteMaterial.build {
-        color = Color(0.941, 0.322, 0.388)
+        color = linearRgb(0.941, 0.322, 0.388)
     }
 
     val purpleMaterial = whiteMaterial.build {
-        color = Color(0.373, 0.404, 0.550)
+        color = linearRgb(0.373, 0.404, 0.550)
     }
 
     val standardTransform = scaling(0.5, 0.5, 0.5) * translation(1.0, -1.0, 1.0)
@@ -47,7 +47,7 @@ fun main() {
     val world = World().apply {
         lights = mutableListOf(
             PointLight(point(50.0, 100.0, -50.0), white),
-            PointLight(point(-400.0, 50.0, -10.0), Color(0.2, 0.2, 0.2))
+            PointLight(point(-400.0, 50.0, -10.0), linearRgb(0.2, 0.2, 0.2))
         )
         objects = mutableListOf(
             Plane().apply {
@@ -61,7 +61,7 @@ fun main() {
             },
             Sphere().apply {
                 material = Material.build {
-                    color = Color(0.373, 0.404, 0.550)
+                    color = linearRgb(0.373, 0.404, 0.550)
                     diffuse = grey(0.2)
                     ambient = black
                     specular = white

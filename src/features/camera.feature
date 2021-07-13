@@ -45,4 +45,4 @@ Feature: Camera
     And up ← vector(0, 1, 0)
     And camera.transform ← view_transform(from, to, up)
     When image ← render(camera, world)
-    Then pixel_at(image, 5, 5) = color(0.38066, 0.47583, 0.2855)
+    Then pixel_at(image, 5, 5) = linear_rgb_color(0.38066, 0.47583, 0.2855)

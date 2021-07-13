@@ -59,7 +59,7 @@ Feature: Material Library (MTL) File
       Ka 1.0 0.0 1.0
       """
     When parser ← parse_mtl_file(file)
-    And material.ambient = color(1, 0, 1)
+    And material.ambient = linear_rgb_color(1, 0, 1)
 
   Scenario: A material specifies the ambient reflectivity using only the R value
     Given file ← a file containing:
@@ -68,7 +68,7 @@ Feature: Material Library (MTL) File
       Ka 0.5
       """
     When parser ← parse_mtl_file(file)
-    And material.ambient = color(0.5, 0.5, 0.5)
+    And material.ambient = linear_rgb_color(0.5, 0.5, 0.5)
 
   # TODO: RFL file support
   @wip
@@ -107,7 +107,7 @@ Feature: Material Library (MTL) File
       Kd 1.0 0.0 1.0
       """
     When parser ← parse_mtl_file(file)
-    Then material.diffuse = color(1.0, 0.0, 1.0)
+    Then material.diffuse = linear_rgb_color(1.0, 0.0, 1.0)
 
   # TODO: RFL file support
   @wip
@@ -134,7 +134,7 @@ Feature: Material Library (MTL) File
       Ks 1.0 0.0 1.0
       """
     When parser ← parse_mtl_file(file)
-    Then material.specular = color(1.0, 0.0, 1.0)
+    Then material.specular = linear_rgb_color(1.0, 0.0, 1.0)
 
   # TODO: RFL file support
   @wip
@@ -161,7 +161,7 @@ Feature: Material Library (MTL) File
       Tf 1.0 0.0 1.0
       """
     When parser ← parse_mtl_file(file)
-    Then material.transparency = color(1.0, 0.0, 1.0)
+    Then material.transparency = linear_rgb_color(1.0, 0.0, 1.0)
 
   # TODO: RFL file support
   @wip
@@ -188,7 +188,7 @@ Feature: Material Library (MTL) File
       Ke 1.0 0.0 1.0
       """
     When parser ← parse_mtl_file(file)
-    Then material.emission = color(1.0, 0.0, 1.0)
+    Then material.emission = linear_rgb_color(1.0, 0.0, 1.0)
 
   # TODO: RFL file support
   @wip
