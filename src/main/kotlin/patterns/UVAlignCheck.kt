@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket.patterns
 
-import garden.ephemeral.rocket.Color
+import garden.ephemeral.rocket.color.Color
 
 class UVAlignCheck(val main: Color, val ul: Color, val ur: Color, val bl: Color, val br: Color): UVPattern() {
     override fun uvPatternAt(u: Double, v: Double): Color {

@@ -3,8 +3,8 @@ package garden.ephemeral.rocket.patterns
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import garden.ephemeral.rocket.CanvasStepDefinitions.Companion.canvas
-import garden.ephemeral.rocket.Color
-import garden.ephemeral.rocket.ColorStepDefinitions.Companion.colors
+import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
 import garden.ephemeral.rocket.Tuple

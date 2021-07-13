@@ -1,5 +1,6 @@
 package garden.ephemeral.rocket
 
+import garden.ephemeral.rocket.color.Color
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.PrintWriter

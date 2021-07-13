@@ -1,8 +1,8 @@
 package garden.ephemeral.rocket
 
-import garden.ephemeral.rocket.Color.Companion.black
-import garden.ephemeral.rocket.Color.Companion.grey
-import garden.ephemeral.rocket.Color.Companion.white
+import garden.ephemeral.rocket.color.Color.Companion.black
+import garden.ephemeral.rocket.color.Color.Companion.grey
+import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.rotationY
 import garden.ephemeral.rocket.Transforms.Companion.rotationZ
@@ -11,6 +11,7 @@ import garden.ephemeral.rocket.Transforms.Companion.translation
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
+import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.patterns.CheckersPattern
 import garden.ephemeral.rocket.shapes.Cylinder
 import garden.ephemeral.rocket.shapes.Group

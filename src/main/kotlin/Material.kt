@@ -1,8 +1,9 @@
 package garden.ephemeral.rocket
 
-import garden.ephemeral.rocket.Color.Companion.black
-import garden.ephemeral.rocket.Color.Companion.grey
-import garden.ephemeral.rocket.Color.Companion.white
+import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.Color.Companion.black
+import garden.ephemeral.rocket.color.Color.Companion.grey
+import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.patterns.Pattern
 import garden.ephemeral.rocket.shapes.Shape
 import kotlin.math.pow
@@ -98,16 +99,16 @@ data class Material(
     }
 
     class Builder(material: Material) {
-        var color: Color             = material.color
-        var ambient: Color           = material.ambient
-        var diffuse: Color           = material.diffuse
-        var specular: Color          = material.specular
+        var color: Color = material.color
+        var ambient: Color = material.ambient
+        var diffuse: Color = material.diffuse
+        var specular: Color = material.specular
         var shininess: Double        = material.shininess
-        var reflective: Color        = material.reflective
-        var transparency: Color      = material.transparency
+        var reflective: Color = material.reflective
+        var transparency: Color = material.transparency
         var refractiveIndex: Double  = material.refractiveIndex
         var pattern: Pattern?        = material.pattern
-        var emission: Color          = material.emission
+        var emission: Color = material.emission
         var dissolve: Double         = 0.0
         var illuminationModel: Int   = 0
 

@@ -4,9 +4,11 @@ import assertk.assertThat
 import assertk.assertions.endsWith
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
-import garden.ephemeral.rocket.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.FileStepDefinitions.Companion.files
+import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
+import garden.ephemeral.rocket.color.isCloseTo
 import io.cucumber.java8.En
 
 class CanvasStepDefinitions: En {

@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket.patterns
 
-import garden.ephemeral.rocket.Color
+import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.Tuple
 
 class TestPattern: Pattern() {

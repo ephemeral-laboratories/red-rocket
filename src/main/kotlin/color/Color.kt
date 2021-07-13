@@ -1,4 +1,4 @@
-package garden.ephemeral.rocket
+package garden.ephemeral.rocket.color
 
 import kotlin.math.abs
 import kotlin.math.pow

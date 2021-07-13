@@ -1,7 +1,7 @@
 package garden.ephemeral.rocket.patterns
 
 import garden.ephemeral.rocket.Canvas
-import garden.ephemeral.rocket.Color
+import garden.ephemeral.rocket.color.Color
 import kotlin.math.round
 
 class UVImage(val canvas: Canvas) : UVPattern() {

@@ -9,6 +9,8 @@ import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.WorldStepDefinitions.Companion.world
+import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.isCloseTo
 import io.cucumber.java8.En
 
 class CameraStepDefinitions: En {

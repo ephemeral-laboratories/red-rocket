@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket.shapes
 
-import garden.ephemeral.rocket.Color.Companion.white
+import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.Material
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.configureFromDataTable
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes

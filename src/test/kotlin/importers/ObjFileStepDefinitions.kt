@@ -3,11 +3,11 @@ package garden.ephemeral.rocket.importers
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
-import garden.ephemeral.rocket.Color
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.FileStepDefinitions.Companion.files
 import garden.ephemeral.rocket.Tuple
-import garden.ephemeral.rocket.isCloseTo
+import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.isCloseTo
 import garden.ephemeral.rocket.shapes.BaseTriangle
 import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes

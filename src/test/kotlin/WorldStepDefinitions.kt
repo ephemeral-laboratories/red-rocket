@@ -4,9 +4,9 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import garden.ephemeral.rocket.Color.Companion.grey
-import garden.ephemeral.rocket.Color.Companion.white
-import garden.ephemeral.rocket.ColorStepDefinitions.Companion.colors
+import garden.ephemeral.rocket.color.Color.Companion.grey
+import garden.ephemeral.rocket.color.Color.Companion.white
+import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.comps
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersections
 import garden.ephemeral.rocket.LightStepDefinitions.Companion.light
@@ -14,6 +14,7 @@ import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
 import garden.ephemeral.rocket.Transforms.Companion.scaling
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
+import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import garden.ephemeral.rocket.shapes.Sphere
 import io.cucumber.java8.En

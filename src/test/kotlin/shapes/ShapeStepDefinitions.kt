@@ -3,9 +3,9 @@ package garden.ephemeral.rocket.shapes
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
-import garden.ephemeral.rocket.Color
-import garden.ephemeral.rocket.Color.Companion.grey
-import garden.ephemeral.rocket.ColorStepDefinitions.Companion.colors
+import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.Color.Companion.grey
+import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersections
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.namedIntersections

@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket.patterns
 
-import garden.ephemeral.rocket.Color
+import garden.ephemeral.rocket.color.Color
 import kotlin.math.floor
 
 class UVCheckers(val width: Int, val height: Int, val a: Color, val b: Color): UVPattern() {

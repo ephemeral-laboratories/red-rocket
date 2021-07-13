@@ -1,7 +1,7 @@
 package garden.ephemeral.rocket.importers
 
-import garden.ephemeral.rocket.Color
-import garden.ephemeral.rocket.Color.Companion.grey
+import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.Color.Companion.grey
 import garden.ephemeral.rocket.Material
 import java.io.File
 

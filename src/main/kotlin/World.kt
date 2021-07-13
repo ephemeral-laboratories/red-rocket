@@ -1,6 +1,7 @@
 package garden.ephemeral.rocket
 
-import garden.ephemeral.rocket.Color.Companion.black
+import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.Color.Companion.black
 import garden.ephemeral.rocket.shapes.Shape
 import kotlin.math.sqrt
 import kotlin.streams.toList
