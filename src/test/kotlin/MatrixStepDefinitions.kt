@@ -16,6 +16,7 @@ import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
+import kotlin.math.abs
 
 class MatrixStepDefinitions: En {
     private val theFollowingMatrix = "the following( 4x4)( 3x3)( 2x2) matrix"
@@ -178,4 +179,18 @@ class MatrixStepDefinitions: En {
 
 private fun Assert<Matrix>.isCloseTo(expected: Matrix, delta: Double) {
     this.matchesPredicate { m : Matrix -> m.isCloseTo(expected, delta) }
+}
+
+fun Matrix.isCloseTo(their: Matrix, delta: Double): Boolean {
+    if (their.rowCount != rowCount || their.columnCount != columnCount) {
+        return false
+    }
+
+    cells.forEachIndexed { index, value ->
+        if (abs(their.cells[index] - value) > delta) {
+            return false
+        }
+    }
+
+    return true
 }

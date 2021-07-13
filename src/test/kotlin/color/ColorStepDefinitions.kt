@@ -8,6 +8,7 @@ import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.java8.En
+import kotlin.math.abs
 
 class ColorStepDefinitions: En {
     companion object {
@@ -60,4 +61,10 @@ class ColorStepDefinitions: En {
 
 fun Assert<Color>.isCloseTo(expected: Color, delta: Double) {
     this.matchesPredicate { c: Color -> c.isCloseTo(expected, delta) }
+}
+
+fun Color.isCloseTo(their: Color, delta: Double) : Boolean {
+    return abs(r - their.r) <= delta
+            && abs(g - their.g) <= delta
+            && abs(b - their.b) <= delta
 }

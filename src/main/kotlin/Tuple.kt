@@ -1,6 +1,5 @@
 package garden.ephemeral.rocket
 
-import kotlin.math.abs
 import kotlin.math.sqrt
 
 data class Tuple(val cells: DoubleArray) {
@@ -63,13 +62,6 @@ data class Tuple(val cells: DoubleArray) {
 
     fun normalize(): Tuple {
         return div(magnitude)
-    }
-
-    fun isCloseTo(their: Tuple, delta: Double) : Boolean {
-        return abs(x - their.x) <= delta
-                && abs(y - their.y) <= delta
-                && abs(z - their.z) <= delta
-                && abs(w - their.w) <= delta
     }
 
     fun dot(their: Tuple): Double {

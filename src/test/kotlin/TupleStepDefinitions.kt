@@ -12,6 +12,7 @@ import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.java8.En
+import kotlin.math.abs
 
 class TupleStepDefinitions: En {
     companion object {
@@ -136,4 +137,11 @@ class TupleStepDefinitions: En {
 
 fun Assert<Tuple>.isCloseTo(expected: Tuple, delta: Double) {
     this.matchesPredicate { t : Tuple -> t.isCloseTo(expected, delta) }
+}
+
+fun Tuple.isCloseTo(their: Tuple, delta: Double) : Boolean {
+    return abs(x - their.x) <= delta
+            && abs(y - their.y) <= delta
+            && abs(z - their.z) <= delta
+            && abs(w - their.w) <= delta
 }

@@ -1,7 +1,5 @@
 package garden.ephemeral.rocket
 
-import kotlin.math.abs
-
 data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArray) {
     val determinant: Double by lazy {
         if (rowCount == 2 && columnCount == 2) {
@@ -151,20 +149,6 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         if (rowCount != other.rowCount) return false
         if (columnCount != other.columnCount) return false
         if (!cells.contentEquals(other.cells)) return false
-
-        return true
-    }
-
-    fun isCloseTo(their: Matrix, delta: Double): Boolean {
-        if (their.rowCount != rowCount || their.columnCount != columnCount) {
-            return false
-        }
-
-        cells.forEachIndexed { index, value ->
-            if (abs(their.cells[index] - value) > delta) {
-                return false
-            }
-        }
 
         return true
     }

@@ -71,10 +71,4 @@ data class Color(val r: Double, val g: Double, val b: Double) {
         val (r, g, b) = toSRgbDoubles()
         return intArrayOf(convert(r), convert(g), convert(b))
     }
-
-    fun isCloseTo(their: Color, delta: Double) : Boolean {
-        return abs(r - their.r) <= delta
-                && abs(g - their.g) <= delta
-                && abs(b - their.b) <= delta
-    }
 }
