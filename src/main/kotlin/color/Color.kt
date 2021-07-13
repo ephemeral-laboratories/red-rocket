@@ -17,6 +17,8 @@ abstract class Color {
 
     abstract fun toLinearRgbDoubles(): DoubleArray
 
+    abstract fun toCieXyz(): CieXyzColor
+
     fun toSRgbDoubles(): DoubleArray {
         fun convert(v: Double): Double {
             return if (v <= 0.0031308) {
@@ -63,6 +65,10 @@ abstract class Color {
 
         fun linearRgb(r: Double, g: Double, b: Double): Color {
             return RgbColor(r, g, b)
+        }
+
+        fun cieXyz(x: Double, y: Double, z: Double): Color {
+            return CieXyzColor(x, y, z)
         }
     }
 }

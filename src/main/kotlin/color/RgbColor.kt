@@ -7,14 +7,14 @@ data class RgbColor(val r: Double, val g: Double, val b: Double): Color() {
         if (their is RgbColor) {
             return RgbColor(r + their.r, g + their.g, b + their.b)
         }
-        throw IncompatibleColorException(this, their)
+        return toCieXyz() + their.toCieXyz()
     }
 
     override operator fun minus(their: Color): Color {
         if (their is RgbColor) {
             return RgbColor(r - their.r, g - their.g, b - their.b)
         }
-        throw IncompatibleColorException(this, their)
+        return toCieXyz() - their.toCieXyz()
     }
 
     override operator fun times(scalar: Double): Color {
@@ -25,7 +25,12 @@ data class RgbColor(val r: Double, val g: Double, val b: Double): Color() {
         if (their is RgbColor) {
             return RgbColor(r * their.r, g * their.g, b * their.b)
         }
-        throw IncompatibleColorException(this, their)
+        return toCieXyz() * their.toCieXyz()
+    }
+
+    override fun toCieXyz(): CieXyzColor {
+        val (x, y, z) = ColorTransforms.linearRgbToCieXyz(doubleArrayOf(r, g, b))
+        return CieXyzColor(x, y, z)
     }
 
     override fun toLinearRgbDoubles(): DoubleArray {

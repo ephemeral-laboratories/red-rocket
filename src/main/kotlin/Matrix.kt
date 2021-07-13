@@ -127,17 +127,21 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
     }
 
     operator fun times(their: Tuple): Tuple {
-        if (columnCount != 4) {
-            throw IllegalArgumentException("Incompatible column count $columnCount with your row count 4")
+        return Tuple(times(their.cells))
+    }
+
+    operator fun times(their: DoubleArray): DoubleArray {
+        if (columnCount != their.size) {
+            throw IllegalArgumentException("Incompatible column count $columnCount with your row count ${their.size}")
         }
 
-        val resultCells = DoubleArray(rowCount)
+        val result = DoubleArray(rowCount)
         for (rowIndex in 0 until rowCount) {
-            resultCells[rowIndex] = (0 until columnCount).sumByDouble { index ->
-                getCell(rowIndex, index) * their.cells[index]
+            result[rowIndex] = (0 until columnCount).sumByDouble { index ->
+                getCell(rowIndex, index) * their[index]
             }
         }
-        return Tuple(resultCells)
+        return result
     }
 
     override fun equals(other: Any?): Boolean {

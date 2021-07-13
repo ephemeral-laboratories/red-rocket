@@ -27,11 +27,12 @@ class ColorStepDefinitions: En {
             string
         }
 
-        ParameterType("color", "(linear_rgb_color|srgb_color)\\(($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
+        ParameterType("color", "(linear_rgb_color|srgb_color|cie_xyz_color)\\(($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
                 type, s1: String, s2: String, s3: String ->
             when (type) {
                 "linear_rgb_color" -> linearRgb(realFromString(s1), realFromString(s2), realFromString(s3))
                 "srgb_color" -> Color.srgb(realFromString(s1), realFromString(s2), realFromString(s3))
+                "cie_xyz_color" -> Color.cieXyz(realFromString(s1), realFromString(s2), realFromString(s3))
                 else -> throw UnsupportedOperationException("Missing case")
             }
         }
@@ -42,6 +43,10 @@ class ColorStepDefinitions: En {
         }
 
         Given("{color_var} ← {color}")  { cv: String, v: Color -> colors[cv] = v }
+
+        When("{color_var} ← color_to_cie_xyz\\({color_var})") { cv1: String, cv2: String ->
+            colors[cv1] = colors[cv2]!!.toCieXyz()
+        }
 
         Then("{color_var} = {color}")  { cv: String, e: Color -> assertThat(colors[cv]!!).isCloseTo(e, epsilon) }
 
@@ -79,6 +84,22 @@ class ColorStepDefinitions: En {
             val c = colors[cv]!!
             assertThat(c).isInstanceOf(RgbColor::class)
             assertThat((c as RgbColor).b).isCloseTo(e, epsilon)
+        }
+
+        Then("{color_var}.x = {real}") { cv: String, e: Double ->
+            val c = colors[cv]!!
+            assertThat(c).isInstanceOf(CieXyzColor::class)
+            assertThat((c as CieXyzColor).x).isCloseTo(e, epsilon)
+        }
+        Then("{color_var}.y = {real}") { cv: String, e: Double ->
+            val c = colors[cv]!!
+            assertThat(c).isInstanceOf(CieXyzColor::class)
+            assertThat((c as CieXyzColor).y).isCloseTo(e, epsilon)
+        }
+        Then("{color_var}.z = {real}") { cv: String, e: Double ->
+            val c = colors[cv]!!
+            assertThat(c).isInstanceOf(CieXyzColor::class)
+            assertThat((c as CieXyzColor).z).isCloseTo(e, epsilon)
         }
 
         Then("color_to_srgb_doubles\\({color_var}) = {array3}") { cv: String, array: DoubleArray ->
