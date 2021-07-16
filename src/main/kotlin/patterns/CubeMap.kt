@@ -1,7 +1,7 @@
 package garden.ephemeral.rocket.patterns
 
-import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.color.Color
 import java.util.*
 import kotlin.math.abs
 
@@ -35,43 +35,43 @@ class CubeMap(left: UVPattern, front: UVPattern, right: UVPattern, back: UVPatte
             }
         }
 
-        val cubeUvRight: (Tuple) -> UV = { point: Tuple ->
+        val cubeUvRight: UVMap = { point: Tuple ->
             val u = ((1 - point.z) fmod 2.0) / 2.0
             val v = ((point.y + 1) fmod 2.0) / 2.0
             UV(u, v)
         }
 
-        val cubeUvLeft: (Tuple) -> UV = { point: Tuple ->
+        val cubeUvLeft: UVMap = { point: Tuple ->
             val u = ((point.z + 1) fmod 2.0) / 2.0
             val v = ((point.y + 1) fmod 2.0) / 2.0
             UV(u, v)
         }
 
-        val cubeUvUp: (Tuple) -> UV = { point: Tuple ->
+        val cubeUvUp: UVMap = { point: Tuple ->
             val u = ((point.x + 1) fmod 2.0) / 2.0
             val v = ((1 - point.z) fmod 2.0) / 2.0
             UV(u, v)
         }
 
-        val cubeUvDown: (Tuple) -> UV = { point: Tuple ->
+        val cubeUvDown: UVMap = { point: Tuple ->
             val u = ((point.x + 1) fmod 2.0) / 2.0
             val v = ((point.z + 1) fmod 2.0) / 2.0
             UV(u, v)
         }
 
-        val cubeUvFront: (Tuple) -> UV = { point: Tuple ->
+        val cubeUvFront: UVMap = { point: Tuple ->
             val u = ((point.x + 1) fmod 2.0) / 2.0
             val v = ((point.y + 1) fmod 2.0) / 2.0
             UV(u, v)
         }
 
-        val cubeUvBack: (Tuple) -> UV = { point: Tuple ->
+        val cubeUvBack: UVMap = { point: Tuple ->
             val u = ((1 - point.x) fmod 2.0) / 2.0
             val v = ((point.y + 1) fmod 2.0) / 2.0
             UV(u, v)
         }
 
-        private val faceUvMaps: Map<Face, (point: Tuple) -> UV> = mapOf(
+        private val faceUvMaps: Map<Face, UVMap> = mapOf(
             Face.LEFT  to cubeUvLeft,
             Face.FRONT to cubeUvFront,
             Face.RIGHT to cubeUvRight,
