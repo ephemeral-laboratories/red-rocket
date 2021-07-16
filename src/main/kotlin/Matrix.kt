@@ -118,7 +118,7 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         val resultCells = DoubleArray(rowCount * their.columnCount)
         (0 until rowCount).forEach { rowIndex ->
             (0 until their.columnCount).forEach { columnIndex ->
-                resultCells[rowIndex * their.columnCount + columnIndex] = (0 until columnCount).sumByDouble { index ->
+                resultCells[rowIndex * their.columnCount + columnIndex] = (0 until columnCount).sumOf { index ->
                     getCell(rowIndex, index) * their.getCell(index,columnIndex)
                 }
             }
@@ -137,7 +137,7 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
 
         val result = DoubleArray(rowCount)
         for (rowIndex in 0 until rowCount) {
-            result[rowIndex] = (0 until columnCount).sumByDouble { index ->
+            result[rowIndex] = (0 until columnCount).sumOf { index ->
                 getCell(rowIndex, index) * their[index]
             }
         }

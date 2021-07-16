@@ -86,7 +86,7 @@ class CubeMap(left: UVPattern, front: UVPattern, right: UVPattern, back: UVPatte
 
         companion object {
             fun fromString(string: String): Face {
-                return valueOf(string.toUpperCase(Locale.ROOT))
+                return valueOf(string.uppercase(Locale.ROOT))
             }
         }
     }

@@ -5,7 +5,7 @@ import kotlin.math.sqrt
 data class Tuple(val cells: DoubleArray) {
     val point:      Boolean get() = w == 1.0
     val vector:     Boolean get() = w == 0.0
-    val magnitude:  Double  get() = sqrt(cells.sumByDouble { cell -> cell * cell })
+    val magnitude:  Double  get() = sqrt(cells.sumOf { cell -> cell * cell })
     val x:          Double  get() = cells[0]
     val y:          Double  get() = cells[1]
     val z:          Double  get() = cells[2]
