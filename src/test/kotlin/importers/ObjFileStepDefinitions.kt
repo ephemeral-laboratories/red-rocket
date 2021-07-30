@@ -20,6 +20,10 @@ class ObjFileStepDefinitions: En {
 
     init {
         When("parser ← parse_obj_file\\({file_var})") { fv: String ->
+            parser = ObjFileParser(files[fv]!!)
+        }
+
+        When("parser ← parse_obj_file_leniently\\({file_var})") { fv: String ->
             parser = ObjFileParser(files[fv]!!, lenient = true)
         }
 

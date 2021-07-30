@@ -9,7 +9,7 @@ Feature: OBJ File
       in a relative way,
       and came back the previous night.
       """
-    When parser ← parse_obj_file(gibberish)
+    When parser ← parse_obj_file_leniently(gibberish)
     Then parser should have ignored 5 lines
     And parser.default_group is empty
 
