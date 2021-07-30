@@ -43,6 +43,9 @@ class ObjFileStepDefinitions: En {
         Then("parser.normals[{int}] = {vector}") { i: Int, e: Tuple ->
             assertThat(parser.normal(i)).isEqualTo(e)
         }
+        Then("parser.textureVertices[{int}] = {vector}") {i: Int, e: Tuple ->
+            assertThat(parser.textureVertex(i)).isEqualTo(e)
+        }
 
         Then("{shape_var}.point1 = parser.vertices[{int}]") { sv: String, i: Int ->
             assertThat((shapes[sv] as BaseTriangle).point1).isEqualTo(parser.vertex(i))
@@ -52,6 +55,15 @@ class ObjFileStepDefinitions: En {
         }
         Then("{shape_var}.point3 = parser.vertices[{int}]") { sv: String, i: Int ->
             assertThat((shapes[sv] as BaseTriangle).point3).isEqualTo(parser.vertex(i))
+        }
+        Then("{shape_var}.texturePoint1 = parser.textureVertices[{int}]") { sv: String, i: Int ->
+            assertThat((shapes[sv] as BaseTriangle).texturePoint1).isEqualTo(parser.textureVertex(i))
+        }
+        Then("{shape_var}.texturePoint2 = parser.textureVertices[{int}]") { sv: String, i: Int ->
+            assertThat((shapes[sv] as BaseTriangle).texturePoint2).isEqualTo(parser.textureVertex(i))
+        }
+        Then("{shape_var}.texturePoint3 = parser.textureVertices[{int}]") { sv: String, i: Int ->
+            assertThat((shapes[sv] as BaseTriangle).texturePoint3).isEqualTo(parser.textureVertex(i))
         }
         Then("{shape_var}.normal1 = parser.normals[{int}]") { sv: String, i: Int ->
             assertThat((shapes[sv] as SmoothTriangle).normal1).isEqualTo(parser.normal(i))

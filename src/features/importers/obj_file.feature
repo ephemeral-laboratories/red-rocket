@@ -115,19 +115,16 @@ Feature: OBJ File
       vn 1 0 0
       vn 0 1 0
       f 1//3 2//1 3//2
-      f 1/0/3 2/102/1 3/14/2
       """
     When parser ← parse_obj_file(file)
     And group ← parser.default_group
-    And shape1 ← first child of group
-    And shape2 ← second child of group
-    Then shape1.point1 = parser.vertices[1]
-    And shape1.point2 = parser.vertices[2]
-    And shape1.point3 = parser.vertices[3]
-    And shape1.normal1 = parser.normals[3]
-    And shape1.normal2 = parser.normals[1]
-    And shape1.normal3 = parser.normals[2]
-    And shape2 = shape1
+    And shape ← first child of group
+    Then shape.point1 = parser.vertices[1]
+    And shape.point2 = parser.vertices[2]
+    And shape.point3 = parser.vertices[3]
+    And shape.normal1 = parser.normals[3]
+    And shape.normal2 = parser.normals[1]
+    And shape.normal3 = parser.normals[2]
 
   Scenario: Faces with materials
     Given mtl_file ← a file named 'thing.mtl' containing:
@@ -149,7 +146,7 @@ Feature: OBJ File
       usemtl Red
       f 1//3 2//1 3//2
       usemtl Blue
-      f 1/0/3 2/102/1 3/14/2
+      f 1//3 2//1 3//2
       """
     When parser ← parse_obj_file(obj_file)
     And group ← parser.default_group
@@ -157,3 +154,44 @@ Feature: OBJ File
     And shape2 ← second child of group
     Then shape1.material.diffuse = linear_rgb_color(1, 0, 0)
     And shape2.material.diffuse = linear_rgb_color(0, 0, 1)
+
+  Scenario: Texture vertex records
+    Given file ← a file containing:
+      """
+      vt 0 1 0
+      vt 0 0 0
+      """
+    When parser ← parse_obj_file(file)
+    Then parser.textureVertices[1] = vector(0, 1, 0)
+    And parser.textureVertices[2] = vector(0, 0, 0)
+
+  Scenario: Texture vertex records' third parameter is optional
+    Given file ← a file containing:
+      """
+      vt 0 1
+      vt 0 0
+      """
+    When parser ← parse_obj_file(file)
+    Then parser.textureVertices[1] = vector(0, 1, 0)
+    And parser.textureVertices[2] = vector(0, 0, 0)
+
+  Scenario: Faces with texture coordinates
+    Given file ← a file containing:
+      """
+      v 0 1 0
+      v -1 0 0
+      v 1 0 0
+      vt -1 0 0
+      vt 1 0 0
+      vt 0 1 0
+      f 1/3 2/1 3/2
+      """
+    When parser ← parse_obj_file(file)
+    And group ← parser.default_group
+    And shape ← first child of group
+    Then shape.point1 = parser.vertices[1]
+    And shape.point2 = parser.vertices[2]
+    And shape.point3 = parser.vertices[3]
+    And shape.texturePoint1 = parser.textureVertices[3]
+    And shape.texturePoint2 = parser.textureVertices[1]
+    And shape.texturePoint3 = parser.textureVertices[2]

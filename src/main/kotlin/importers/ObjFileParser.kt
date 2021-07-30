@@ -15,6 +15,7 @@ class ObjFileParser(file: File) {
     private var currentGroup: Group = defaultGroup
     private val vertices: MutableList<Tuple> = mutableListOf()
     private val normals: MutableList<Tuple> = mutableListOf()
+    private val textureVertices: MutableList<Tuple> = mutableListOf()
     var ignoredLines: Int = 0
     private val whitespace = Regex("\\s+")
     private lateinit var materialLibrary: Map<String, Material>
@@ -35,6 +36,13 @@ class ObjFileParser(file: File) {
                 "v" -> {
                     vertices.add(point(command[1].toDouble(), command[2].toDouble(), command[3].toDouble()))
                 }
+                "vt" -> {
+                    textureVertices.add(if (command.size > 3) {
+                        vector(command[1].toDouble(), command[2].toDouble(), command[3].toDouble())
+                    } else {
+                        vector(command[1].toDouble(), command[2].toDouble(), 0.0)
+                    })
+                }
                 "vn" -> {
                     normals.add(vector(command[1].toDouble(), command[2].toDouble(), command[3].toDouble()))
                 }
@@ -44,7 +52,7 @@ class ObjFileParser(file: File) {
                     currentGroup = group
                 }
                 "f" -> {
-                    val faceData = command.subList(1, command.size).map(this::parseFace)
+                    val faceData = command.subList(1, command.size).map(this::parseVertexAttributes)
 
                     // Fan triangulation - assumes that the shape is convex!
                     (1 until faceData.size - 1).forEach { i ->
@@ -52,10 +60,13 @@ class ObjFileParser(file: File) {
                         val p2Data = faceData[i]
                         val p3Data = faceData[i + 1]
                         currentGroup.addChild(
-                            if (p1Data.size > 1) {
-                                SmoothTriangle(p1Data[0], p2Data[0], p3Data[0], p1Data[1], p2Data[1], p3Data[1])
+                            if (p1Data.normal != null && p2Data.normal != null && p3Data.normal != null) {
+                                SmoothTriangle(p1Data.vertex, p2Data.vertex, p3Data.vertex,
+                                    p1Data.textureVertex, p2Data.textureVertex, p3Data.textureVertex,
+                                    p1Data.normal, p2Data.normal, p3Data.normal)
                             } else {
-                                Triangle(p1Data[0], p2Data[0], p3Data[0])
+                                Triangle(p1Data.vertex, p2Data.vertex, p3Data.vertex,
+                                    p1Data.textureVertex, p2Data.textureVertex, p3Data.textureVertex)
                             }.apply {
                                 material = currentMaterial
                             }
@@ -69,17 +80,20 @@ class ObjFileParser(file: File) {
         }
     }
 
-    private fun parseFace(string: String): List<Tuple> {
-        // Three possible formats supposedly:
-        //     1
-        //     1/2/3
-        //     1//3
-        return if (string.contains('/')) {
-            val parts = string.split('/')
-            listOf(vertex(parts[0].toInt()), normal(parts[2].toInt()))
+    private fun parseVertexAttributes(string: String): VertexAttributes {
+        val parts = string.split('/')
+        val vertex = vertex(parts[0].toInt())
+        val textureVertex = if (parts.size > 1 && parts[1].isNotEmpty()) {
+            textureVertex(parts[1].toInt())
         } else {
-            listOf(vertex(string.toInt()))
+            null
         }
+        val normal = if (parts.size > 2 && parts[2].isNotEmpty()) {
+            normal(parts[2].toInt())
+        } else {
+            null
+        }
+        return VertexAttributes(vertex, textureVertex, normal)
     }
 
     fun vertex(i: Int): Tuple {
@@ -88,6 +102,10 @@ class ObjFileParser(file: File) {
 
     fun normal(i: Int): Tuple {
         return normals[i - 1]
+    }
+
+    fun textureVertex(i: Int): Tuple {
+        return textureVertices[i - 1]
     }
 
     fun namedGroup(string: String): Group? {
@@ -100,4 +118,6 @@ class ObjFileParser(file: File) {
             namedGroups.values.forEach(::addChild)
         }
     }
+
+    data class VertexAttributes(val vertex: Tuple, val textureVertex: Tuple?, val normal: Tuple?)
 }

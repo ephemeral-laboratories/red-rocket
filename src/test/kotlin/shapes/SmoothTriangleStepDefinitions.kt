@@ -11,13 +11,14 @@ class SmoothTriangleStepDefinitions: En {
     init {
         Given("{shape_var} ← smooth_triangle\\({point}, {point}, {point}, {vector}, {vector}, {vector})") {
                 sv: String, p1: Tuple, p2: Tuple, p3: Tuple, n1: Tuple, n2: Tuple, n3: Tuple ->
-            shapes[sv] = SmoothTriangle(p1, p2, p3, n1, n2, n3)
+            shapes[sv] = SmoothTriangle(p1, p2, p3, null, null, null, n1, n2, n3)
         }
         Given("{shape_var} ← smooth_triangle\\({tuple_var}, {tuple_var}, {tuple_var}, " +
                 "{tuple_var}, {tuple_var}, {tuple_var})") {
                 sv: String, tv1: String, tv2: String, tv3: String, tv4: String, tv5: String, tv6: String ->
             shapes[sv] = SmoothTriangle(
                 tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!,
+                null, null, null,
                 tuples[tv4]!!, tuples[tv5]!!, tuples[tv6]!!)
         }
 
