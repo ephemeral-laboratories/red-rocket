@@ -9,7 +9,7 @@ import garden.ephemeral.rocket.shapes.SmoothTriangle
 import garden.ephemeral.rocket.shapes.Triangle
 import java.io.File
 
-class ObjFileParser(file: File) {
+class ObjFileParser(file: File, lenient: Boolean = false) {
     val defaultGroup: Group = Group()
     private val namedGroups: MutableMap<String, Group> = mutableMapOf()
     private var currentGroup: Group = defaultGroup
@@ -17,42 +17,46 @@ class ObjFileParser(file: File) {
     private val normals: MutableList<Tuple> = mutableListOf()
     private val textureVertices: MutableList<Tuple> = mutableListOf()
     var ignoredLines: Int = 0
-    private val whitespace = Regex("\\s+")
     private lateinit var materialLibrary: Map<String, Material>
     private var currentMaterial: Material = Material.default
 
     init {
-        file.forEachLine { line ->
-            val command = line.trim().split(whitespace)
-            when (command[0]) {
+        CommandReader(file).forEachCommand { command ->
+            when (command.name) {
                 "mtllib" -> {
-                    materialLibrary = MtlFileParser(file.resolveSibling(command[1])).materials
+                    val (mtlFilename) = command.args
+                    materialLibrary = MtlFileParser(file.resolveSibling(mtlFilename)).materials
                 }
                 "usemtl" -> {
-                    currentMaterial = materialLibrary[command[1]]
-                        ?: throw IllegalArgumentException("OBJ file refers to material ${command[1]} " +
+                    val (materialName) = command.args
+                    currentMaterial = materialLibrary[materialName]
+                        ?: throw IllegalArgumentException("OBJ file refers to material $materialName " +
                                 "which does not exist in the material library")
                 }
                 "v" -> {
-                    vertices.add(point(command[1].toDouble(), command[2].toDouble(), command[3].toDouble()))
+                    val args = command.args
+                    vertices.add(point(args[0].toDouble(), args[1].toDouble(), args[2].toDouble()))
                 }
                 "vt" -> {
-                    textureVertices.add(if (command.size > 3) {
-                        vector(command[1].toDouble(), command[2].toDouble(), command[3].toDouble())
+                    val args = command.args
+                    textureVertices.add(if (args.size >= 3) {
+                        vector(args[0].toDouble(), args[1].toDouble(), args[2].toDouble())
                     } else {
-                        vector(command[1].toDouble(), command[2].toDouble(), 0.0)
+                        vector(args[0].toDouble(), args[1].toDouble(), 0.0)
                     })
                 }
                 "vn" -> {
-                    normals.add(vector(command[1].toDouble(), command[2].toDouble(), command[3].toDouble()))
+                    val args = command.args
+                    normals.add(vector(args[0].toDouble(), args[1].toDouble(), args[2].toDouble()))
                 }
                 "g" -> {
+                    val (groupName) = command.args
                     val group = Group()
-                    namedGroups[command[1]] = group
+                    namedGroups[groupName] = group
                     currentGroup = group
                 }
                 "f" -> {
-                    val faceData = command.subList(1, command.size).map(this::parseVertexAttributes)
+                    val faceData = command.args.map(this::parseVertexAttributes)
 
                     // Fan triangulation - assumes that the shape is convex!
                     (1 until faceData.size - 1).forEach { i ->
@@ -74,7 +78,11 @@ class ObjFileParser(file: File) {
                     }
                 }
                 else -> {
-                    ignoredLines++
+                    if (lenient) {
+                        ignoredLines++
+                    } else {
+                        throw UnrecognisedCommandException(command)
+                    }
                 }
             }
         }

@@ -11,6 +11,17 @@ Feature: OBJ File
       """
     When parser ← parse_obj_file(gibberish)
     Then parser should have ignored 5 lines
+    And parser.default_group is empty
+
+  Scenario: Ignoring file comments
+    Given file ← a file containing:
+      """
+      # Empty file
+      # But all lines supported
+      """
+    When parser ← parse_obj_file(file)
+    Then parser should have ignored 0 lines
+    And parser.default_group is empty
 
   Scenario: Vertex records
     Given file ← a file containing:
@@ -25,6 +36,15 @@ Feature: OBJ File
     And parser.vertices[2] = point(-1, 0.5, 0)
     And parser.vertices[3] = point(1, 0, 0)
     And parser.vertices[4] = point(1, 1, 0)
+
+  Scenario: Continuation lines
+    Given file ← a file containing:
+      """
+      v -1 1 \
+       0
+      """
+    When parser ← parse_obj_file(file)
+    Then parser.vertices[1] = point(-1, 1, 0)
 
   Scenario: Parsing triangle faces
     Given file ← a file containing:

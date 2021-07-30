@@ -2,6 +2,7 @@ package garden.ephemeral.rocket.importers
 
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.FileStepDefinitions.Companion.files
@@ -19,7 +20,7 @@ class ObjFileStepDefinitions: En {
 
     init {
         When("parser ← parse_obj_file\\({file_var})") { fv: String ->
-            parser = ObjFileParser(files[fv]!!)
+            parser = ObjFileParser(files[fv]!!, lenient = true)
         }
 
         When("{shape_var} ← parser.default_group") { sv: String ->
@@ -31,6 +32,10 @@ class ObjFileStepDefinitions: En {
 
         When("{shape_var} ← obj_to_group\\(parser)") { sv: String ->
             shapes[sv] = parser.objToGroup()
+        }
+
+        Then("parser.default_group is empty") {
+            assertThat(parser.defaultGroup.children).isEmpty()
         }
 
         Then("parser should have ignored {int} lines") { i: Int ->
