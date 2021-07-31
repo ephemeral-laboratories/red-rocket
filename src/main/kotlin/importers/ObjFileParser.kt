@@ -24,20 +24,25 @@ class ObjFileParser(file: File, lenient: Boolean = false) {
         CommandReader(file).forEachCommand { command ->
             when (command.name) {
                 "mtllib" -> {
+                    // mtllib $filename
                     val (mtlFilename) = command.args
                     materialLibrary = MtlFileParser(file.resolveSibling(mtlFilename)).materials
                 }
                 "usemtl" -> {
+                    // usemtl $name
                     val (materialName) = command.args
                     currentMaterial = materialLibrary[materialName]
                         ?: throw IllegalArgumentException("OBJ file refers to material $materialName " +
                                 "which does not exist in the material library")
                 }
                 "v" -> {
+                    // v $x $y $z
                     val args = command.args
                     vertices.add(point(args[0].toDouble(), args[1].toDouble(), args[2].toDouble()))
                 }
                 "vt" -> {
+                    // vt $u $v
+                    // vt $u $v $z
                     val args = command.args
                     textureVertices.add(if (args.size >= 3) {
                         vector(args[0].toDouble(), args[1].toDouble(), args[2].toDouble())
@@ -46,16 +51,21 @@ class ObjFileParser(file: File, lenient: Boolean = false) {
                     })
                 }
                 "vn" -> {
+                    // vn $x $y $z
                     val args = command.args
                     normals.add(vector(args[0].toDouble(), args[1].toDouble(), args[2].toDouble()))
                 }
                 "g" -> {
+                    // g $name
                     val (groupName) = command.args
                     val group = Group()
                     namedGroups[groupName] = group
                     currentGroup = group
                 }
                 "f" -> {
+                    // f $vi $vi $vi ...
+                    // f $vi/$vti $vi/$vti $vi/$vti ...
+                    // f $vi/$vti/$vni $vi/$vti/$vni $vi/$vti/$vni ...
                     val faceData = command.args.map(this::parseVertexAttributes)
 
                     // Fan triangulation - assumes that the shape is convex!
@@ -104,16 +114,53 @@ class ObjFileParser(file: File, lenient: Boolean = false) {
         return VertexAttributes(vertex, textureVertex, normal)
     }
 
+    /**
+     * Gets a vertex by index.
+     *
+     * @param i the index, indexed from 1.
+     * @return the vertex.
+     */
     fun vertex(i: Int): Tuple {
-        return vertices[i - 1]
+        return getByIndex(vertices, i)
     }
 
+    /**
+     * Gets a normal by index.
+     *
+     * @param i the index, indexed from 1.
+     * @return the normal.
+     */
     fun normal(i: Int): Tuple {
-        return normals[i - 1]
+        return getByIndex(normals, i)
     }
 
+    /**
+     * Gets a texture vertex by index.
+     *
+     * @param i the index, indexed from 1.
+     * @return the texture vertex.
+     */
     fun textureVertex(i: Int): Tuple {
-        return textureVertices[i - 1]
+        return getByIndex(textureVertices, i)
+    }
+
+    /**
+     * Converts index from OBJ format into an index into the list.
+     * If i is positive, it is re-offset from 0.
+     * If i is negative, it is offset backwards from the end of the list.
+     * If i is zero, you currently get an error.
+     * Once the real index has been determined, that element of the list is returned.
+     *
+     * @param list the list.
+     * @param i the index in OBJ format.
+     * @return the element from the list.
+     */
+    private fun getByIndex(list: List<Tuple>, i: Int): Tuple {
+        return list[if (i < 0) {
+            list.size + i
+        } else {
+            i - 1
+        }]
     }
 
     fun namedGroup(string: String): Group? {

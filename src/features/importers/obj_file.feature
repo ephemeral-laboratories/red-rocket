@@ -67,6 +67,27 @@ Feature: OBJ File
     And shape2.point2 = parser.vertices[3]
     And shape2.point3 = parser.vertices[4]
 
+  Scenario: Parsing triangle faces using negative vertex indices
+    Given file ← a file containing:
+      """
+      v -1 1 0
+      v -1 0 0
+      v 1 0 0
+      f -3 -2 -1
+      v 1 1 0
+      f -4 -2 -1
+      """
+    When parser ← parse_obj_file(file)
+    And group ← parser.default_group
+    And shape1 ← first child of group
+    And shape2 ← second child of group
+    Then shape1.point1 = parser.vertices[1]
+    And shape1.point2 = parser.vertices[2]
+    And shape1.point3 = parser.vertices[3]
+    And shape2.point1 = parser.vertices[1]
+    And shape2.point2 = parser.vertices[3]
+    And shape2.point3 = parser.vertices[4]
+
   Scenario: Triangulating polygons
     Given file ← a file containing:
       """
@@ -146,6 +167,27 @@ Feature: OBJ File
     And shape.normal2 = parser.normals[1]
     And shape.normal3 = parser.normals[2]
 
+  Scenario: Faces with normals using negative normal indices
+    Given file ← a file containing:
+      """
+      v 0 1 0
+      v -1 0 0
+      v 1 0 0
+      vn -1 0 0
+      vn 1 0 0
+      vn 0 1 0
+      f -3//-1 -2//-3 -1//-2
+      """
+    When parser ← parse_obj_file(file)
+    And group ← parser.default_group
+    And shape ← first child of group
+    Then shape.point1 = parser.vertices[1]
+    And shape.point2 = parser.vertices[2]
+    And shape.point3 = parser.vertices[3]
+    And shape.normal1 = parser.normals[3]
+    And shape.normal2 = parser.normals[1]
+    And shape.normal3 = parser.normals[2]
+
   Scenario: Faces with materials
     Given mtl_file ← a file named 'thing.mtl' containing:
       """
@@ -205,6 +247,27 @@ Feature: OBJ File
       vt 1 0 0
       vt 0 1 0
       f 1/3 2/1 3/2
+      """
+    When parser ← parse_obj_file(file)
+    And group ← parser.default_group
+    And shape ← first child of group
+    Then shape.point1 = parser.vertices[1]
+    And shape.point2 = parser.vertices[2]
+    And shape.point3 = parser.vertices[3]
+    And shape.texturePoint1 = parser.textureVertices[3]
+    And shape.texturePoint2 = parser.textureVertices[1]
+    And shape.texturePoint3 = parser.textureVertices[2]
+
+  Scenario: Faces with texture coordinates using negative texture vertex indices
+    Given file ← a file containing:
+      """
+      v 0 1 0
+      v -1 0 0
+      v 1 0 0
+      vt -1 0 0
+      vt 1 0 0
+      vt 0 1 0
+      f -3/-1 -2/-3 -1/-2
       """
     When parser ← parse_obj_file(file)
     And group ← parser.default_group
