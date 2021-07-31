@@ -7,9 +7,9 @@ import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.SmoothTriangle
 import garden.ephemeral.rocket.shapes.Triangle
-import java.io.File
+import java.nio.file.Path
 
-class ObjFileParser(file: File, lenient: Boolean = false) {
+class ObjFileParser(file: Path, lenient: Boolean = false) {
     val defaultGroup: Group = Group()
     private val namedGroups: MutableMap<String, Group> = mutableMapOf()
     private var currentGroup: Group = defaultGroup

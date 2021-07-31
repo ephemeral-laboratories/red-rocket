@@ -14,9 +14,10 @@ import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.importers.ObjFileParser
 import garden.ephemeral.rocket.patterns.CheckersPattern
 import garden.ephemeral.rocket.shapes.Plane
-import java.io.File
 import java.time.Duration
 import java.time.Instant
+import kotlin.io.path.Path
+import kotlin.io.path.writeText
 import kotlin.math.PI
 
 fun main() {
@@ -44,7 +45,7 @@ fun main() {
         }
     }
 
-    val teapot = ObjFileParser(File("src/files/teapot.obj")).objToGroup().apply {
+    val teapot = ObjFileParser(Path("src/files/teapot.obj")).objToGroup().apply {
         transform = scaling(0.125, 0.125, 0.125) * rotationX(-PI / 2)
     }
 
@@ -63,7 +64,7 @@ fun main() {
     val t0 = Instant.now()
     val canvas = camera.render(world)
     val t1 = Instant.now()
-    println("Render time: " + Duration.between(t0, t1))
+    println("Render time: ${Duration.between(t0, t1)}")
 
-    File("out.ppm").writeText(canvas.toPPM())
+    Path("out.ppm").writeText(canvas.toPPM())
 }

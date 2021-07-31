@@ -13,9 +13,9 @@ import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.shapes.Cube
 import garden.ephemeral.rocket.shapes.Plane
 import garden.ephemeral.rocket.shapes.Sphere
-import java.io.File
 import java.time.Duration
 import java.time.Instant
+import kotlin.io.path.Path
 import kotlin.math.PI
 
 fun main() {
@@ -156,6 +156,6 @@ fun main() {
     val t1 = Instant.now()
     println("Render time: " + Duration.between(t0, t1))
 
-    canvas.toPPM(File("out.ppm"))
-    canvas.toPNG(File("out.png"))
+    canvas.toPPM(Path("out.ppm"))
+    canvas.toPNG(Path("out.png"))
 }

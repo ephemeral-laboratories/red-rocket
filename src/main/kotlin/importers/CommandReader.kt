@@ -1,13 +1,14 @@
 package garden.ephemeral.rocket.importers
 
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.forEachLine
 
 /**
  * Utility to read OBJ style commands from a plain-text file.
  *
  * @param file the file.
  */
-internal class CommandReader(private val file: File) {
+internal class CommandReader(private val file: Path) {
     private val whitespace = Regex("\\s+")
 
     /**

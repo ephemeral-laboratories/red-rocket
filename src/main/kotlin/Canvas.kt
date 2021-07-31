@@ -3,13 +3,17 @@ package garden.ephemeral.rocket
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
 import java.awt.image.BufferedImage
-import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.nio.file.Path
 import java.util.*
 import java.util.regex.Pattern
 import java.util.stream.Stream
 import javax.imageio.ImageIO
+import kotlin.io.path.bufferedReader
+import kotlin.io.path.bufferedWriter
+import kotlin.io.path.inputStream
+import kotlin.io.path.outputStream
 
 
 class Canvas(val width: Int, val height: Int) {
@@ -37,7 +41,7 @@ class Canvas(val width: Int, val height: Int) {
         }
     }
 
-    fun toPNG(file: File) {
+    fun toPNG(file: Path) {
         val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
         (0 until height).forEach { y ->
             (0 until width).forEach { x ->
@@ -45,13 +49,15 @@ class Canvas(val width: Int, val height: Int) {
                 image.setRGB(x, y, 0xff000000.toInt() + r.shl(16) + g.shl(8) + b)
             }
         }
-        if (!ImageIO.write(image, "PNG", file)) {
-            throw IllegalStateException("Couldn't find a suitable writer")
+        file.outputStream().use { stream ->
+            if (!ImageIO.write(image, "PNG", stream)) {
+                throw IllegalStateException("Couldn't find a suitable writer")
+            }
         }
     }
 
-    fun toPPM(file: File) {
-        file.printWriter().use(this@Canvas::toPPM)
+    fun toPPM(file: Path) {
+        PrintWriter(file.bufferedWriter()).use(this@Canvas::toPPM)
     }
 
     fun toPPM(): String {
@@ -96,8 +102,8 @@ class Canvas(val width: Int, val height: Int) {
         }
 
     companion object {
-        fun fromPNG(file: File): Canvas {
-            val image = ImageIO.read(file)
+        fun fromPNG(file: Path): Canvas {
+            val image = file.inputStream().use(ImageIO::read)
             return Canvas(image.width, image.height).apply {
                 (0 until height).forEach { y: Int ->
                     (0 until width).forEach { x: Int ->
@@ -110,7 +116,7 @@ class Canvas(val width: Int, val height: Int) {
             }
         }
 
-        fun fromPPM(file: File): Canvas {
+        fun fromPPM(file: Path): Canvas {
             return Scanner(file.bufferedReader()).use { scanner ->
                 val comments = Pattern.compile("\\s*(#.*\n)*")
 

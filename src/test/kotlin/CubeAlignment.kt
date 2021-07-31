@@ -14,9 +14,10 @@ import garden.ephemeral.rocket.patterns.CubeMap
 import garden.ephemeral.rocket.patterns.UVAlignCheck
 import garden.ephemeral.rocket.shapes.Cube
 import garden.ephemeral.rocket.shapes.Shape
-import java.io.File
 import java.time.Duration
 import java.time.Instant
+import kotlin.io.path.Path
+import kotlin.io.path.writeText
 
 fun mappedCube(): Shape {
     return Cube().apply {
@@ -90,7 +91,7 @@ fun main() {
     val t1 = Instant.now()
     println("Render time: " + Duration.between(t0, t1))
 
-    File("out.ppm").writeText(canvas.toPPM())
+    Path("out.ppm").writeText(canvas.toPPM())
 
 }
 

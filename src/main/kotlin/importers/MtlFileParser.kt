@@ -5,9 +5,10 @@ import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.cieXyz
 import garden.ephemeral.rocket.color.Color.Companion.grey
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.forEachLine
 
-class MtlFileParser(file: File) {
+class MtlFileParser(file: Path) {
     val materials: MutableMap<String, Material> = mutableMapOf()
     private val whitespace = Regex("\\s+")
     private var currentMaterialName = ""

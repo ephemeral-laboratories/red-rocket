@@ -17,7 +17,8 @@ import garden.ephemeral.rocket.shapes.Cylinder
 import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.Plane
 import garden.ephemeral.rocket.shapes.Sphere
-import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.writeText
 import kotlin.math.PI
 
 fun main() {
@@ -99,5 +100,5 @@ fun main() {
 
     val canvas = camera.render(world)
 
-    File("out.ppm").writeText(canvas.toPPM())
+    Path("out.ppm").writeText(canvas.toPPM())
 }

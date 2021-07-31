@@ -1,20 +1,22 @@
 package garden.ephemeral.rocket
 
 import io.cucumber.java8.En
-import java.io.File
 import java.nio.file.Files
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.writeText
 
 class FileStepDefinitions: En {
     companion object {
-        val files: MutableMap<String, File> = mutableMapOf()
+        val files: MutableMap<String, Path> = mutableMapOf()
     }
 
-    private val tempDir: File by lazy {
+    private val tempDir: Path by lazy {
         // Safe Path.toFile call because Files.createTempDirectory is guaranteed to produce
         // a path on the default filesystem.
-        Files.createTempDirectory("temp").toFile().also { t ->
+        Files.createTempDirectory("temp").also { t ->
             After { _ ->
-                Files.deleteIfExists(t.toPath())
+                Files.deleteIfExists(t)
             }
         }
     }
@@ -35,7 +37,7 @@ class FileStepDefinitions: En {
         }
 
         Given("{file_var} ← the file {string}") { fv: String, string: String ->
-            files[fv] = File("src/files/$string")
+            files[fv] = Path("src/files/$string")
         }
     }
 }
