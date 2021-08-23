@@ -8,5 +8,5 @@ import org.junit.runner.RunWith
 @CucumberOptions(
         strict = true,
         features = ["src/features"],
-        tags = ["not @ignored"])
+        tags = "not @ignored")
 class RunCucumberTest
