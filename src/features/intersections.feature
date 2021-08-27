@@ -94,6 +94,20 @@ Feature: Intersections
     When comps ← prepare_computations(intersection, ray)
     Then comps.reflection = vector(0, √2/2, √2/2)
 
+  Scenario: Computing the tangent vector
+    Given shape ← plane()
+    And ray ← ray(point(0, 1, -1), vector(0, -√2/2, √2/2))
+    And intersection ← intersection(√2, shape)
+    When comps ← prepare_computations(intersection, ray)
+    Then comps.tangent = vector(1, 0, 0)
+
+  Scenario: Computing the bitangent vector
+    Given shape ← plane()
+    And ray ← ray(point(0, 1, -1), vector(0, -√2/2, √2/2))
+    And intersection ← intersection(√2, shape)
+    When comps ← prepare_computations(intersection, ray)
+    Then comps.bitangent = vector(0, 0, 1)
+
   Scenario Outline: Finding n1 and n2 at various intersections
     Given shape1 ← glass_sphere() with:
       | transform                 | scaling(2, 2, 2) |

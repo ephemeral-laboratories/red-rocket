@@ -60,6 +60,14 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
         val n1: Double,
         val n2: Double
     ) {
+        val tangent: Tuple by lazy {
+            normal.cross(-eyeline).normalize()
+        }
+
+        val bitangent: Tuple by lazy {
+            tangent.cross(normal).normalize()
+        }
+
         fun schlick(): Double {
             var cos = eyeline.dot(normal)
 

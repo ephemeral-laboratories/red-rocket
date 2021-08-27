@@ -144,6 +144,12 @@ class IntersectionStepDefinitions: En {
         Then("comps.normal = {vector}") { e: Tuple ->
             assertThat(comps.normal).isCloseTo(e, epsilon)
         }
+        Then("comps.tangent = {vector}") { e: Tuple ->
+            assertThat(comps.tangent).isCloseTo(e, epsilon)
+        }
+        Then("comps.bitangent = {vector}") { e: Tuple ->
+            assertThat(comps.bitangent).isCloseTo(e, epsilon)
+        }
         Then("comps.reflection = {vector}") { e: Tuple ->
             assertThat(comps.reflection).isCloseTo(e, epsilon)
         }
