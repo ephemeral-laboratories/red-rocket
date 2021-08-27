@@ -70,15 +70,32 @@ Feature: Complex Numbers
       | complex(2i)     | complex(-3i)    | complex(6)       |
       | complex(3 + 2i) | complex(3 + i)  | complex(7 + 9i)  |
 
-#      |
-#  public final class Complex {
-#  public double :re, im;
-#  public Complex(double r, double i) 1 re = r; im = i; 1
-#  public Complex assign(Complex z) { re = z.re; im = z.im; return this; 1
-#  public Complex plus(Comp.Lex z) { return new Complex(re+z.re,im+z.imL; 1
-#  public Complex minus(Complex z) { return new Complextre-z.re,im-z.im); 1
-#  public Complex times(Compl.ex z) {
-#  return new Complex(re*z.re-im*z.im,im*z.re+re*z.im);
-#  I
-#  public Complex times(dou1~l.e x) ( return new Complex(re*x,im*x); )
-#  public
+  Scenario Outline: Finding the conjugate of a complex number
+    When z is <value>
+    When z.conjugate = <expected conjugate>
+
+    Examples:
+    | value            | expected conjugate |
+    | complex(0)       | complex(0)         |
+    | complex(1)       | complex(1)         |
+    | complex(-2)      | complex(-2)        |
+    | complex(i)       | complex(-i)        |
+    | complex(-3i)     | complex(3i)        |
+    | complex(3 + 2i)  | complex(3 - 2i)    |
+    | complex(-4 - 3i) | complex(-4 + 3i)   |
+
+  Scenario Outline: Dividing two complex numbers
+    When z1 is <dividend>
+    And z2 is <divisor>
+    Then z1 / z2 = <expected quotient>
+
+    Examples:
+      | dividend         | divisor         | expected quotient    |
+      | complex(4)       | complex(2)      | complex(2)           |
+      | complex(6i)      | complex(2)      | complex(3i)          |
+      | complex(-6i)     | complex(3i)     | complex(-2)          |
+      | complex(2 + 3i)  | complex(4)      | complex(0.5 + 0.75i) |
+      | complex(20 - 4i) | complex(3 + 2i) | complex(4 - 4i)      |
+      | complex(4 + 2i)  | complex(-1 + i) | complex(-1 - 3i)     |
+
+  # TODO: Sensible example for dividing by 0, choose whether it's an error or Infinity

@@ -3,6 +3,9 @@ package garden.ephemeral.rocket.util
 import kotlin.math.sign
 
 data class Complex(val real: Double, val imaginary: Double) {
+    val conjugate: Complex by lazy { Complex(real, -imaginary) }
+    val isZero: Boolean = this == zero
+
     operator fun plus(addend: Complex): Any {
         return Complex(real + addend.real, imaginary + addend.imaginary)
     }
@@ -14,6 +17,25 @@ data class Complex(val real: Double, val imaginary: Double) {
     operator fun times(multiplier: Complex): Complex {
         return Complex(real * multiplier.real - imaginary * multiplier.imaginary,
             real * multiplier.imaginary + imaginary * multiplier.real)
+    }
+
+    operator fun div(divisor: Complex): Complex {
+        if (divisor.isZero) {
+            throw IllegalArgumentException("Not handling dividing by zero right now, let me know what it should do")
+        }
+
+        var top: Complex = this
+        var bottom: Complex = divisor
+
+        if (bottom.imaginary != 0.0) {
+            // Complex case, multiply top and bottom by the conjugate of the divisor,
+            // making the bottom always real.
+            top = this * divisor.conjugate
+            bottom = divisor * divisor.conjugate
+            assert(bottom.imaginary == 0.0)
+        }
+
+        return Complex(top.real / bottom.real, top.imaginary / bottom.real)
     }
 
     override fun toString(): String {
@@ -39,4 +61,21 @@ data class Complex(val real: Double, val imaginary: Double) {
         return builder.toString()
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Complex) return false
+
+        if (real != other.real) return false
+        if (imaginary != other.imaginary) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return 31 * real.hashCode() + imaginary.hashCode()
+    }
+
+    companion object {
+        val zero = Complex(0.0, 0.0)
+    }
 }
