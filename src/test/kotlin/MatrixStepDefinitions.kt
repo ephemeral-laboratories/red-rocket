@@ -106,16 +106,14 @@ class MatrixStepDefinitions: En {
         }
 
         Then("{matrix_var} = {matrix_var}") { mv1: String?, mv2: String? ->
-            assertThat(matrices[mv1]!!).isEqualTo(
-                matrices[mv2]!!)
+            assertThat(matrices[mv1]!!).isEqualTo(matrices[mv2]!!)
         }
         Then("{matrix_var} != {matrix_var}") { mv1: String?, mv2: String? ->
-            assertThat(matrices[mv1]!!).isNotEqualTo(
-                matrices[mv2]!!)
+            assertThat(matrices[mv1]!!).isNotEqualTo(matrices[mv2]!!)
         }
 
         Given("{matrix_var} = {transform}") { mv: String, m: Matrix ->
-            assertThat(matrices[mv]!!).isEqualTo(m)
+            assertThat(matrices[mv]!!).isCloseTo(m, epsilon)
         }
 
         Then("{matrix_var} is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->
@@ -126,11 +124,10 @@ class MatrixStepDefinitions: En {
         }
 
         Then("{matrix_var} * {matrix_var} = {matrix_var}") { mv1: String, mv2: String, v3: String ->
-            assertThat(matrices[mv1]!! * matrices[mv2]!!).isEqualTo(
-                matrices[v3]!!)
+            assertThat(matrices[mv1]!! * matrices[mv2]!!).isCloseTo(matrices[v3]!!, epsilon)
         }
         Then("{matrix_var} * {tuple_var} = {tuple_var}") { mv: String, tv1: String, tv2: String ->
-            assertThat(matrices[mv]!! * tuples[tv1]!!).isEqualTo(tuples[tv2]!!)
+            assertThat(matrices[mv]!! * tuples[tv1]!!).isCloseTo(tuples[tv2]!!, epsilon)
         }
         Then("{matrix_var} * {tuple_var} = {tuple}") { mv: String, tv: String, e: Tuple ->
             assertThat(matrices[mv]!! * tuples[tv]!!).isCloseTo(e, epsilon)
@@ -143,7 +140,7 @@ class MatrixStepDefinitions: En {
         }
 
         Then("determinant\\({matrix_var}) = {real}") { mv: String, e: Double ->
-            assertThat(matrices[mv]!!.determinant).isEqualTo(e)
+            assertThat(matrices[mv]!!.determinant).isCloseTo(e, epsilon)
         }
 
         Then("{matrix_var} * inverse\\({matrix_var}) = {matrix_var}") { mv1: String, mv2: String, mv3: String ->
@@ -156,10 +153,10 @@ class MatrixStepDefinitions: En {
             assertThat(matrices[mv]!!.submatrix(row, column)).isEqualTo(matrixFromDataTable(dataTable))
         }
         Then("minor\\({matrix_var}, {int}, {int}) = {real}") { mv: String, row: Int, column: Int, e: Double ->
-            assertThat(matrices[mv]!!.minor(row, column)).isEqualTo(e)
+            assertThat(matrices[mv]!!.minor(row, column)).isCloseTo(e, epsilon)
         }
         Then("cofactor\\({matrix_var}, {int}, {int}) = {real}") { mv: String, row: Int, column: Int, e: Double ->
-            assertThat(matrices[mv]!!.cofactor(row, column)).isEqualTo(e)
+            assertThat(matrices[mv]!!.cofactor(row, column)).isCloseTo(e, epsilon)
         }
         Then("{matrix_var} is invertible") { mv: String ->
             assertThat(matrices[mv]!!.invertible).isTrue()
@@ -173,12 +170,20 @@ class MatrixStepDefinitions: En {
     }
 
     private fun matrixFromDataTable(dataTable: DataTable): Matrix {
-        return Matrix.fromLists(dataTable.asLists(Double::class.java))
+        val lists = dataTable.asLists().map { row -> row.map { cell -> realFromString(cell) } }
+        return Matrix.fromLists(lists)
     }
 }
 
 private fun Assert<Matrix>.isCloseTo(expected: Matrix, delta: Double) {
-    this.matchesPredicate { m : Matrix -> m.isCloseTo(expected, delta) }
+    this.matchesPredicate { m : Matrix ->
+        if (!m.isCloseTo(expected, delta)) {
+            System.err.println("FAIL: EXPECTED = $expected")
+            System.err.println("FAIL: ACTUAL   = $m")
+        }
+
+
+        m.isCloseTo(expected, delta) }
 }
 
 fun Matrix.isCloseTo(their: Matrix, delta: Double): Boolean {
