@@ -106,7 +106,7 @@ class TupleStepDefinitions: En {
             assertThat(tuples[tv]!! * s).isCloseTo(t, epsilon)
         }
 
-        Then("{tuple_var} / {real} = {tuple}") { tv: String, s: Double, e: Tuple ->
+        Then("{tuple_var} \\/ {real} = {tuple}") { tv: String, s: Double, e: Tuple ->
             assertThat(tuples[tv]!! / s).isCloseTo(e, epsilon)
         }
 

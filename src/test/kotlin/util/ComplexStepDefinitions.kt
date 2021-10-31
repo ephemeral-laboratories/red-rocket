@@ -76,7 +76,7 @@ class ComplexStepDefinitions: En {
         Then("z1 * z2 = {complex}") { complex: Complex ->
             assertThat(z1 * z2).isEqualTo(complex)
         }
-        Then("z1 / z2 = {complex}") { complex: Complex ->
+        Then("z1 \\/ z2 = {complex}") { complex: Complex ->
             assertThat(z1 / z2).isEqualTo(complex)
         }
 

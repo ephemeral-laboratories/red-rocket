@@ -70,7 +70,7 @@ class IntersectionStepDefinitions: En {
         When("comps ← prepare_computations\\({intersection_var}, {ray_var}, intersections)") { iv: String, rv: String ->
             comps = namedIntersections[iv]!!.prepareComputations(rays[rv]!!, intersections)
         }
-        When("comps ← prepare_computations\\(intersections\\[{int}], {ray_var}, intersections)") { i: Int, rv: String ->
+        When("comps ← prepare_computations\\(intersections[{int}], {ray_var}, intersections)") { i: Int, rv: String ->
             comps = intersections[i].prepareComputations(rays[rv]!!, intersections)
         }
 
