@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id ("org.jetbrains.kotlin.jvm") version "1.5.21"
+    id ("org.jetbrains.kotlin.jvm") version "1.5.31"
 }
 
 group = "garden.ephemeral.rocket"
@@ -17,7 +17,7 @@ dependencies {
 
     testImplementation("io.cucumber:cucumber-java8:${project.property("cucumber.version")}")
     testImplementation("io.cucumber:cucumber-junit:${project.property("cucumber.version")}")
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.22")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:${project.property("assertk.version")}")
 }
 
 tasks.withType<KotlinCompile> {
