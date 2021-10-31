@@ -2,11 +2,12 @@
 # IDEA
 .idea/
 out/
+*.iml
 
 # Gradle
 .gradle/
 build/
 
 # My own test output files
-out.ppm
-out.png
+/*.ppm
+/*.png
