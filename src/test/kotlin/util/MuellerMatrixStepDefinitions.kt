@@ -20,5 +20,10 @@ class MuellerMatrixStepDefinitions: En {
                 matrices[matrixVar] = matrix
             }
         }
+
+        When("{matrix_var} is a Mueller matrix for a reference rotation of {real} degrees") { matrixVar: String, degrees: Double ->
+            val radians = Math.toRadians(degrees)
+            matrices[matrixVar] = MuellerMatrices.forReferenceFrameRotation(radians)
+        }
     }
 }
