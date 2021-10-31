@@ -4,8 +4,8 @@ import kotlin.math.sqrt
 
 class RealParser {
     companion object {
-        private const val doubleTermRegex = "\\d+(?:\\.\\d+)?"
-        private const val realTermRegex = "(?:-?(?:√?(?:$doubleTermRegex|π)|∞))"
+        private const val doubleTermRegex = "(?:\\d+(?:\\.\\d+)?)"
+        private const val realTermRegex = "(?:-?(?:√?(?:${doubleTermRegex}π?|π)|∞))"
         const val realRegex = "(?:$realTermRegex(?:\\s*\\/\\s*$realTermRegex)?)"
 
         fun realFromString(string: String): Double {
@@ -31,12 +31,11 @@ class RealParser {
                 root = true
             }
 
-            var n = when (s) {
-                "π" -> { Math.PI }
-                "∞" -> {
-                    Double.POSITIVE_INFINITY
-                }
-                else -> { s.toDouble() }
+            var n = when {
+                s == "π" -> Math.PI
+                s.endsWith("π") -> s.substring(0, s.length - 1).toDouble() * Math.PI
+                s == "∞" -> Double.POSITIVE_INFINITY
+                else -> s.toDouble()
             }
 
             if (root) {
