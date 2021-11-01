@@ -1,6 +1,13 @@
 package garden.ephemeral.rocket
 
 data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArray) {
+    init {
+        if (cells.size != rowCount * columnCount) {
+            throw IllegalArgumentException("Wrong cell count ${cells.size} " +
+                    "for matrix of size $rowCount x $columnCount")
+        }
+    }
+
     val determinant: Double by lazy {
         if (rowCount == 2 && columnCount == 2) {
             cells[0] * cells[3] - cells[1] * cells[2]

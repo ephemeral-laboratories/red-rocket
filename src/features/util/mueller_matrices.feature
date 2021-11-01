@@ -73,8 +73,19 @@ Feature: Mueller Matrices
       | 0 | -0.866025 | 0.5      | 0 |
       | 0 |  0        | 0        | 1 |
 
-#  General linear retarder (wave plate calculations are made from this)
-#    | 1 | 0                        | 0                        | 0              |
-#    | 0 | cos²(2θ)+sin²(2θ)cos(δ)  | cos(2θ)sin(2θ)(1-cos(δ)) | sin(2θ)sin(δ)  |
-#    | 0 | cos(2θ)sin(2θ)(1-cos(δ)) | cos²(2θ)cos(δ)+sin²(2θ)  | -cos(2θ)sin(δ) |
-#    | 0 | -sin(2θ)sin(δ)           | cos(2θ)sin(δ)            | cos(δ)         |
+  # Note: Identical to quarter-wave plate (fast-axis vertical) to check that consistency
+  Scenario: Mueller matrix for a linear retarder with fast axis 0 degrees and phase difference 90 degrees
+    When M is a Mueller matrix for a linear retarder with fast axis 0 degrees and phase difference 90 degrees
+    Then M is the following 4x4 matrix:
+      | 1 | 0 | 0 |  0 |
+      | 0 | 1 | 0 |  0 |
+      | 0 | 0 | 0 | -1 |
+      | 0 | 0 | 1 |  0 |
+
+  Scenario: Mueller matrix for a linear retarder with fast axis 30 degrees and phase difference 60 degrees
+    When M is a Mueller matrix for a linear retarder with fast axis 30 degrees and phase difference 60 degrees
+    Then M is the following 4x4 matrix:
+      | 1 | 0        | 0        |  0        |
+      | 0 | 0.625    | 0.216506 |  0.75     |
+      | 0 | 0.216506 | 0.875    | -0.433012 |
+      | 0 | -0.75    | 0.433012 |  0.5      |
