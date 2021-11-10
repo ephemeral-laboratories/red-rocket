@@ -48,7 +48,7 @@ class MatrixStepDefinitions: En {
     init {
         matrices["identity_matrix"] = Matrix.identity4x4
 
-        ParameterType("matrix_var", "A|B|C|m|M|t|T|identity_matrix|transform|inv|half_quarter|full_quarter") {
+        ParameterType("matrix_var", "(A|B|C|m|M|t|T|identity_matrix|transform|inv|half_quarter|full_quarter)\\d?") {
                 string ->
             string
         }
