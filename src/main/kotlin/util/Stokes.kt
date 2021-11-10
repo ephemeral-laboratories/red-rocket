@@ -7,6 +7,7 @@ import garden.ephemeral.rocket.Tuple
  * https://en.wikipedia.org/wiki/Stokes_parameters
  */
 object Stokes {
+    val None = Tuple.zero
     val Unpolarized = Tuple(1.0, 0.0, 0.0, 0.0)
     val LinearlyPolarizedHorizontal = Tuple(1.0, 1.0, 0.0, 0.0)
     val LinearlyPolarizedVertical = Tuple(1.0, -1.0, 0.0, 0.0)

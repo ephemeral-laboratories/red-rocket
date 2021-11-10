@@ -23,7 +23,9 @@ class TupleStepDefinitions: En {
         ParameterType(
             "tuple_var",
             "(?:tuple|point|position|vector|origin|direction|reflection|refraction|eyeline|normal|zero" +
-                    "|from|to|up)\\d?"
+                    "|from|to|up" +
+                    "|S" +
+                    ")\\d?"
         ) { string ->
             string
         }
@@ -58,6 +60,10 @@ class TupleStepDefinitions: En {
         When("{tuple_var} ← reflect\\({tuple_var}, {tuple_var})") { tv1: String, tv2: String, tv3: String ->
             tuples[tv1] = tuples[tv2]!!.reflect(
                 tuples[tv3]!!)
+        }
+
+        When("{tuple_var} ← {tuple_var} * {real}") { tupleVar1: String, tupleVar2: String, scale: Double ->
+            tuples[tupleVar1] = tuples[tupleVar2]!! * scale
         }
 
         Then("{tuple_var}.x = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.x).isCloseTo(e, epsilon) }

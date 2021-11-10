@@ -6,6 +6,7 @@ Feature: Stokes Vectors
 
     Examples:
       | description                       | expected values |
+      | no                                | (0, 0, 0, 0)    |
       | unpolarized                       | (1, 0, 0, 0)    |
       | linearly polarized (horizontal)   | (1, 1, 0, 0)    |
       | linearly polarized (vertical)     | (1, -1, 0, 0)   |
