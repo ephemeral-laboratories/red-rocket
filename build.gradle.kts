@@ -20,6 +20,10 @@ dependencies {
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:${project.property("assertk.version")}")
 }
 
+extensions.configure<JavaPluginExtension> {
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
 }
