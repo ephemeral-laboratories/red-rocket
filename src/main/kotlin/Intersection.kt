@@ -31,16 +31,20 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
         var n2 = 1.0
         for (i in allIntersections) {
             if (i == this) {
-                n1 = containers.lastOrNull()?.material?.refractiveIndex ?: 1.0
+                val lastContainer = containers.lastOrNull()
+                if (lastContainer != null) {
+                    n1 = lastContainer.material.refractiveIndex
+                }
             }
-            if (containers.contains(i.obj)) {
-                containers.remove(i.obj)
-            } else {
+            if (!containers.remove(i.obj)) {
                 containers.add(i.obj)
             }
             if (i == this) {
-                n2 = containers.lastOrNull()?.material?.refractiveIndex ?: 1.0
-                break
+                val lastContainer = containers.lastOrNull()
+                if (lastContainer != null) {
+                    n2 = lastContainer.material.refractiveIndex
+                    break
+                }
             }
         }
 
