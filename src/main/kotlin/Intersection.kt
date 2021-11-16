@@ -74,7 +74,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
             // Total internal reflection can only occur if n1 > n2
             if (n1 > n2) {
                 val n = n1 / n2
-                val sin2t = n * n * (1.0 - cos * cos)
+                val sin2t = n.pow(2) * (1.0 - cos.pow(2))
                 if (sin2t > 1.0) {
                     return 1.0
                 }
@@ -86,8 +86,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
                 cos = cosT
             }
 
-            var r0 = ((n1 - n2) / (n1 + n2))
-            r0 *= r0
+            val r0 = ((n1 - n2) / (n1 + n2)).pow(2)
             return r0 + (1 - r0) * (1 - cos).pow(5)
         }
     }
