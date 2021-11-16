@@ -18,11 +18,11 @@ import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import kotlin.math.abs
 
-class MatrixStepDefinitions: En {
+class MatrixStepDefinitions : En {
     private val theFollowingMatrix = "the following( 4x4)( 3x3)( 2x2) matrix"
 
     companion object {
-        val matrices: MutableMap<String, Matrix> = mutableMapOf()
+        val matrices = mutableMapOf<String, Matrix>()
 
         fun transformFromString(string: String): Matrix {
             val open = string.indexOf('(')
@@ -49,7 +49,7 @@ class MatrixStepDefinitions: En {
         matrices["identity_matrix"] = Matrix.identity4x4
 
         ParameterType("matrix_var", "(A|B|C|m|M|t|T|identity_matrix|transform|inv|half_quarter|full_quarter)\\d?") {
-                string ->
+            string ->
             string
         }
 
@@ -73,18 +73,18 @@ class MatrixStepDefinitions: En {
             matrices[mv1] = matrices[mv2]!!.inverse
         }
         Given("{matrix_var} ← submatrix\\({matrix_var}, {int}, {int})") {
-                mv1: String, mv2: String, row: Int, column: Int ->
+            mv1: String, mv2: String, row: Int, column: Int ->
             matrices[mv1] = matrices[mv2]!!.submatrix(row, column)
         }
         Given("{matrix_var} ← {transform}") { mv: String, m: Matrix ->
             matrices[mv] = m
         }
         Given("{matrix_var} ← shearing\\({real}, {real}, {real}, {real}, {real}, {real})") {
-                mv: String, xy: Double, xz: Double, yx: Double, yz: Double, zx: Double, zy: Double ->
+            mv: String, xy: Double, xz: Double, yx: Double, yz: Double, zx: Double, zy: Double ->
             matrices[mv] = shearing(xy, xz, yx, yz, zx, zy)
         }
         Given("{matrix_var} ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") {
-                mv: String, tv1: String, tv2: String, tv3: String ->
+            mv: String, tv1: String, tv2: String, tv3: String ->
             matrices[mv] = viewTransform(tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!)
         }
 
@@ -93,7 +93,7 @@ class MatrixStepDefinitions: En {
         }
 
         When("{matrix_var} ← {matrix_var} * {matrix_var} * {matrix_var}") {
-                mv1: String, mv2: String, mv3: String, mv4: String ->
+            mv1: String, mv2: String, mv3: String, mv4: String ->
             matrices[mv1] = matrices[mv2]!! * matrices[mv3]!! * matrices[mv4]!!
         }
 
@@ -145,11 +145,12 @@ class MatrixStepDefinitions: En {
 
         Then("{matrix_var} * inverse\\({matrix_var}) = {matrix_var}") { mv1: String, mv2: String, mv3: String ->
             assertThat(matrices[mv1]!! * matrices[mv2]!!.inverse).isCloseTo(
-                matrices[mv3]!!, epsilon)
+                matrices[mv3]!!, epsilon
+            )
         }
 
         Then("submatrix\\({matrix_var}, {int}, {int}) is $theFollowingMatrix:") {
-                mv: String, row: Int, column: Int, dataTable: DataTable ->
+            mv: String, row: Int, column: Int, dataTable: DataTable ->
             assertThat(matrices[mv]!!.submatrix(row, column)).isEqualTo(matrixFromDataTable(dataTable))
         }
         Then("minor\\({matrix_var}, {int}, {int}) = {real}") { mv: String, row: Int, column: Int, e: Double ->
@@ -176,14 +177,14 @@ class MatrixStepDefinitions: En {
 }
 
 private fun Assert<Matrix>.isCloseTo(expected: Matrix, delta: Double) {
-    this.matchesPredicate { m : Matrix ->
+    this.matchesPredicate { m: Matrix ->
         if (!m.isCloseTo(expected, delta)) {
             System.err.println("FAIL: EXPECTED = $expected")
             System.err.println("FAIL: ACTUAL   = $m")
         }
 
-
-        m.isCloseTo(expected, delta) }
+        m.isCloseTo(expected, delta)
+    }
 }
 
 fun Matrix.isCloseTo(their: Matrix, delta: Double): Boolean {

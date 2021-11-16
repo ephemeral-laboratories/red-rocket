@@ -6,9 +6,9 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.writeText
 
-class FileStepDefinitions: En {
+class FileStepDefinitions : En {
     companion object {
-        val files: MutableMap<String, Path> = mutableMapOf()
+        val files = mutableMapOf<String, Path>()
     }
 
     private val tempDir: Path by lazy {

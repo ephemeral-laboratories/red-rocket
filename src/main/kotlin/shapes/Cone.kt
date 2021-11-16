@@ -8,7 +8,7 @@ import garden.ephemeral.rocket.Tuple.Companion.vector
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-class Cone: CylinderLikeShape() {
+class Cone : CylinderLikeShape() {
     override fun intersectWall(localRay: Ray, xs: MutableList<Intersection>) {
         val o = localRay.origin
         val d = localRay.direction

@@ -15,8 +15,10 @@ data class Complex(val real: Double, val imaginary: Double) {
     }
 
     operator fun times(multiplier: Complex): Complex {
-        return Complex(real * multiplier.real - imaginary * multiplier.imaginary,
-            real * multiplier.imaginary + imaginary * multiplier.real)
+        return Complex(
+            real * multiplier.real - imaginary * multiplier.imaginary,
+            real * multiplier.imaginary + imaginary * multiplier.real
+        )
     }
 
     operator fun div(divisor: Complex): Complex {
@@ -65,6 +67,8 @@ data class Complex(val real: Double, val imaginary: Double) {
         if (this === other) return true
         if (other !is Complex) return false
 
+        // Default equality for doubles treats 0.0 and -0.0 as different
+        // which forces us to implement equality ourselves
         if (real != other.real) return false
         if (imaginary != other.imaginary) return false
 

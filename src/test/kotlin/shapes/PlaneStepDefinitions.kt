@@ -5,7 +5,7 @@ import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 
-class PlaneStepDefinitions: En {
+class PlaneStepDefinitions : En {
     init {
         ParameterType("plane", "(?:plane)\\(\\)") { _ -> Plane() }
 

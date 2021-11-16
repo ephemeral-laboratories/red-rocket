@@ -7,7 +7,7 @@ import assertk.assertions.isNotEmpty
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.java8.En
 
-class GroupStepDefinitions: En {
+class GroupStepDefinitions : En {
     init {
         ParameterType("group", "group\\(\\)") { _ -> Group() }
 
@@ -36,7 +36,7 @@ class GroupStepDefinitions: En {
         Then("{shape_var} is not empty") { sv: String ->
             assertThat((shapes[sv] as Group).children).isNotEmpty()
         }
-        Then ("{shape_var} includes {shape_var}") { sv1: String, sv2: String ->
+        Then("{shape_var} includes {shape_var}") { sv1: String, sv2: String ->
             assertThat((shapes[sv1] as Group).children).contains(shapes[sv2]!!)
         }
     }

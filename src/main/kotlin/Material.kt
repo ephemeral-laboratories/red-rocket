@@ -23,11 +23,12 @@ data class Material(
     val illuminationModel: Int
 ) {
     companion object {
-        val default: Material = Material(
+        val default = Material(
             white, grey(0.1), grey(0.9), grey(0.9), 200.0,
-            black, black, 1.0, null, black, 1.0, -1)
+            black, black, 1.0, null, black, 1.0, -1
+        )
 
-        fun build(callback: Builder.() -> Unit) : Material {
+        fun build(callback: Builder.() -> Unit): Material {
             return default.build(callback)
         }
 
@@ -47,7 +48,7 @@ data class Material(
         worldEyeDirection: Tuple,
         worldNormal: Tuple,
         inShadow: Boolean
-    ) : Color {
+    ): Color {
 
         val color = pattern?.patternAtShape(shape, worldPoint) ?: color
 
@@ -103,20 +104,21 @@ data class Material(
         var ambient: Color = material.ambient
         var diffuse: Color = material.diffuse
         var specular: Color = material.specular
-        var shininess: Double        = material.shininess
+        var shininess: Double = material.shininess
         var reflective: Color = material.reflective
         var transparency: Color = material.transparency
-        var refractiveIndex: Double  = material.refractiveIndex
-        var pattern: Pattern?        = material.pattern
+        var refractiveIndex: Double = material.refractiveIndex
+        var pattern: Pattern? = material.pattern
         var emission: Color = material.emission
-        var dissolve: Double         = 0.0
-        var illuminationModel: Int   = 0
+        var dissolve: Double = 0.0
+        var illuminationModel: Int = 0
 
         fun build(): Material {
             return Material(
                 color, ambient, diffuse, specular, shininess,
                 reflective, transparency, refractiveIndex, pattern,
-                emission, dissolve, illuminationModel)
+                emission, dissolve, illuminationModel
+            )
         }
 
         fun build(callback: Builder.() -> Unit): Material {

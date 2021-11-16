@@ -10,22 +10,23 @@ import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.java8.En
 
-class IntersectionStepDefinitions: En {
+class IntersectionStepDefinitions : En {
     companion object {
-        val namedIntersections : MutableMap<String, Intersection> = mutableMapOf()
-        lateinit var comps : Intersection.Precomputed
-        lateinit var intersections : List<Intersection>
-        var reflectance : Double = 0.0
+        val namedIntersections = mutableMapOf<String, Intersection>()
+        lateinit var comps: Intersection.Precomputed
+        lateinit var intersections: List<Intersection>
+        var reflectance: Double = 0.0
     }
 
     init {
         ParameterType("intersection_var", "intersection\\d*") { string -> string }
 
-        ParameterType("compact_intersections",
+        ParameterType(
+            "compact_intersections",
             "intersections\\(" +
-                    "((?:(?:$realRegex):(?:$shapeVarRegex)(?:,\\s*)?)+)" +
-                    "\\)") { string ->
-
+                "((?:(?:$realRegex):(?:$shapeVarRegex)(?:,\\s*)?)+)" +
+                "\\)"
+        ) { string ->
             string.split(", ").map { param ->
                 val parts = param.split(':')
                 Intersection(realFromString(parts[0]), shapes[parts[1]]!!)
@@ -36,7 +37,7 @@ class IntersectionStepDefinitions: En {
             namedIntersections[iv] = Intersection(t, shapes[sv]!!)
         }
         When("{intersection_var} ← intersection_with_uv\\({real}, {shape_var}, {real}, {real})") {
-                iv: String, t: Double, sv: String, u: Double, v: Double ->
+            iv: String, t: Double, sv: String, u: Double, v: Double ->
             namedIntersections[iv] = Intersection(t, shapes[sv]!!, u, v)
         }
 
@@ -50,7 +51,7 @@ class IntersectionStepDefinitions: En {
             intersections = listOf(namedIntersections[iv1]!!, namedIntersections[iv2]!!)
         }
         When("intersections ← intersections\\({intersection_var}, {intersection_var}, {intersection_var}, {intersection_var})") {
-                iv1: String, iv2: String, iv3: String, iv4: String ->
+            iv1: String, iv2: String, iv3: String, iv4: String ->
             intersections = listOf(namedIntersections[iv1]!!, namedIntersections[iv2]!!, namedIntersections[iv3]!!, namedIntersections[iv4]!!)
         }
         When("intersections ← {compact_intersections}") { cxs: List<Intersection> -> intersections = cxs }

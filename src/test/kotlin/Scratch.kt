@@ -51,18 +51,22 @@ fun main() {
         (0..5).forEach { n ->
             val side = Group().apply {
                 transform = rotationY(n * PI / 3)
-                addChild(Sphere().apply {
-                    transform = translation(0.0, 0.0, -1.0) *
-                                scaling(0.25, 0.25, 0.25)
-                })
-                addChild(Cylinder().apply {
-                    minimum = 0.0
-                    maximum = 1.0
-                    transform = translation(0.0, 0.0, -1.0) *
-                                rotationY(-PI / 6) *
-                                rotationZ(-PI / 2) *
-                                scaling(0.25, 1.0, 0.25)
-                })
+                addChild(
+                    Sphere().apply {
+                        transform = translation(0.0, 0.0, -1.0) *
+                            scaling(0.25, 0.25, 0.25)
+                    }
+                )
+                addChild(
+                    Cylinder().apply {
+                        minimum = 0.0
+                        maximum = 1.0
+                        transform = translation(0.0, 0.0, -1.0) *
+                            rotationY(-PI / 6) *
+                            rotationZ(-PI / 2) *
+                            scaling(0.25, 1.0, 0.25)
+                    }
+                )
             }
             addChild(side)
         }

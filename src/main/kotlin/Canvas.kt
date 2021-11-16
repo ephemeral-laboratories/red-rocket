@@ -15,7 +15,6 @@ import kotlin.io.path.bufferedWriter
 import kotlin.io.path.inputStream
 import kotlin.io.path.outputStream
 
-
 class Canvas(val width: Int, val height: Int) {
     private val data = DoubleArray(width * height * 3)
 
@@ -98,7 +97,7 @@ class Canvas(val width: Int, val height: Int) {
             return IntRange(0, width - 1)
                 .zip(IntRange(0, height - 1))
                 .stream()
-                .map {(x: Int, y: Int) -> getPixel(x, y)}
+                .map { (x: Int, y: Int) -> getPixel(x, y) }
         }
 
     companion object {
@@ -108,9 +107,14 @@ class Canvas(val width: Int, val height: Int) {
                 (0 until height).forEach { y: Int ->
                     (0 until width).forEach { x: Int ->
                         val rgb = image.getRGB(x, y)
-                        setPixel(x, y, Color.fromSRgbInts(rgb.shr(16).and(0xff),
-                            rgb.shr(8).and(0xff),
-                            rgb.and(0xFF)))
+                        setPixel(
+                            x, y,
+                            Color.fromSRgbInts(
+                                rgb.shr(16).and(0xff),
+                                rgb.shr(8).and(0xff),
+                                rgb.and(0xFF)
+                            )
+                        )
                     }
                 }
             }

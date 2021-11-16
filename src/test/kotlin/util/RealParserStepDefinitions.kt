@@ -9,7 +9,7 @@ import io.cucumber.java8.En
 import kotlin.Double.Companion.NEGATIVE_INFINITY
 import kotlin.Double.Companion.POSITIVE_INFINITY
 
-class RealParserStepDefinitions: En {
+class RealParserStepDefinitions : En {
     lateinit var string: String
 
     init {

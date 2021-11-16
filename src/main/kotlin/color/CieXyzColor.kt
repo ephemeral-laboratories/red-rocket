@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket.color
 
-data class CieXyzColor(val x: Double, val y: Double, val z: Double): Color() {
+data class CieXyzColor(val x: Double, val y: Double, val z: Double) : Color() {
     override val isBlack: Boolean get() = x == 0.0 && y == 0.0 && z == 0.0
 
     override operator fun plus(their: Color): Color {

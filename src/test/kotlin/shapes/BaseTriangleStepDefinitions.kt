@@ -9,7 +9,7 @@ import garden.ephemeral.rocket.isCloseTo
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.java8.En
 
-class BaseTriangleStepDefinitions: En {
+class BaseTriangleStepDefinitions : En {
     init {
         Then("{shape_var}.point1 = {tuple_var}") { sv: String, tv: String ->
             assertThat((shapes[sv] as BaseTriangle).point1).isEqualTo(tuples[tv]!!)

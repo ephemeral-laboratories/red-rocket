@@ -2,12 +2,12 @@ package garden.ephemeral.rocket
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import io.cucumber.java8.En
 
-class LightStepDefinitions: En {
+class LightStepDefinitions : En {
     companion object {
         lateinit var light: PointLight
     }

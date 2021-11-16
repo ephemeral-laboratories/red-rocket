@@ -4,7 +4,7 @@ import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import io.cucumber.java8.En
 
-class MuellerMatrixStepDefinitions: En {
+class MuellerMatrixStepDefinitions : En {
     init {
         val mappings = mapOf(
             "linear polarizer \\(horizontal transmission)" to MuellerMatrices.LinearPolarizerHorizontal,
@@ -26,16 +26,17 @@ class MuellerMatrixStepDefinitions: En {
             }
         }
 
-        When("{matrix_var} is a Mueller matrix " +
-                "for a reference rotation of {real} degrees") { matrixVar: String, degrees: Double ->
+        When("{matrix_var} is a Mueller matrix for a reference rotation of {real} degrees") {
+            matrixVar: String, degrees: Double ->
             val radians = Math.toRadians(degrees)
             matrices[matrixVar] = MuellerMatrices.forReferenceFrameRotation(radians)
         }
 
-        When("{matrix_var} is a Mueller matrix for a linear retarder " +
+        When(
+            "{matrix_var} is a Mueller matrix for a linear retarder " +
                 "with fast axis {real} degrees " +
-                "and phase difference {real} degrees") {
-                matrixVar: String, fastAxisDegrees: Double, phaseDifferenceDegrees: Double ->
+                "and phase difference {real} degrees"
+        ) { matrixVar: String, fastAxisDegrees: Double, phaseDifferenceDegrees: Double ->
             val fastAxisRadians = Math.toRadians(fastAxisDegrees)
             val phaseDifferenceRadians = Math.toRadians(phaseDifferenceDegrees)
             matrices[matrixVar] = MuellerMatrices.forLinearRetarder(fastAxisRadians, phaseDifferenceRadians)

@@ -5,13 +5,13 @@ import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Ray
 import kotlin.math.abs
 
-abstract class CylinderLikeShape: Shape() {
+abstract class CylinderLikeShape : Shape() {
     var minimum: Double = Double.NEGATIVE_INFINITY
     var maximum: Double = Double.POSITIVE_INFINITY
     var closed: Boolean = false
 
     final override fun localIntersect(localRay: Ray): List<Intersection> {
-        val xs: MutableList<Intersection> = mutableListOf()
+        val xs = mutableListOf<Intersection>()
         intersectWall(localRay, xs)
         intersectCaps(localRay, xs)
         return xs.toList()

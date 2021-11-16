@@ -1,13 +1,13 @@
 package garden.ephemeral.rocket.shapes
 
-import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.Material
+import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.configureFromDataTable
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 
-class SphereStepDefinitions: En {
+class SphereStepDefinitions : En {
     init {
         ParameterType("sphere", "(?:sphere|glass_sphere)\\(\\)") { string ->
             when (string.substring(0, string.indexOf('('))) {

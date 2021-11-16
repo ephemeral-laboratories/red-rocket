@@ -11,10 +11,10 @@ import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.color.isCloseTo
 import io.cucumber.java8.En
 
-class CanvasStepDefinitions: En {
+class CanvasStepDefinitions : En {
     companion object {
-        lateinit var canvas : Canvas
-        lateinit var ppm : String
+        lateinit var canvas: Canvas
+        lateinit var ppm: String
     }
 
     init {

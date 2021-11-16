@@ -7,8 +7,12 @@ import garden.ephemeral.rocket.Tuple
 import kotlin.math.abs
 
 abstract class BaseTriangle(
-    val point1: Tuple, val point2: Tuple, val point3: Tuple,
-    val texturePoint1: Tuple?, val texturePoint2: Tuple?, val texturePoint3: Tuple?,
+    val point1: Tuple,
+    val point2: Tuple,
+    val point3: Tuple,
+    val texturePoint1: Tuple?,
+    val texturePoint2: Tuple?,
+    val texturePoint3: Tuple?,
 ) : Shape() {
 
     val edge1: Tuple = point2 - point1

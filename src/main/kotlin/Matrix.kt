@@ -3,8 +3,9 @@ package garden.ephemeral.rocket
 data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArray) {
     init {
         if (cells.size != rowCount * columnCount) {
-            throw IllegalArgumentException("Wrong cell count ${cells.size} " +
-                    "for matrix of size $rowCount x $columnCount")
+            throw IllegalArgumentException(
+                "Wrong cell count ${cells.size} for matrix of size $rowCount x $columnCount"
+            )
         }
     }
 
@@ -31,30 +32,39 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         Matrix(columnCount, rowCount, inverseCells)
     }
 
-
     val invertible: Boolean
         get() = determinant != 0.0
 
     companion object {
-        val identity2x2 = Matrix(2, 2, doubleArrayOf(
-            1.0, 0.0,
-            0.0, 1.0))
-        val identity3x3 = Matrix(3, 3, doubleArrayOf(
-            1.0, 0.0, 0.0,
-            0.0, 1.0, 0.0,
-            0.0, 0.0, 1.0))
-        val identity4x4 = Matrix(4, 4, doubleArrayOf(
-            1.0, 0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0))
+        val identity2x2 = Matrix(
+            2, 2,
+            doubleArrayOf(
+                1.0, 0.0,
+                0.0, 1.0
+            )
+        )
+
+        val identity3x3 = Matrix(
+            3, 3,
+            doubleArrayOf(
+                1.0, 0.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 0.0, 1.0
+            )
+        )
+
+        val identity4x4 = Matrix(
+            4, 4,
+            doubleArrayOf(
+                1.0, 0.0, 0.0, 0.0,
+                0.0, 1.0, 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 1.0
+            )
+        )
 
         fun fromLists(cells: List<List<Double>>): Matrix {
-            return Matrix(
-                cells.size,
-                cells[0].size,
-                cells.flatten().toDoubleArray()
-            )
+            return Matrix(cells.size, cells[0].size, cells.flatten().toDoubleArray())
         }
     }
 
@@ -126,7 +136,7 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         (0 until rowCount).forEach { rowIndex ->
             (0 until their.columnCount).forEach { columnIndex ->
                 resultCells[rowIndex * their.columnCount + columnIndex] = (0 until columnCount).sumOf { index ->
-                    getCell(rowIndex, index) * their.getCell(index,columnIndex)
+                    getCell(rowIndex, index) * their.getCell(index, columnIndex)
                 }
             }
         }

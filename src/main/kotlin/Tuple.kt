@@ -3,13 +3,20 @@ package garden.ephemeral.rocket
 import kotlin.math.sqrt
 
 data class Tuple(val cells: DoubleArray) {
-    val point:      Boolean get() = w == 1.0
-    val vector:     Boolean get() = w == 0.0
-    val magnitude:  Double  get() = sqrt(cells.sumOf { cell -> cell * cell })
-    val x:          Double  get() = cells[0]
-    val y:          Double  get() = cells[1]
-    val z:          Double  get() = cells[2]
-    val w:          Double  get() = cells[3]
+    val point: Boolean
+        get() = w == 1.0
+    val vector: Boolean
+        get() = w == 0.0
+    val magnitude: Double
+        get() = sqrt(cells.sumOf { cell -> cell * cell })
+    val x: Double
+        get() = cells[0]
+    val y: Double
+        get() = cells[1]
+    val z: Double
+        get() = cells[2]
+    val w: Double
+        get() = cells[3]
 
     constructor(x: Double, y: Double, z: Double) : this(doubleArrayOf(x, y, z))
     constructor(x: Double, y: Double, z: Double, w: Double) : this(doubleArrayOf(x, y, z, w))
@@ -18,8 +25,8 @@ data class Tuple(val cells: DoubleArray) {
         val zero = vector(0.0, 0.0, 0.0)
         val origin = point(0.0, 0.0, 0.0)
 
-        fun point(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 1.0) }
-        fun vector(x: Double, y: Double, z: Double) : Tuple { return Tuple(x, y, z, 0.0) }
+        fun point(x: Double, y: Double, z: Double): Tuple { return Tuple(x, y, z, 1.0) }
+        fun vector(x: Double, y: Double, z: Double): Tuple { return Tuple(x, y, z, 0.0) }
     }
 
     private inline fun unaryOp(op: (Double) -> Double): Tuple {

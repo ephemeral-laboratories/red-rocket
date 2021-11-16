@@ -7,8 +7,8 @@ import kotlin.math.sqrt
 import kotlin.streams.toList
 
 class World {
-    var objects : MutableList<Shape> = mutableListOf()
-    var lights : MutableList<PointLight> = mutableListOf()
+    var objects = mutableListOf<Shape>()
+    var lights = mutableListOf<PointLight>()
 
     fun intersect(ray: Ray): List<Intersection> {
         return objects.stream()
@@ -32,7 +32,8 @@ class World {
             val material = precomputed.obj.material
             val shadowed = isShadowed(precomputed.overPoint, light)
             val surface = material.lighting(
-                precomputed.obj, light, precomputed.overPoint, precomputed.eyeline, precomputed.normal, shadowed)
+                precomputed.obj, light, precomputed.overPoint, precomputed.eyeline, precomputed.normal, shadowed
+            )
 
             val reflected = reflectedColor(precomputed, recursionsAllowed)
             val refracted = refractedColor(precomputed, recursionsAllowed)

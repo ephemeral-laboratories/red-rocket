@@ -35,7 +35,8 @@ fun mappedCube(): Shape {
                 UVAlignCheck(red, yellow, magenta, green, white),
                 UVAlignCheck(green, magenta, cyan, white, blue),
                 UVAlignCheck(orange, cyan, magenta, red, yellow),
-                UVAlignCheck(magenta, orange, green, blue, white))
+                UVAlignCheck(magenta, orange, green, blue, white)
+            )
             ambient = grey(0.2)
             specular = black
             diffuse = grey(0.8)
@@ -92,6 +93,4 @@ fun main() {
     println("Render time: " + Duration.between(t0, t1))
 
     Path("out.ppm").writeText(canvas.toPPM())
-
 }
-

@@ -5,7 +5,7 @@ import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 
-class CylinderStepDefinitions: En {
+class CylinderStepDefinitions : En {
     init {
         ParameterType("cylinder", "cylinder\\(\\)") { _ -> Cylinder() }
 

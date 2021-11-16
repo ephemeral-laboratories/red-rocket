@@ -7,7 +7,7 @@ import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersectio
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.java8.En
 
-class CSGStepDefinitions: En {
+class CSGStepDefinitions : En {
     companion object {
         var result: Boolean = false
         lateinit var resultIntersections: List<Intersection>
@@ -17,12 +17,12 @@ class CSGStepDefinitions: En {
             shapes[sv] = CSG(operationFromString(string), s1, s2)
         }
         When("{shape_var} ← csg\\({string}, {shape_var}, {shape_var})") {
-                sv1: String, string: String, sv2: String, sv3: String ->
+            sv1: String, string: String, sv2: String, sv3: String ->
             shapes[sv1] = CSG(operationFromString(string), shapes[sv2]!!, shapes[sv3]!!)
         }
 
         When("result ← intersection_allowed\\({string}, {boolean}, {boolean}, {boolean})") {
-                string: String, lHit: Boolean, inL: Boolean, inR: Boolean ->
+            string: String, lHit: Boolean, inL: Boolean, inR: Boolean ->
             result = operationFromString(string).intersectionAllowed(lHit, inL, inR)
         }
 
@@ -50,9 +50,9 @@ class CSGStepDefinitions: En {
 
     private fun operationFromString(string: String): CSG.Operation {
         return when (string) {
-            "union"        -> CSG.Operation.UNION
+            "union" -> CSG.Operation.UNION
             "intersection" -> CSG.Operation.INTERSECTION
-            "difference"   -> CSG.Operation.DIFFERENCE
+            "difference" -> CSG.Operation.DIFFERENCE
             else -> throw IllegalArgumentException("Unknown operation: $string")
         }
     }

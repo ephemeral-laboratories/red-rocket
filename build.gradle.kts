@@ -1,7 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id ("org.jetbrains.kotlin.jvm") version "1.5.31"
+    kotlin("jvm") version "1.5.31"
+    id("com.diffplug.spotless") version "6.0.0"
 }
 
 group = "garden.ephemeral.rocket"
@@ -26,4 +27,14 @@ extensions.configure<JavaPluginExtension> {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
+}
+
+spotless {
+    val ktlintVersion = "0.43.0"
+    kotlin {
+        ktlint(ktlintVersion).userData(mapOf("disabled_rules" to "no-wildcard-imports"))
+    }
+    kotlinGradle {
+        ktlint(ktlintVersion)
+    }
 }

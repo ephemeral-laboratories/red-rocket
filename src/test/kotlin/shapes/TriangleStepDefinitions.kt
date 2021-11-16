@@ -8,14 +8,14 @@ import garden.ephemeral.rocket.isCloseTo
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.java8.En
 
-class TriangleStepDefinitions: En {
+class TriangleStepDefinitions : En {
     init {
         Given("{shape_var} ← triangle\\({point}, {point}, {point})") {
-                sv: String, p1: Tuple, p2: Tuple, p3: Tuple ->
+            sv: String, p1: Tuple, p2: Tuple, p3: Tuple ->
             shapes[sv] = Triangle(p1, p2, p3)
         }
         Given("{shape_var} ← triangle\\({tuple_var}, {tuple_var}, {tuple_var})") {
-                sv: String, tv1: String, tv2: String, tv3: String ->
+            sv: String, tv1: String, tv2: String, tv3: String ->
             shapes[sv] = Triangle(tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!)
         }
 

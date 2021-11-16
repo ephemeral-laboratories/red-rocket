@@ -7,7 +7,7 @@ import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Tuple.Companion.vector
 import kotlin.math.abs
 
-class Plane: Shape() {
+class Plane : Shape() {
     override fun localIntersect(localRay: Ray): List<Intersection> {
         // Parallel to the plane, or coplanar => no intersections
         if (abs(localRay.direction.y) < epsilon) {

@@ -6,13 +6,15 @@ import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.java8.En
 
-class ComplexStepDefinitions: En {
+class ComplexStepDefinitions : En {
     lateinit var z: Complex
     lateinit var z1: Complex
     lateinit var z2: Complex
 
     init {
-        ParameterType("complex", """(?x)
+        ParameterType(
+            "complex",
+            """(?x)
             | complex\( \s*
             |   (?:
             |     ($realRegex)
@@ -23,13 +25,14 @@ class ComplexStepDefinitions: En {
             |     (-?(?:$realRegex \s*)? i)
             |   )
             | \s* \)
-            |""".trimMargin()) {
-                realPartString: String?, joiner: String?,
-                imaginaryPartString1: String?, imaginaryPartString2: String? ->
+            |""".trimMargin()
+        ) {
+            realPartString: String?, joiner: String?,
+            imaginaryPartString1: String?, imaginaryPartString2: String? ->
 
             fun imaginaryPartFromString(string: String): Double {
                 if (!string.endsWith("i")) {
-                    throw IllegalArgumentException("String should have ended with i");
+                    throw IllegalArgumentException("String should have ended with i")
                 }
                 return when (val front = string.substring(0, string.length - 1).trim()) {
                     "" -> 1.0
@@ -41,8 +44,10 @@ class ComplexStepDefinitions: En {
             if (realPartString != null) {
                 if (imaginaryPartString1 != null) {
                     val imaginarySign = if (joiner == "-") -1.0 else 1.0
-                    Complex(realFromString(realPartString),
-                        imaginarySign * imaginaryPartFromString(imaginaryPartString1))
+                    Complex(
+                        realFromString(realPartString),
+                        imaginarySign * imaginaryPartFromString(imaginaryPartString1)
+                    )
                 } else {
                     Complex(realFromString(realPartString), 0.0)
                 }

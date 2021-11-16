@@ -7,7 +7,7 @@ import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.isCloseTo
 import io.cucumber.java8.En
 
-class StokesStepDefinitions: En {
+class StokesStepDefinitions : En {
     init {
         When("{tuple_var} is a Stokes vector for no light") { tupleVar: String ->
             tuples[tupleVar] = Stokes.None

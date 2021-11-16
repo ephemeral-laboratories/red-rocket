@@ -9,7 +9,7 @@ import java.nio.file.Path
 import kotlin.io.path.forEachLine
 
 class MtlFileParser(file: Path) {
-    val materials: MutableMap<String, Material> = mutableMapOf()
+    val materials = mutableMapOf<String, Material>()
     private val whitespace = Regex("\\s+")
     private var currentMaterialName = ""
     private var currentBuilder = Material.builder()
@@ -83,5 +83,4 @@ class MtlFileParser(file: Path) {
 
     class UnsupportedMtlException(message: String, cause: Throwable? = null) :
         UnsupportedOperationException(message, cause)
-
 }

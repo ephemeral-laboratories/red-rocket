@@ -8,7 +8,7 @@ import garden.ephemeral.rocket.Tuple.Companion.vector
 import kotlin.Double.Companion.POSITIVE_INFINITY
 import kotlin.math.abs
 
-class Cube: Shape() {
+class Cube : Shape() {
     override fun localIntersect(localRay: Ray): List<Intersection> {
         val (xtMin, xtMax) = checkAxis(localRay.origin.x, localRay.direction.x)
         val (ytMin, ytMax) = checkAxis(localRay.origin.y, localRay.direction.y)
@@ -18,7 +18,7 @@ class Cube: Shape() {
         if (tMin > tMax) {
             return listOf()
         }
-        return listOf(Intersection(tMin, this), Intersection(tMax, this) )
+        return listOf(Intersection(tMin, this), Intersection(tMax, this))
     }
 
     private fun checkAxis(origin: Double, direction: Double): Pair<Double, Double> {
@@ -39,7 +39,7 @@ class Cube: Shape() {
         return when (maxOf(abs(localPoint.x), abs(localPoint.y), abs(localPoint.z))) {
             abs(localPoint.x) -> { vector(localPoint.x, 0.0, 0.0) }
             abs(localPoint.y) -> { vector(0.0, localPoint.y, 0.0) }
-            else              -> { vector(0.0, 0.0, localPoint.z) }
+            else -> { vector(0.0, 0.0, localPoint.z) }
         }
     }
 

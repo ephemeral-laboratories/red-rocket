@@ -5,7 +5,7 @@ import garden.ephemeral.rocket.color.Color
 import java.util.*
 import kotlin.math.abs
 
-class CubeMap(left: UVPattern, front: UVPattern, right: UVPattern, back: UVPattern, up: UVPattern, down: UVPattern):
+class CubeMap(left: UVPattern, front: UVPattern, right: UVPattern, back: UVPattern, up: UVPattern, down: UVPattern) :
     Pattern() {
 
     private val faceUvPatterns: Map<Face, UVPattern> = mapOf(
@@ -72,12 +72,12 @@ class CubeMap(left: UVPattern, front: UVPattern, right: UVPattern, back: UVPatte
         }
 
         private val faceUvMaps: Map<Face, UVMap> = mapOf(
-            Face.LEFT  to cubeUvLeft,
+            Face.LEFT to cubeUvLeft,
             Face.FRONT to cubeUvFront,
             Face.RIGHT to cubeUvRight,
-            Face.BACK  to cubeUvBack,
-            Face.UP    to cubeUvUp,
-            Face.DOWN  to cubeUvDown
+            Face.BACK to cubeUvBack,
+            Face.UP to cubeUvUp,
+            Face.DOWN to cubeUvDown
         )
     }
 

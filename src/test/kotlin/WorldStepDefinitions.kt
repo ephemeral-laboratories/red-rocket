@@ -20,7 +20,7 @@ import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import garden.ephemeral.rocket.shapes.Sphere
 import io.cucumber.java8.En
 
-class WorldStepDefinitions: En {
+class WorldStepDefinitions : En {
     companion object {
         lateinit var world: World
     }
@@ -94,16 +94,20 @@ class WorldStepDefinitions: En {
     private fun defaultWorld(): World {
         return World().apply {
             lights.add(PointLight(point(-10.0, 10.0, -10.0), white))
-            objects.add(Sphere().apply {
-                material = Material.build {
-                    color = linearRgb(0.8, 1.0, 0.6)
-                    diffuse = grey(0.7)
-                    specular = grey(0.2)
+            objects.add(
+                Sphere().apply {
+                    material = Material.build {
+                        color = linearRgb(0.8, 1.0, 0.6)
+                        diffuse = grey(0.7)
+                        specular = grey(0.2)
+                    }
                 }
-            })
-            objects.add(Sphere().apply {
-                transform = scaling(0.5, 0.5, 0.5)
-            })
+            )
+            objects.add(
+                Sphere().apply {
+                    transform = scaling(0.5, 0.5, 0.5)
+                }
+            )
         }
     }
 }

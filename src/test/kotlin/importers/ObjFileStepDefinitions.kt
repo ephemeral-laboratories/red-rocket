@@ -15,7 +15,7 @@ import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import garden.ephemeral.rocket.shapes.SmoothTriangle
 import io.cucumber.java8.En
 
-class ObjFileStepDefinitions: En {
+class ObjFileStepDefinitions : En {
     private lateinit var parser: ObjFileParser
 
     init {
@@ -52,7 +52,7 @@ class ObjFileStepDefinitions: En {
         Then("parser.normals[{int}] = {vector}") { i: Int, e: Tuple ->
             assertThat(parser.normal(i)).isEqualTo(e)
         }
-        Then("parser.textureVertices[{int}] = {vector}") {i: Int, e: Tuple ->
+        Then("parser.textureVertices[{int}] = {vector}") { i: Int, e: Tuple ->
             assertThat(parser.textureVertex(i)).isEqualTo(e)
         }
 

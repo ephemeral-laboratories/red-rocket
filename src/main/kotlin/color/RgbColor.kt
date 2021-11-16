@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket.color
 
-data class RgbColor(val r: Double, val g: Double, val b: Double): Color() {
+data class RgbColor(val r: Double, val g: Double, val b: Double) : Color() {
     override val isBlack: Boolean get() = r == 0.0 && g == 0.0 && b == 0.0
 
     override operator fun plus(their: Color): Color {
@@ -36,5 +36,4 @@ data class RgbColor(val r: Double, val g: Double, val b: Double): Color() {
     override fun toLinearRgbDoubles(): DoubleArray {
         return doubleArrayOf(r, g, b)
     }
-
 }

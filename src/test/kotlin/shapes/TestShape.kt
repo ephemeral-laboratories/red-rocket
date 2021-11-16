@@ -5,7 +5,7 @@ import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Tuple.Companion.vector
 
-class TestShape: Shape() {
+class TestShape : Shape() {
     var savedRay: Ray? = null
 
     override fun localIntersect(localRay: Ray): List<Intersection> {

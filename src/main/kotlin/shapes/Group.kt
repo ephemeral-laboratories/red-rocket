@@ -4,8 +4,8 @@ import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.Tuple
 
-class Group: Shape() {
-    val children: MutableList<Shape> = mutableListOf()
+class Group : Shape() {
+    val children = mutableListOf<Shape>()
 
     override fun localIntersect(localRay: Ray): List<Intersection> {
         return children

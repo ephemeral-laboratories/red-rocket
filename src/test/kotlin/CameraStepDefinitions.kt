@@ -13,7 +13,7 @@ import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.isCloseTo
 import io.cucumber.java8.En
 
-class CameraStepDefinitions: En {
+class CameraStepDefinitions : En {
     private var hSize: Int = 0
     private var vSize: Int = 0
     private var fieldOfView: Double = 0.0
@@ -40,7 +40,7 @@ class CameraStepDefinitions: En {
             camera.transform = m1 * m2
         }
         When("camera.transform ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") {
-                tv1: String, tv2: String, tv3: String ->
+            tv1: String, tv2: String, tv3: String ->
             camera.transform = viewTransform(tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!)
         }
 

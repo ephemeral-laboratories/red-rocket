@@ -26,7 +26,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
         val overPoint = point + normal * epsilon
         val underPoint = point - normal * epsilon
 
-        val containers : MutableList<Shape> = mutableListOf()
+        val containers = mutableListOf<Shape>()
         var n1 = 1.0
         var n2 = 1.0
         for (i in allIntersections) {

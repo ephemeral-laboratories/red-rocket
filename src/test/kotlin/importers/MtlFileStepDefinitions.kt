@@ -8,8 +8,7 @@ import garden.ephemeral.rocket.FileStepDefinitions
 import garden.ephemeral.rocket.MaterialStepDefinitions
 import io.cucumber.java8.En
 
-
-class MtlFileStepDefinitions: En {
+class MtlFileStepDefinitions : En {
     private lateinit var parser: MtlFileParser
 
     init {

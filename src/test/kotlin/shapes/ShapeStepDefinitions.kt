@@ -21,9 +21,9 @@ import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 
-class ShapeStepDefinitions: En {
+class ShapeStepDefinitions : En {
     companion object {
-        val shapes: MutableMap<String, Shape> = mutableMapOf()
+        val shapes = mutableMapOf<String, Shape>()
         const val shapeVarRegex = "(?:outer|inner|lower|upper|shape|group)\\d*"
 
         fun configureFromDataTable(shape: Shape, dataTable: DataTable) {
@@ -32,13 +32,14 @@ class ShapeStepDefinitions: En {
 
         fun configureFromDataTableRows(shape: Shape, rows: List<List<String>>) {
             rows.forEach { row ->
-                when(row[0]) {
+                when (row[0]) {
                     "material.color" -> {
                         val params = row[1].substring(1, row[1].length - 1).split(", ")
                         shape.material = shape.material.build {
                             color = linearRgb(
                                 realFromString(params[0]), realFromString(params[1]),
-                                realFromString(params[2]))
+                                realFromString(params[2])
+                            )
                         }
                     }
                     "material.pattern" -> {
@@ -117,7 +118,7 @@ class ShapeStepDefinitions: En {
             tuples[tv] = shapes[sv]!!.worldNormalAt(p, dummyIntersection())
         }
         When("{tuple_var} ← normal_at\\({shape_var}, {point}, {intersection_var})") {
-                tv: String, sv: String, p: Tuple, iv: String ->
+            tv: String, sv: String, p: Tuple, iv: String ->
             tuples[tv] = shapes[sv]!!.worldNormalAt(p, namedIntersections[iv]!!)
         }
 

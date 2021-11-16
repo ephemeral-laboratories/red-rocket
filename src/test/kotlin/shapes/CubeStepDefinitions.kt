@@ -3,7 +3,7 @@ package garden.ephemeral.rocket.shapes
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.java8.En
 
-class CubeStepDefinitions: En {
+class CubeStepDefinitions : En {
     init {
         ParameterType("cube", "cube\\(\\)") { _ -> Cube() }
 

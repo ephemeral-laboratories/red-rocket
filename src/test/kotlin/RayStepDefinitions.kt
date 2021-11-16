@@ -6,9 +6,9 @@ import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import io.cucumber.java8.En
 
-class RayStepDefinitions: En {
+class RayStepDefinitions : En {
     companion object {
-        val rays : MutableMap<String, Ray> = mutableMapOf()
+        val rays = mutableMapOf<String, Ray>()
     }
 
     init {

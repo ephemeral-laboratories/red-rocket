@@ -11,11 +11,11 @@ import java.nio.file.Path
 
 class ObjFileParser(file: Path, lenient: Boolean = false) {
     val defaultGroup: Group = Group()
-    private val namedGroups: MutableMap<String, Group> = mutableMapOf()
+    private val namedGroups = mutableMapOf<String, Group>()
     private var currentGroup: Group = defaultGroup
-    private val vertices: MutableList<Tuple> = mutableListOf()
-    private val normals: MutableList<Tuple> = mutableListOf()
-    private val textureVertices: MutableList<Tuple> = mutableListOf()
+    private val vertices = mutableListOf<Tuple>()
+    private val normals = mutableListOf<Tuple>()
+    private val textureVertices = mutableListOf<Tuple>()
     var ignoredLines: Int = 0
     private lateinit var materialLibrary: Map<String, Material>
     private var currentMaterial: Material = Material.default
@@ -32,8 +32,9 @@ class ObjFileParser(file: Path, lenient: Boolean = false) {
                     // usemtl $name
                     val (materialName) = command.args
                     currentMaterial = materialLibrary[materialName]
-                        ?: throw IllegalArgumentException("OBJ file refers to material $materialName " +
-                                "which does not exist in the material library")
+                        ?: throw IllegalArgumentException(
+                            "OBJ file refers to material $materialName which does not exist in the material library"
+                        )
                 }
                 "v" -> {
                     // v $x $y $z
@@ -44,11 +45,13 @@ class ObjFileParser(file: Path, lenient: Boolean = false) {
                     // vt $u $v
                     // vt $u $v $z
                     val args = command.args
-                    textureVertices.add(if (args.size >= 3) {
-                        vector(args[0].toDouble(), args[1].toDouble(), args[2].toDouble())
-                    } else {
-                        vector(args[0].toDouble(), args[1].toDouble(), 0.0)
-                    })
+                    textureVertices.add(
+                        if (args.size >= 3) {
+                            vector(args[0].toDouble(), args[1].toDouble(), args[2].toDouble())
+                        } else {
+                            vector(args[0].toDouble(), args[1].toDouble(), 0.0)
+                        }
+                    )
                 }
                 "vn" -> {
                     // vn $x $y $z
@@ -75,12 +78,16 @@ class ObjFileParser(file: Path, lenient: Boolean = false) {
                         val p3Data = faceData[i + 1]
                         currentGroup.addChild(
                             if (p1Data.normal != null && p2Data.normal != null && p3Data.normal != null) {
-                                SmoothTriangle(p1Data.vertex, p2Data.vertex, p3Data.vertex,
+                                SmoothTriangle(
+                                    p1Data.vertex, p2Data.vertex, p3Data.vertex,
                                     p1Data.textureVertex, p2Data.textureVertex, p3Data.textureVertex,
-                                    p1Data.normal, p2Data.normal, p3Data.normal)
+                                    p1Data.normal, p2Data.normal, p3Data.normal
+                                )
                             } else {
-                                Triangle(p1Data.vertex, p2Data.vertex, p3Data.vertex,
-                                    p1Data.textureVertex, p2Data.textureVertex, p3Data.textureVertex)
+                                Triangle(
+                                    p1Data.vertex, p2Data.vertex, p3Data.vertex,
+                                    p1Data.textureVertex, p2Data.textureVertex, p3Data.textureVertex
+                                )
                             }.apply {
                                 material = currentMaterial
                             }
@@ -156,11 +163,13 @@ class ObjFileParser(file: Path, lenient: Boolean = false) {
      * @return the element from the list.
      */
     private fun getByIndex(list: List<Tuple>, i: Int): Tuple {
-        return list[if (i < 0) {
-            list.size + i
-        } else {
-            i - 1
-        }]
+        return list[
+            if (i < 0) {
+                list.size + i
+            } else {
+                i - 1
+            }
+        ]
     }
 
     fun namedGroup(string: String): Group? {
