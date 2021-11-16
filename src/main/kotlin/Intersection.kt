@@ -60,6 +60,19 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
         val n1: Double,
         val n2: Double
     ) {
+        val cosThetaI: Double by lazy {
+            eyeline.dot(normal)
+        }
+
+        val sin2ThetaT: Double by lazy {
+            val n = n1 / n2
+            n.pow(2) * (1.0 - cosThetaI.pow(2))
+        }
+
+        val cosThetaT: Double by lazy {
+            sqrt(1.0 - sin2ThetaT)
+        }
+
         val tangent: Tuple by lazy {
             normal.cross(-eyeline).normalize()
         }
@@ -69,21 +82,16 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
         }
 
         fun schlick(): Double {
-            var cos = eyeline.dot(normal)
+            var cos = cosThetaI
 
             // Total internal reflection can only occur if n1 > n2
             if (n1 > n2) {
-                val n = n1 / n2
-                val sin2t = n.pow(2) * (1.0 - cos.pow(2))
-                if (sin2t > 1.0) {
+                if (sin2ThetaT > 1.0) {
                     return 1.0
                 }
 
-                // compute cosine of theta_t using trig identity
-                val cosT = sqrt(1.0 - sin2t)
-
                 // when n1 > n2, use cos(theta_t) instead
-                cos = cosT
+                cos = cosThetaT
             }
 
             val r0 = ((n1 - n2) / (n1 + n2)).pow(2)
