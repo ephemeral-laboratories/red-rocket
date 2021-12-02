@@ -42,15 +42,4 @@ class Cube : Shape() {
             else -> { vector(0.0, 0.0, localPoint.z) }
         }
     }
-
-    override fun toStringName(): String {
-        return "Cube"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Cube) return false
-        if (!super.equals(other)) return false
-        return true
-    }
 }

@@ -66,15 +66,4 @@ class Cone : CylinderLikeShape() {
         }
         return vector(localPoint.x, y, localPoint.z)
     }
-
-    override fun toStringName(): String {
-        return "Cone"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Cone) return false
-        if (!super.equals(other)) return false
-        return true
-    }
 }

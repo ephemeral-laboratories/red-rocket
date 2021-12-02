@@ -13,7 +13,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("reflect"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.property("kotlinx-coroutines-core.version")}")
 
     testImplementation("io.cucumber:cucumber-java8:${project.property("cucumber.version")}")

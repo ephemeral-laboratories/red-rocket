@@ -30,15 +30,4 @@ class Sphere : Shape() {
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         return localPoint - point(0.0, 0.0, 0.0)
     }
-
-    override fun toStringName(): String {
-        return "Sphere"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Sphere) return false
-        if (!super.equals(other)) return false
-        return true
-    }
 }

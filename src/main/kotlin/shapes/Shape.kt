@@ -2,6 +2,7 @@ package garden.ephemeral.rocket.shapes
 
 import garden.ephemeral.rocket.*
 import garden.ephemeral.rocket.Tuple.Companion.vector
+import garden.ephemeral.rocket.util.ToStringBuilder
 
 abstract class Shape {
     var parent: Shape? = null
@@ -39,16 +40,6 @@ abstract class Shape {
         return shape === this
     }
 
-    final override fun toString(): String {
-        return "${toStringName()}(${toStringParams()})"
-    }
-
-    abstract fun toStringName(): String
-
-    open fun toStringParams(): String {
-        return "transform=$transform, material=$material"
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Shape) return false
@@ -63,5 +54,13 @@ abstract class Shape {
         var result = transform.hashCode()
         result = 31 * result + material.hashCode()
         return result
+    }
+
+    final override fun toString(): String = ToStringBuilder(this).apply(::toStringImpl).toString()
+
+    open fun toStringImpl(builder: ToStringBuilder) {
+        builder
+            .add(::transform)
+            .add(::material)
     }
 }

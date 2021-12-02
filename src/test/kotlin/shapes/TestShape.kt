@@ -16,8 +16,4 @@ class TestShape : Shape() {
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         return vector(localPoint.x, localPoint.y, localPoint.z)
     }
-
-    override fun toStringName(): String {
-        return "TestShape"
-    }
 }

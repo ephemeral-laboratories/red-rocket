@@ -61,15 +61,4 @@ class Cylinder : CylinderLikeShape() {
             vector(localPoint.x, 0.0, localPoint.z)
         }
     }
-
-    override fun toStringName(): String {
-        return "Cylinder"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Cylinder) return false
-        if (!super.equals(other)) return false
-        return true
-    }
 }

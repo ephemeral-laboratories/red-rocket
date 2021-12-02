@@ -4,6 +4,7 @@ import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.util.ToStringBuilder
 import kotlin.math.abs
 
 abstract class BaseTriangle(
@@ -42,27 +43,15 @@ abstract class BaseTriangle(
         return listOf(Intersection(t, this, u, v))
     }
 
-    override fun toStringParams(): String {
-        return "${super.toStringParams()}, p1=$point1, p2=$point2, p3=$point3, e1=$edge1, e2=$edge2"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is BaseTriangle) return false
-        if (!super.equals(other)) return false
-
-        if (point1 != other.point1) return false
-        if (point2 != other.point2) return false
-        if (point3 != other.point3) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + point1.hashCode()
-        result = 31 * result + point2.hashCode()
-        result = 31 * result + point3.hashCode()
-        return result
+    override fun toStringImpl(builder: ToStringBuilder) {
+        super.toStringImpl(builder)
+        builder.add(::point1)
+            .add(::point1)
+            .add(::point1)
+            .add(::texturePoint1)
+            .add(::texturePoint2)
+            .add(::texturePoint3)
+            .add(::edge1)
+            .add(::edge2)
     }
 }

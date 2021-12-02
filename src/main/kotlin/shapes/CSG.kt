@@ -3,6 +3,7 @@ package garden.ephemeral.rocket.shapes
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.util.ToStringBuilder
 
 class CSG(val operation: Operation, val left: Shape, val right: Shape) : Shape() {
     init {
@@ -46,32 +47,11 @@ class CSG(val operation: Operation, val left: Shape, val right: Shape) : Shape()
         return left.includes(shape) || right.includes(shape)
     }
 
-    override fun toStringName(): String {
-        return "CSG"
-    }
-
-    override fun toStringParams(): String {
-        return "${super.toStringParams()}, operation=$operation, left=$left, right=$right"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CSG) return false
-        if (!super.equals(other)) return false
-
-        if (operation != other.operation) return false
-        if (left != other.left) return false
-        if (right != other.right) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + operation.hashCode()
-        result = 31 * result + left.hashCode()
-        result = 31 * result + right.hashCode()
-        return result
+    override fun toStringImpl(builder: ToStringBuilder) {
+        super.toStringImpl(builder)
+        builder.add(::operation)
+            .add(::left)
+            .add(::right)
     }
 
     enum class Operation {

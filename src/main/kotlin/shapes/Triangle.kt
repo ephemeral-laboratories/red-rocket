@@ -2,6 +2,7 @@ package garden.ephemeral.rocket.shapes
 
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.util.ToStringBuilder
 
 class Triangle(
     point1: Tuple,
@@ -18,19 +19,8 @@ class Triangle(
         return normal
     }
 
-    override fun toStringName(): String {
-        return "Triangle"
-    }
-
-    override fun toStringParams(): String {
-        return "${super.toStringParams()}, normal=$normal"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Triangle) return false
-        if (!super.equals(other)) return false
-
-        return true
+    override fun toStringImpl(builder: ToStringBuilder) {
+        super.toStringImpl(builder)
+        builder.add(::normal)
     }
 }

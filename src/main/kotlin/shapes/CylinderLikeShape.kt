@@ -3,6 +3,7 @@ package garden.ephemeral.rocket.shapes
 import garden.ephemeral.rocket.Constants
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Ray
+import garden.ephemeral.rocket.util.ToStringBuilder
 import kotlin.math.abs
 
 abstract class CylinderLikeShape : Shape() {
@@ -45,27 +46,10 @@ abstract class CylinderLikeShape : Shape() {
         }
     }
 
-    override fun toStringParams(): String {
-        return "${super.toStringParams()}, minimum=$minimum, maximum=$maximum, closed=$closed"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CylinderLikeShape) return false
-        if (!super.equals(other)) return false
-
-        if (minimum != other.minimum) return false
-        if (maximum != other.maximum) return false
-        if (closed != other.closed) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + minimum.hashCode()
-        result = 31 * result + maximum.hashCode()
-        result = 31 * result + closed.hashCode()
-        return result
+    override fun toStringImpl(builder: ToStringBuilder) {
+        super.toStringImpl(builder)
+        builder.add(::minimum)
+            .add(::maximum)
+            .add(::closed)
     }
 }

@@ -25,24 +25,4 @@ class Group : Shape() {
     override fun includes(shape: Shape): Boolean {
         return children.any { child -> child.includes(shape) }
     }
-
-    override fun toStringName(): String {
-        return "Group"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Group) return false
-        if (!super.equals(other)) return false
-
-        if (children != other.children) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + children.hashCode()
-        return result
-    }
 }

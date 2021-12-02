@@ -22,8 +22,4 @@ class Plane : Shape() {
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         return vector(0.0, 1.0, 0.0)
     }
-
-    override fun toStringName(): String {
-        return "Plane"
-    }
 }
