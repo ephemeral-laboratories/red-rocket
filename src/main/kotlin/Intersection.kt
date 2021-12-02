@@ -36,7 +36,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
                     n1 = lastContainer.material.refractiveIndex
                 }
             }
-            if (!containers.remove(i.obj)) {
+            if (!containers.removeByIdentity(i.obj)) {
                 containers.add(i.obj)
             }
             if (i == this) {
@@ -49,6 +49,19 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
         }
 
         return Precomputed(t, obj, point, overPoint, underPoint, eyeline, normal, reflection, inside, n1, n2)
+    }
+
+    // faster removal routine because we only care about object identity, not deep equality
+    private fun <E> MutableList<E>.removeByIdentity(value: E): Boolean {
+        val iterator = iterator()
+        while (iterator.hasNext()) {
+            val child = iterator.next()
+            if (child === value) {
+                iterator.remove()
+                return true
+            }
+        }
+        return false
     }
 
     data class Precomputed(

@@ -3,7 +3,7 @@ package garden.ephemeral.rocket
 import garden.ephemeral.rocket.Matrix.Companion.identity4x4
 import garden.ephemeral.rocket.Tuple.Companion.origin
 import garden.ephemeral.rocket.Tuple.Companion.point
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import kotlin.math.tan
 
 data class Camera(val hSize: Int, val vSize: Int, val fieldOfView: Double) {
@@ -48,6 +48,10 @@ data class Camera(val hSize: Int, val vSize: Int, val fieldOfView: Double) {
     fun render(world: World): Canvas {
         return Canvas(hSize, vSize).apply {
             runBlocking {
+                suspend fun <E> Iterable<E>.parallelForEach(f: suspend (E) -> Unit): Unit = coroutineScope {
+                    map { job -> async(Dispatchers.Default) { f(job) } }.joinAll()
+                }
+
                 (0 until vSize).parallelForEach { y ->
                     (0 until hSize).forEach { x ->
                         val ray = rayForPixel(x, y)
