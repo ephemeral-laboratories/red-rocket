@@ -73,7 +73,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
         val eyeline: Tuple,
         val normal: Tuple,
         val reflection: Tuple,
-        val inside: Boolean,
+        val isInside: Boolean,
         val n1: Double,
         val n2: Double
     ) {

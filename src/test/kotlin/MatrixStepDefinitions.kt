@@ -160,10 +160,10 @@ class MatrixStepDefinitions : En {
             assertThat(matrices[mv]!!.cofactor(row, column)).isCloseTo(e, epsilon)
         }
         Then("{matrix_var} is invertible") { mv: String ->
-            assertThat(matrices[mv]!!.invertible).isTrue()
+            assertThat(matrices[mv]!!.isInvertible).isTrue()
         }
         Then("{matrix_var} is not invertible") { mv: String ->
-            assertThat(matrices[mv]!!.invertible).isFalse()
+            assertThat(matrices[mv]!!.isInvertible).isFalse()
         }
         Then("inverse\\({matrix_var}) is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->
             assertThat(matrices[mv]!!.inverse).isCloseTo(matrixFromDataTable(dataTable), epsilon)

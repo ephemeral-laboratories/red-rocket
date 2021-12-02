@@ -3,9 +3,9 @@ package garden.ephemeral.rocket
 import kotlin.math.sqrt
 
 data class Tuple(val cells: DoubleArray) {
-    val point: Boolean
+    val isPoint: Boolean
         get() = w == 1.0
-    val vector: Boolean
+    val isVector: Boolean
         get() = w == 0.0
     val magnitude: Double
         get() = sqrt(cells.sumOf { cell -> cell * cell })
@@ -76,7 +76,7 @@ data class Tuple(val cells: DoubleArray) {
     }
 
     fun cross(their: Tuple): Tuple {
-        if (!vector || !their.vector) {
+        if (!isVector || !their.isVector) {
             throw IllegalStateException("cross product only makes sense for vectors")
         }
         return vector(

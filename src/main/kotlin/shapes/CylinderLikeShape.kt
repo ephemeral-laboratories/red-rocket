@@ -9,7 +9,7 @@ import kotlin.math.abs
 abstract class CylinderLikeShape : Shape() {
     var minimum: Double = Double.NEGATIVE_INFINITY
     var maximum: Double = Double.POSITIVE_INFINITY
-    var closed: Boolean = false
+    var isClosed: Boolean = false
 
     final override fun localIntersect(localRay: Ray): List<Intersection> {
         val xs = mutableListOf<Intersection>()
@@ -27,7 +27,7 @@ abstract class CylinderLikeShape : Shape() {
     private fun intersectCaps(localRay: Ray, xs: MutableList<Intersection>) {
         // caps only matter if the cylinder is closed, and might possibly be
         // intersected by the ray.
-        if (!closed || abs(localRay.direction.y) < Constants.epsilon) {
+        if (!isClosed || abs(localRay.direction.y) < Constants.epsilon) {
             return
         }
 
@@ -50,6 +50,6 @@ abstract class CylinderLikeShape : Shape() {
         super.toStringImpl(builder)
         builder.add(::minimum)
             .add(::maximum)
-            .add(::closed)
+            .add(::isClosed)
     }
 }

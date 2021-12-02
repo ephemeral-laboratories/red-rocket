@@ -18,7 +18,7 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
     }
 
     val inverse: Matrix by lazy {
-        if (!invertible) {
+        if (!isInvertible) {
             throw UnsupportedOperationException("This matrix is not invertible")
         }
 
@@ -32,7 +32,7 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         Matrix(columnCount, rowCount, inverseCells)
     }
 
-    val invertible: Boolean
+    val isInvertible: Boolean
         get() = determinant != 0.0
 
     companion object {

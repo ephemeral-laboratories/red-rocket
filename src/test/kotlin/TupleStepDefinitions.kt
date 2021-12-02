@@ -70,10 +70,10 @@ class TupleStepDefinitions : En {
         Then("{tuple_var}.z = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.z).isCloseTo(e, epsilon) }
         Then("{tuple_var}.w = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.w).isCloseTo(e, epsilon) }
 
-        Then("{tuple_var} is a point") { tv: String -> assertThat(tuples[tv]!!.point).isTrue() }
-        Then("{tuple_var} is not a point") { tv: String -> assertThat(tuples[tv]!!.point).isFalse() }
-        Then("{tuple_var} is a vector") { tv: String -> assertThat(tuples[tv]!!.vector).isTrue() }
-        Then("{tuple_var} is not a vector") { tv: String -> assertThat(tuples[tv]!!.vector).isFalse() }
+        Then("{tuple_var} is a point") { tv: String -> assertThat(tuples[tv]!!.isPoint).isTrue() }
+        Then("{tuple_var} is not a point") { tv: String -> assertThat(tuples[tv]!!.isPoint).isFalse() }
+        Then("{tuple_var} is a vector") { tv: String -> assertThat(tuples[tv]!!.isVector).isTrue() }
+        Then("{tuple_var} is not a vector") { tv: String -> assertThat(tuples[tv]!!.isVector).isFalse() }
 
         Then("{tuple_var} = {tuple}") { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
         Then("{tuple_var} = {point}") { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }

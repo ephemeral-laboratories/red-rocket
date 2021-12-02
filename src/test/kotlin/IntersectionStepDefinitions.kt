@@ -155,7 +155,7 @@ class IntersectionStepDefinitions : En {
             assertThat(comps.reflection).isCloseTo(e, epsilon)
         }
         Then("comps.inside = {boolean}") { e: Boolean ->
-            assertThat(comps.inside).isEqualTo(e)
+            assertThat(comps.isInside).isEqualTo(e)
         }
         Then("comps.n1 = {real}") { e: Double ->
             assertThat(comps.n1).isEqualTo(e)

@@ -15,7 +15,7 @@ class CylinderLikeShapeStepDefinitions : En {
                 when (row[0]) {
                     "minimum" -> { shape.minimum = realFromString(row[1]) }
                     "maximum" -> { shape.maximum = realFromString(row[1]) }
-                    "closed" -> shape.closed = row[1] == "true"
+                    "closed" -> shape.isClosed = row[1] == "true"
                     else -> { unrecognisedRows.add(row) }
                 }
             }
@@ -31,7 +31,7 @@ class CylinderLikeShapeStepDefinitions : En {
             (shapes[sv]!! as CylinderLikeShape).maximum = v
         }
         Given("{shape_var}.closed ← {boolean}") { sv: String, v: Boolean ->
-            (shapes[sv]!! as CylinderLikeShape).closed = v
+            (shapes[sv]!! as CylinderLikeShape).isClosed = v
         }
 
         Then("{shape_var}.minimum = {real}") { sv: String, e: Double ->
@@ -41,7 +41,7 @@ class CylinderLikeShapeStepDefinitions : En {
             assertThat((shapes[sv]!! as CylinderLikeShape).maximum).isEqualTo(e)
         }
         Then("{shape_var}.closed = {boolean}") { sv: String, e: Boolean ->
-            assertThat((shapes[sv]!! as CylinderLikeShape).closed).isEqualTo(e)
+            assertThat((shapes[sv]!! as CylinderLikeShape).isClosed).isEqualTo(e)
         }
     }
 }
