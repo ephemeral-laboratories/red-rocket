@@ -6,15 +6,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val v: Double = 0.0) {
-    companion object {
-        fun hit(intersections: List<Intersection>): Intersection? {
-            return intersections
-                .filter { intersection -> intersection.t > 0 }
-                .minByOrNull { intersection -> intersection.t }
-        }
-    }
-
-    fun prepareComputations(ray: Ray, allIntersections: List<Intersection>): Precomputed {
+    fun prepareComputations(ray: Ray, allIntersections: Intersections): Precomputed {
         val point = ray.position(t)
         val eyeline = -ray.direction
         var normal = obj.worldNormalAt(point, this)

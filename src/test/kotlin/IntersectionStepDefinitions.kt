@@ -14,7 +14,7 @@ class IntersectionStepDefinitions : En {
     companion object {
         val namedIntersections = mutableMapOf<String, Intersection>()
         lateinit var comps: Intersection.Precomputed
-        lateinit var intersections: List<Intersection>
+        lateinit var intersections: Intersections
         var reflectance: Double = 0.0
     }
 
@@ -42,22 +42,27 @@ class IntersectionStepDefinitions : En {
         }
 
         When("intersections ← intersect\\({shape_var}, {ray_var})") { sv: String, rv: String ->
-            intersections = shapes[sv]!!.intersect(rays[rv]!!)
+            intersections = Intersections(shapes[sv]!!.intersect(rays[rv]!!))
         }
         When("intersections ← intersections\\({intersection_var})") { iv: String ->
-            intersections = listOf(namedIntersections[iv]!!)
+            intersections = Intersections(namedIntersections[iv]!!)
         }
         When("intersections ← intersections\\({intersection_var}, {intersection_var})") { iv1: String, iv2: String ->
-            intersections = listOf(namedIntersections[iv1]!!, namedIntersections[iv2]!!)
+            intersections = sequenceOf(namedIntersections[iv1]!!, namedIntersections[iv2]!!)
+                .toIntersections()
         }
         When("intersections ← intersections\\({intersection_var}, {intersection_var}, {intersection_var}, {intersection_var})") {
             iv1: String, iv2: String, iv3: String, iv4: String ->
-            intersections = listOf(namedIntersections[iv1]!!, namedIntersections[iv2]!!, namedIntersections[iv3]!!, namedIntersections[iv4]!!)
+            intersections = sequenceOf(
+                namedIntersections[iv1]!!, namedIntersections[iv2]!!,
+                namedIntersections[iv3]!!, namedIntersections[iv4]!!
+            )
+                .toIntersections()
         }
-        When("intersections ← {compact_intersections}") { cxs: List<Intersection> -> intersections = cxs }
+        When("intersections ← {compact_intersections}") { cxs: List<Intersection> -> intersections = Intersections(cxs) }
 
         When("{intersection_var} ← hit\\(intersections)") { iv: String ->
-            val i = Intersection.hit(intersections)
+            val i = intersections.hit()
             if (i != null) {
                 namedIntersections[iv] = i
             } else {
@@ -66,7 +71,7 @@ class IntersectionStepDefinitions : En {
         }
 
         When("comps ← prepare_computations\\({intersection_var}, {ray_var})") { iv: String, rv: String ->
-            comps = namedIntersections[iv]!!.prepareComputations(rays[rv]!!, listOf(namedIntersections[iv]!!))
+            comps = namedIntersections[iv]!!.prepareComputations(rays[rv]!!, Intersections(namedIntersections[iv]!!))
         }
         When("comps ← prepare_computations\\({intersection_var}, {ray_var}, intersections)") { iv: String, rv: String ->
             comps = namedIntersections[iv]!!.prepareComputations(rays[rv]!!, intersections)

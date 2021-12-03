@@ -52,8 +52,7 @@ data class Camera(val hSize: Int, val vSize: Int, val fieldOfView: Double) {
                     map { job -> async(Dispatchers.Default) { f(job) } }.joinAll()
                 }
 
-                (0 until vSize).forEach { y ->
-//                (0 until vSize).parallelForEach { y ->
+                (0 until vSize).parallelForEach { y ->
                     (0 until hSize).forEach { x ->
                         val ray = rayForPixel(x, y)
                         val color = world.colorAt(ray)

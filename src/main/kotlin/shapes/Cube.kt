@@ -2,6 +2,7 @@ package garden.ephemeral.rocket.shapes
 
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.Intersection
+import garden.ephemeral.rocket.Intersections
 import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Tuple.Companion.vector
@@ -9,16 +10,16 @@ import kotlin.Double.Companion.POSITIVE_INFINITY
 import kotlin.math.abs
 
 class Cube : Shape() {
-    override fun localIntersect(localRay: Ray): List<Intersection> {
+    override fun localIntersect(localRay: Ray): Intersections {
         val (xtMin, xtMax) = checkAxis(localRay.origin.x, localRay.direction.x)
         val (ytMin, ytMax) = checkAxis(localRay.origin.y, localRay.direction.y)
         val (ztMin, ztMax) = checkAxis(localRay.origin.z, localRay.direction.z)
         val tMin = maxOf(xtMin, ytMin, ztMin)
         val tMax = minOf(xtMax, ytMax, ztMax)
         if (tMin > tMax) {
-            return listOf()
+            return Intersections.None
         }
-        return listOf(Intersection(tMin, this), Intersection(tMax, this))
+        return Intersections(Intersection(tMin, this), Intersection(tMax, this))
     }
 
     private fun checkAxis(origin: Double, direction: Double): Pair<Double, Double> {

@@ -1,8 +1,6 @@
 package garden.ephemeral.rocket.shapes
 
-import garden.ephemeral.rocket.Intersection
-import garden.ephemeral.rocket.Ray
-import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.*
 import garden.ephemeral.rocket.util.ToStringBuilder
 
 class CSG(val operation: Operation, val left: Shape, val right: Shape) : Shape() {
@@ -11,10 +9,14 @@ class CSG(val operation: Operation, val left: Shape, val right: Shape) : Shape()
         right.parent = this
     }
 
-    override fun localIntersect(localRay: Ray): List<Intersection> {
-        val intersections = (left.intersect(localRay) + right.intersect(localRay))
-            .sortedBy { intersection -> intersection.t }
+    override fun localIntersect(localRay: Ray): Intersections {
+        val intersections = left.intersect(localRay).merge(right.intersect(localRay))
+
+        // XXX: For some reason we have to do this as a `List`. When I make an equivalent
+        //      method for `Sequence` the wrong number of results comes out somehow.
         return filterIntersections(intersections)
+            .asSequence()
+            .toIntersections()
     }
 
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
@@ -22,25 +24,25 @@ class CSG(val operation: Operation, val left: Shape, val right: Shape) : Shape()
     }
 
     fun filterIntersections(intersections: List<Intersection>): List<Intersection> {
-        // begin outside of both children
+        // begin outside both children
         var inL = false
         var inR = false
 
-        val result = mutableListOf<Intersection>()
-        intersections.forEach { intersection ->
-            val lHit = left.includes(intersection.obj)
-            if (operation.intersectionAllowed(lHit, inL, inR)) {
-                result.add(intersection)
-            }
+        return buildList {
+            intersections.forEach { intersection ->
+                val lHit = left.includes(intersection.obj)
+                if (operation.intersectionAllowed(lHit, inL, inR)) {
+                    add(intersection)
+                }
 
-            // depending on which object was hit, toggle either inl or inr
-            if (lHit) {
-                inL = !inL
-            } else {
-                inR = !inR
+                // depending on which object was hit, toggle either inl or inr
+                if (lHit) {
+                    inL = !inL
+                } else {
+                    inR = !inR
+                }
             }
         }
-        return result
     }
 
     override fun includes(shape: Shape): Boolean {

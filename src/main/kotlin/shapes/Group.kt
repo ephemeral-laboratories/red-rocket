@@ -1,16 +1,15 @@
 package garden.ephemeral.rocket.shapes
 
-import garden.ephemeral.rocket.Intersection
-import garden.ephemeral.rocket.Ray
-import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.*
 
 class Group : Shape() {
     val children = mutableListOf<Shape>()
 
-    override fun localIntersect(localRay: Ray): List<Intersection> {
+    override fun localIntersect(localRay: Ray): Intersections {
         return children
+            .asSequence()
             .flatMap { child -> child.intersect(localRay) }
-            .sortedBy { intersection -> intersection.t }
+            .toIntersections()
     }
 
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {

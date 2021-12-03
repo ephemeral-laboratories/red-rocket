@@ -2,6 +2,7 @@ package garden.ephemeral.rocket.shapes
 
 import garden.ephemeral.rocket.Constants
 import garden.ephemeral.rocket.Intersection
+import garden.ephemeral.rocket.Intersections
 import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.util.ToStringBuilder
 import kotlin.math.abs
@@ -11,11 +12,11 @@ abstract class CylinderLikeShape : Shape() {
     var maximum: Double = Double.POSITIVE_INFINITY
     var isClosed: Boolean = false
 
-    final override fun localIntersect(localRay: Ray): List<Intersection> {
+    final override fun localIntersect(localRay: Ray): Intersections {
         val xs = mutableListOf<Intersection>()
         intersectWall(localRay, xs)
         intersectCaps(localRay, xs)
-        return xs.toList()
+        return Intersections(xs.toList())
     }
 
     protected abstract fun intersectWall(localRay: Ray, xs: MutableList<Intersection>)

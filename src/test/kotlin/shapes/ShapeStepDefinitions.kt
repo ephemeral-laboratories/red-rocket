@@ -6,6 +6,7 @@ import assertk.assertions.isNull
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.intersections
 import garden.ephemeral.rocket.IntersectionStepDefinitions.Companion.namedIntersections
+import garden.ephemeral.rocket.Intersections
 import garden.ephemeral.rocket.MaterialStepDefinitions.Companion.material
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
@@ -130,7 +131,7 @@ class ShapeStepDefinitions : En {
         }
 
         When("intersections ← local_intersect\\({shape_var}, {ray_var})") { sv: String, rv: String ->
-            intersections = shapes[sv]!!.localIntersect(rays[rv]!!)
+            intersections = Intersections(shapes[sv]!!.localIntersect(rays[rv]!!))
         }
         When("{tuple_var} ← local_normal_at\\({shape_var}, {point})") { tv: String, sv: String, p: Tuple ->
             tuples[tv] = shapes[sv]!!.localNormalAt(p, dummyIntersection())

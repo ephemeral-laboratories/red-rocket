@@ -9,11 +9,11 @@ class World {
     var objects = mutableListOf<Shape>()
     var lights = mutableListOf<PointLight>()
 
-    fun intersect(ray: Ray): List<Intersection> {
-        return objects.stream()
-            .flatMap { obj -> obj.intersect(ray).stream() }
-            .sorted(Comparator.comparing(Intersection::t))
-            .toList()
+    fun intersect(ray: Ray): Intersections {
+        return objects
+            .asSequence()
+            .flatMap { obj -> obj.intersect(ray) }
+            .toIntersections()
     }
 
     fun isShadowed(point: Tuple, light: PointLight): Boolean {
@@ -22,7 +22,7 @@ class World {
         val direction = v.normalize()
         val r = Ray(point, direction)
         val intersections = intersect(r)
-        val h = Intersection.hit(intersections)
+        val h = intersections.hit()
         return h != null && h.t < distance
     }
 
@@ -50,7 +50,7 @@ class World {
 
     fun colorAt(ray: Ray, recursionsAllowed: Int = 5): Color {
         val intersections = intersect(ray)
-        val hit = Intersection.hit(intersections) ?: return black
+        val hit = intersections.hit() ?: return black
         val precomputed = hit.prepareComputations(ray, intersections)
         return shadeHit(precomputed, recursionsAllowed)
     }

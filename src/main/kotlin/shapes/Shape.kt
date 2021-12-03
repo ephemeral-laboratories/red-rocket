@@ -21,12 +21,12 @@ abstract class Shape {
         return normal
     }
 
-    fun intersect(worldRay: Ray): List<Intersection> {
+    fun intersect(worldRay: Ray): Intersections {
         val localRay = worldRay.transform(transform.inverse)
         return localIntersect(localRay)
     }
 
-    abstract fun localIntersect(localRay: Ray): List<Intersection>
+    abstract fun localIntersect(localRay: Ray): Intersections
 
     fun worldNormalAt(worldPoint: Tuple, intersection: Intersection): Tuple {
         val localPoint = worldToObject(worldPoint)
