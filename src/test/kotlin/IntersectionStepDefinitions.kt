@@ -83,6 +83,9 @@ class IntersectionStepDefinitions : En {
         When("^reflectance ← schlick\\(comps\\)") {
             reflectance = comps.schlick()
         }
+        When("^reflectance ← fresnel\\(comps\\)") {
+            reflectance = comps.fresnel()
+        }
 
         Then("{intersection_var} = {intersection_var}") { iv1: String, iv2: String ->
             assertThat(namedIntersections[iv1]!!).isEqualTo(namedIntersections[iv2]!!)

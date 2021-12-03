@@ -106,5 +106,25 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
             val r0 = ((n1 - n2) / (n1 + n2)).pow(2)
             return r0 + (1 - r0) * (1 - cos).pow(5)
         }
+
+        fun fresnel(): Double {
+            // Total internal reflection can only occur if n1 > n2
+            if (n1 > n2 && sin2ThetaT > 1.0) {
+                return 1.0
+            }
+
+            // Actual Fresnel equations. Terminology check:
+            // The plane of incidence is the plane made up of the ray and the surface normal
+            // p-polarised component is in the plane of incidence
+            // s-polarised component is perpendicular to the plane of incidence
+
+            val rs = ((n1 * cosThetaI - n2 * cosThetaT)
+                    / (n1 * cosThetaI + n2 * cosThetaT)).pow(2)
+            val rp = ((n2 * cosThetaI - n1 * cosThetaT)
+                    / (n2 * cosThetaI + n1 * cosThetaT)).pow(2)
+
+            // Big assumption that incoming light isn't polarised and outgoing light isn't either
+            return (rs + rp) / 2;
+        }
     }
 }
