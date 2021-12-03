@@ -3,7 +3,6 @@ package garden.ephemeral.rocket
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.black
 import garden.ephemeral.rocket.shapes.Shape
-import kotlin.math.sqrt
 
 class World {
     var objects = mutableListOf<Shape>()
@@ -38,7 +37,7 @@ class World {
             val refracted = refractedColor(precomputed, recursionsAllowed)
 
             val reflectRefract = if (material.reflective.isNonBlack && material.transparency.isNonBlack) {
-                val reflectance = precomputed.schlick()
+                val reflectance = precomputed.fresnel()
                 reflected * reflectance + refracted * (1.0 - reflectance)
             } else {
                 reflected + refracted
@@ -79,20 +78,13 @@ class World {
         }
 
         // Find the ratio of first index of refraction to the second.
-        // (Yup, this is inverted from the definition of Snell's Law.)
         val nRatio = comps.n1 / comps.n2
-        // cos(theta_i) is the same as the dot product of the two vectors
-        val cosI = comps.eyeline.dot(comps.normal)
-        // Find sin(theta_t)^2 via trigonometric identity
-        val sin2t = nRatio * nRatio * (1 - cosI * cosI)
-        if (sin2t > 1.0) {
+        if (comps.sin2ThetaT > 1.0) {
             // Total internal reflection
             return black
         }
 
-        // Find cos(theta_t) via trigonometric identity
-        val cosT = sqrt(1.0 - sin2t)
-        val direction = comps.normal * (nRatio * cosI - cosT) - comps.eyeline * nRatio
+        val direction = comps.normal * (nRatio * comps.cosThetaI - comps.cosThetaT) - comps.eyeline * nRatio
         val refractRay = Ray(comps.underPoint, direction)
         // Find the color of the refracted ray, making sure to multiply
         // by the transparency value to account for any opacity

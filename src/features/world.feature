@@ -249,4 +249,4 @@ Feature: World
     And intersections ← intersections(√2:shape1)
     When comps ← prepare_computations(intersections[0], ray, intersections)
     And color ← shade_hit(world, comps, 5)
-    Then color = linear_rgb_color(0.93391, 0.69643, 0.69243)
+    Then color = linear_rgb_color(0.933425, 0.698376, 0.693594)

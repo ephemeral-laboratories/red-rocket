@@ -167,30 +167,6 @@ Feature: Intersections
     And reflectance ← fresnel(comps)
     Then reflectance = 0.45931275795
 
-  Scenario: The Schlick approximation under total internal reflection
-    Given shape ← glass_sphere()
-    And ray ← ray(point(0, 0, √2/2), vector(0, 1, 0))
-    And intersections ← intersections(-√2/2:shape, √2/2:shape)
-    When comps ← prepare_computations(intersections[1], ray, intersections)
-    And reflectance ← schlick(comps)
-    Then reflectance = 1
-
-  Scenario: The Schlick approximation with a perpendicular viewing angle
-    Given shape ← glass_sphere()
-    And ray ← ray(point(0, 0, 0), vector(0, 1, 0))
-    And intersections ← intersections(-1:shape, 1:shape)
-    When comps ← prepare_computations(intersections[1], ray, intersections)
-    And reflectance ← schlick(comps)
-    Then reflectance = 0.04
-
-  Scenario: The Schlick approximation with small angle and n2 > n1
-    Given shape ← glass_sphere()
-    And ray ← ray(point(0, 0.99, -2), vector(0, 0, 1))
-    And intersections ← intersections(1.8589:shape)
-    When comps ← prepare_computations(intersections[0], ray, intersections)
-    And reflectance ← schlick(comps)
-    Then reflectance = 0.48873
-
   Scenario: An intersection can encapsulate `u` and `v`
     Given shape ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
     When intersection ← intersection_with_uv(3.5, shape, 0.2, 0.4)

@@ -80,9 +80,6 @@ class IntersectionStepDefinitions : En {
             comps = intersections[i].prepareComputations(rays[rv]!!, intersections)
         }
 
-        When("^reflectance ← schlick\\(comps\\)") {
-            reflectance = comps.schlick()
-        }
         When("^reflectance ← fresnel\\(comps\\)") {
             reflectance = comps.fresnel()
         }
