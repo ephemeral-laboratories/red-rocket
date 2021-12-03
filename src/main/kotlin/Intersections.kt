@@ -71,7 +71,7 @@ fun Sequence<Intersection>.toIntersections(): Intersections {
  * @return the merged list of intersections.
  */
 fun merge(vararg multiple: Intersections): Intersections {
-    return merge(listOf(*multiple))
+    return merge(sequenceOf(*multiple))
 }
 
 /**
@@ -83,7 +83,7 @@ fun merge(vararg multiple: Intersections): Intersections {
  * @param multiple the lists of intersections to merge.
  * @return the merged list of intersections.
  */
-fun merge(multiple: Iterable<Intersections>): Intersections {
+fun merge(multiple: Sequence<Intersections>): Intersections {
     class Candidate(val iterator: Iterator<Intersection>, var current: Intersection) : Comparable<Candidate> {
         fun next(): Boolean {
             return if (iterator.hasNext()) {

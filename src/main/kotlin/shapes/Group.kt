@@ -6,7 +6,11 @@ class Group : Shape() {
     val children = mutableListOf<Shape>()
 
     override fun localIntersect(localRay: Ray): Intersections {
-        return merge(children.map { child -> child.intersect(localRay) })
+        return merge(
+            children
+                .asSequence()
+                .map { child -> child.intersect(localRay) }
+        )
     }
 
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
