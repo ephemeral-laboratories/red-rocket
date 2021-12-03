@@ -1,8 +1,6 @@
 package garden.ephemeral.rocket.util
 
 import garden.ephemeral.rocket.Matrix
-import kotlin.math.cos
-import kotlin.math.sin
 
 object MuellerMatrices {
     val LinearPolarizerHorizontal = Matrix(
@@ -75,9 +73,9 @@ object MuellerMatrices {
         )
     )
 
-    fun forReferenceFrameRotation(radians: Double): Matrix {
-        val cos2Theta = cos(2.0 * radians)
-        val sin2Theta = sin(2.0 * radians)
+    fun forReferenceFrameRotation(angle: Angle): Matrix {
+        val cos2Theta = cos(2.0 * angle)
+        val sin2Theta = sin(2.0 * angle)
         return Matrix(
             4, 4,
             doubleArrayOf(
@@ -89,13 +87,13 @@ object MuellerMatrices {
         )
     }
 
-    fun forLinearRetarder(fastAxisRadians: Double, phaseDifferenceRadians: Double): Matrix {
-        val cos2Theta = cos(2.0 * fastAxisRadians)
-        val sin2Theta = sin(2.0 * fastAxisRadians)
+    fun forLinearRetarder(fastAxis: Angle, phaseDifference: Angle): Matrix {
+        val cos2Theta = cos(2.0 * fastAxis)
+        val sin2Theta = sin(2.0 * fastAxis)
         val cos22Theta = cos2Theta * cos2Theta
         val sin22Theta = sin2Theta * sin2Theta
-        val cosDelta = cos(phaseDifferenceRadians)
-        val sinDelta = sin(phaseDifferenceRadians)
+        val cosDelta = cos(phaseDifference)
+        val sinDelta = sin(phaseDifference)
         return Matrix(
             4, 4,
             doubleArrayOf(

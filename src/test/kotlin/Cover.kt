@@ -11,7 +11,7 @@ import garden.ephemeral.rocket.color.Color.Companion.grey
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
 import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.dsl.render
-import kotlin.math.PI
+import garden.ephemeral.rocket.util.deg
 
 fun main() = render {
     World {
@@ -50,7 +50,7 @@ fun main() = render {
                 diffuse = black
                 specular = black
             }
-            transform = translation(0.0, 0.0, 500.0) * rotationX(PI / 2)
+            transform = translation(0.0, 0.0, 500.0) * rotationX(90.deg)
         }
         Sphere {
             material = Material.build {
@@ -139,7 +139,7 @@ fun main() = render {
         }
     }
 
-    Camera(800, 800, 0.785) {
+    Camera(800, 800, 45.deg) {
         transform = viewTransform(point(-6.0, 6.0, -10.0), point(6.0, 0.0, 6.0), vector(-0.45, 1.0, 0.0))
     }
 }

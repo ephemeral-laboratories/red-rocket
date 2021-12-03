@@ -3,10 +3,11 @@ package garden.ephemeral.rocket
 import garden.ephemeral.rocket.Matrix.Companion.identity4x4
 import garden.ephemeral.rocket.Tuple.Companion.origin
 import garden.ephemeral.rocket.Tuple.Companion.point
+import garden.ephemeral.rocket.util.Angle
+import garden.ephemeral.rocket.util.tan
 import kotlinx.coroutines.*
-import kotlin.math.tan
 
-data class Camera(val hSize: Int, val vSize: Int, val fieldOfView: Double) {
+data class Camera(val hSize: Int, val vSize: Int, val fieldOfView: Angle) {
     private val halfWidth: Double
     private val halfHeight: Double
     val pixelSize: Double

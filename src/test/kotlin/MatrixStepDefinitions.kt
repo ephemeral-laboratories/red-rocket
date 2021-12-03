@@ -14,6 +14,7 @@ import garden.ephemeral.rocket.Transforms.Companion.viewTransform
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
+import garden.ephemeral.rocket.util.rad
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import kotlin.math.abs
@@ -35,9 +36,9 @@ class MatrixStepDefinitions : En {
                 "scaling" -> {
                     scaling(realFromString(params[0]), realFromString(params[1]), realFromString(params[2]))
                 }
-                "rotation_x" -> { rotationX(realFromString(params[0])) }
-                "rotation_y" -> { rotationY(realFromString(params[0])) }
-                "rotation_z" -> { rotationZ(realFromString(params[0])) }
+                "rotation_x" -> { rotationX(realFromString(params[0]).rad) }
+                "rotation_y" -> { rotationY(realFromString(params[0]).rad) }
+                "rotation_z" -> { rotationZ(realFromString(params[0]).rad) }
                 else -> {
                     throw IllegalArgumentException("Unknown transform: $string")
                 }

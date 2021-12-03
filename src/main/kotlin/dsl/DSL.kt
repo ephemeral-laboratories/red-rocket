@@ -4,6 +4,7 @@ import garden.ephemeral.rocket.*
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.importers.ObjFileParser
 import garden.ephemeral.rocket.shapes.*
+import garden.ephemeral.rocket.util.Angle
 import java.time.Duration
 import java.time.Instant
 import kotlin.io.path.Path
@@ -20,7 +21,7 @@ class RenderBuilder {
         world = WorldBuilder().apply(block).build()
     }
 
-    fun Camera(hSize: Int, vSize: Int, fieldOfView: Double, block: Camera.() -> Unit) {
+    fun Camera(hSize: Int, vSize: Int, fieldOfView: Angle, block: Camera.() -> Unit) {
         camera = Camera(hSize, vSize, fieldOfView).apply(block)
     }
 

@@ -11,22 +11,24 @@ import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.WorldStepDefinitions.Companion.world
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.isCloseTo
+import garden.ephemeral.rocket.util.Angle
+import garden.ephemeral.rocket.util.rad
 import io.cucumber.java8.En
 
 class CameraStepDefinitions : En {
     private var hSize: Int = 0
     private var vSize: Int = 0
-    private var fieldOfView: Double = 0.0
+    private var fieldOfView: Angle = 0.0.rad
     private lateinit var camera: Camera
     private lateinit var image: Canvas
 
     init {
         Given("hsize ← {int}") { v: Int -> hSize = v }
         Given("vsize ← {int}") { v: Int -> vSize = v }
-        Given("field_of_view ← {real}") { v: Double -> fieldOfView = v }
+        Given("field_of_view ← {real}") { v: Double -> fieldOfView = v.rad }
 
         Given("camera ← camera\\({int}, {int}, {real})") { h: Int, v: Int, fov: Double ->
-            camera = Camera(h, v, fov)
+            camera = Camera(h, v, fov.rad)
         }
         Given("camera ← camera\\(hsize, vsize, field_of_view)") {
             camera = Camera(hSize, vSize, fieldOfView)
@@ -50,7 +52,7 @@ class CameraStepDefinitions : En {
 
         Then("camera.hsize = {int}") { e: Int -> assertThat(camera.hSize).isEqualTo(e) }
         Then("camera.vsize = {int}") { e: Int -> assertThat(camera.vSize).isEqualTo(e) }
-        Then("camera.field_of_view = {real}") { e: Double -> assertThat(camera.fieldOfView).isEqualTo(e) }
+        Then("camera.field_of_view = {real}") { e: Double -> assertThat(camera.fieldOfView).isEqualTo(e.rad) }
 
         Then("camera.transform = {matrix_var}") { mv: String ->
             assertThat(camera.transform).isEqualTo(matrices[mv]!!)

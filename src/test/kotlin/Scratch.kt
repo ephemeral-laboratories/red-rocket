@@ -14,7 +14,8 @@ import garden.ephemeral.rocket.color.Color.Companion.linearRgb
 import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.dsl.render
 import garden.ephemeral.rocket.patterns.CheckersPattern
-import kotlin.math.PI
+import garden.ephemeral.rocket.util.deg
+import garden.ephemeral.rocket.util.times
 
 fun main() = render {
     World {
@@ -31,7 +32,7 @@ fun main() = render {
 
         Plane {
             name = "Left Wall"
-            transform = translation(0.0, 0.0, 5.0) * rotationX(PI / 2)
+            transform = translation(0.0, 0.0, 5.0) * rotationX(90.deg)
             material = Material.build {
                 specular = black
             }
@@ -39,18 +40,18 @@ fun main() = render {
 
         Plane {
             name = "Right Wall"
-            transform = translation(5.0, 0.0, 0.0) * rotationZ(PI / 2)
+            transform = translation(5.0, 0.0, 0.0) * rotationZ(90.deg)
             material = Material.build {
                 specular = black
             }
         }
 
         Group {
-            transform = translation(0.0, 1.0, 0.5) * rotationX(-PI / 4)
-            (1..6).forEach { n ->
+            transform = translation(0.0, 1.0, 0.5) * rotationX((-45).deg)
+            (0..5).forEach { n ->
                 Group {
-                    name = "Side $n"
-                    transform = rotationY(n * PI / 3)
+                    name = "Side ${n + 1}"
+                    transform = rotationY(n * 60.deg)
 
                     Sphere {
                         transform = translation(0.0, 0.0, -1.0) *
@@ -61,8 +62,8 @@ fun main() = render {
                         minimum = 0.0
                         maximum = 1.0
                         transform = translation(0.0, 0.0, -1.0) *
-                            rotationY(-PI / 6) *
-                            rotationZ(-PI / 2) *
+                            rotationY((-30).deg) *
+                            rotationZ((-90).deg) *
                             scaling(0.25, 1.0, 0.25)
                     }
                 }
@@ -91,7 +92,7 @@ fun main() = render {
         PointLight(point(-8.0, 10.0, -10.0), linearRgb(0.0, 1.0, 1.0))
     }
 
-    Camera(500, 250, PI / 3) {
+    Camera(500, 250, 60.deg) {
         transform = viewTransform(point(0.0, 1.0, -5.0), point(0.0, 0.5, 0.0), vector(0.0, 1.0, 0.0))
     }
 }

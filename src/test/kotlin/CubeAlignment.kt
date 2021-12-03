@@ -14,6 +14,7 @@ import garden.ephemeral.rocket.patterns.CubeMap
 import garden.ephemeral.rocket.patterns.UVAlignCheck
 import garden.ephemeral.rocket.shapes.Cube
 import garden.ephemeral.rocket.shapes.Shape
+import garden.ephemeral.rocket.util.deg
 import java.time.Duration
 import java.time.Instant
 import kotlin.io.path.Path
@@ -46,7 +47,7 @@ fun mappedCube(): Shape {
 
 fun main() {
 
-    val camera = Camera(800, 400, 0.8).apply {
+    val camera = Camera(800, 400, 45.deg).apply {
         transform = viewTransform(point(0.0, 0.0, -20.0), point(0.0, 0.0, 0.0), vector(0.0, 1.0, 0.0))
     }
 
@@ -61,28 +62,28 @@ fun main() {
 
         objects = mutableListOf(
             mappedCube().apply {
-                transform = translation(-6.0, 2.0, 0.0) * rotationX(0.7854) * rotationY(0.7854)
+                transform = translation(-6.0, 2.0, 0.0) * rotationX(45.deg) * rotationY(45.deg)
             },
             mappedCube().apply {
-                transform = translation(-2.0, 2.0, 0.0) * rotationX(0.7854) * rotationY(2.3562)
+                transform = translation(-2.0, 2.0, 0.0) * rotationX(45.deg) * rotationY(135.deg)
             },
             mappedCube().apply {
-                transform = translation(2.0, 2.0, 0.0) * rotationX(0.7854) * rotationY(3.927)
+                transform = translation(2.0, 2.0, 0.0) * rotationX(45.deg) * rotationY(225.deg)
             },
             mappedCube().apply {
-                transform = translation(6.0, 2.0, 0.0) * rotationX(0.7854) * rotationY(5.4978)
+                transform = translation(6.0, 2.0, 0.0) * rotationX(45.deg) * rotationY(315.deg)
             },
             mappedCube().apply {
-                transform = translation(-6.0, -2.0, 0.0) * rotationX(-0.7854) * rotationY(0.7854)
+                transform = translation(-6.0, -2.0, 0.0) * rotationX((-45).deg) * rotationY(45.deg)
             },
             mappedCube().apply {
-                transform = translation(-2.0, -2.0, 0.0) * rotationX(-0.7854) * rotationY(2.3562)
+                transform = translation(-2.0, -2.0, 0.0) * rotationX((-45).deg) * rotationY(135.deg)
             },
             mappedCube().apply {
-                transform = translation(2.0, -2.0, 0.0) * rotationX(-0.7854) * rotationY(3.927)
+                transform = translation(2.0, -2.0, 0.0) * rotationX((-45).deg) * rotationY(225.deg)
             },
             mappedCube().apply {
-                transform = translation(6.0, -2.0, 0.0) * rotationX(-0.7854) * rotationY(5.4978)
+                transform = translation(6.0, -2.0, 0.0) * rotationX((-45).deg) * rotationY(315.deg)
             }
         )
     }

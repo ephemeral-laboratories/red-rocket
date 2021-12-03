@@ -1,7 +1,8 @@
 package garden.ephemeral.rocket
 
-import kotlin.math.cos
-import kotlin.math.sin
+import garden.ephemeral.rocket.util.Angle
+import garden.ephemeral.rocket.util.cos
+import garden.ephemeral.rocket.util.sin
 
 class Transforms {
     companion object {
@@ -29,9 +30,9 @@ class Transforms {
             )
         }
 
-        fun rotationX(thetaRadians: Double): Matrix {
-            val cosR = cos(thetaRadians)
-            val sinR = sin(thetaRadians)
+        fun rotationX(theta: Angle): Matrix {
+            val cosR = cos(theta)
+            val sinR = sin(theta)
             return Matrix(
                 4, 4,
                 doubleArrayOf(
@@ -43,9 +44,9 @@ class Transforms {
             )
         }
 
-        fun rotationY(thetaRadians: Double): Matrix {
-            val cosR = cos(thetaRadians)
-            val sinR = sin(thetaRadians)
+        fun rotationY(theta: Angle): Matrix {
+            val cosR = cos(theta)
+            val sinR = sin(theta)
             return Matrix(
                 4, 4,
                 doubleArrayOf(
@@ -57,9 +58,9 @@ class Transforms {
             )
         }
 
-        fun rotationZ(thetaRadians: Double): Matrix {
-            val cosR = cos(thetaRadians)
-            val sinR = sin(thetaRadians)
+        fun rotationZ(theta: Angle): Matrix {
+            val cosR = cos(theta)
+            val sinR = sin(theta)
             return Matrix(
                 4, 4,
                 doubleArrayOf(
