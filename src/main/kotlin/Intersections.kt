@@ -61,7 +61,7 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
         fun add(intersection: Intersection): Builder {
             var insertionPoint = intersections.binarySearch(intersection, ordering)
             if (insertionPoint < 0) {
-                insertionPoint = -insertionPoint - 1;
+                insertionPoint = -insertionPoint - 1
             }
             intersections.add(insertionPoint, intersection)
             return this

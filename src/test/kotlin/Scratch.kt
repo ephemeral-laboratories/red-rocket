@@ -12,53 +12,52 @@ import garden.ephemeral.rocket.color.Color.Companion.black
 import garden.ephemeral.rocket.color.Color.Companion.grey
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
 import garden.ephemeral.rocket.color.Color.Companion.white
+import garden.ephemeral.rocket.dsl.render
 import garden.ephemeral.rocket.patterns.CheckersPattern
-import garden.ephemeral.rocket.shapes.Cylinder
-import garden.ephemeral.rocket.shapes.Group
-import garden.ephemeral.rocket.shapes.Plane
-import garden.ephemeral.rocket.shapes.Sphere
-import kotlin.io.path.Path
-import kotlin.io.path.writeText
 import kotlin.math.PI
 
-fun main() {
-    val floor = Plane().apply {
-        material = Material.build {
-            pattern = CheckersPattern(white, black).apply {
-                transform = scaling(0.25, 0.25, 0.25)
+fun main() = render {
+    World {
+        Plane {
+            name = "Floor"
+            material = Material.build {
+                pattern = CheckersPattern(white, black).apply {
+                    transform = scaling(0.25, 0.25, 0.25)
+                }
+                specular = black
+                reflective = grey(0.1)
             }
-            specular = black
-            reflective = grey(0.1)
         }
-    }
 
-    val leftWall = Plane().apply {
-        transform = translation(0.0, 0.0, 5.0) * rotationX(PI / 2)
-        material = Material.build {
-            specular = black
+        Plane {
+            name = "Left Wall"
+            transform = translation(0.0, 0.0, 5.0) * rotationX(PI / 2)
+            material = Material.build {
+                specular = black
+            }
         }
-    }
 
-    val rightWall = Plane().apply {
-        transform = translation(5.0, 0.0, 0.0) * rotationZ(PI / 2)
-        material = Material.build {
-            specular = black
+        Plane {
+            name = "Right Wall"
+            transform = translation(5.0, 0.0, 0.0) * rotationZ(PI / 2)
+            material = Material.build {
+                specular = black
+            }
         }
-    }
 
-    val middle = Group().apply {
-        transform = translation(0.0, 1.0, 0.5) * rotationX(-PI / 4)
-        (0..5).forEach { n ->
-            val side = Group().apply {
-                transform = rotationY(n * PI / 3)
-                addChild(
-                    Sphere().apply {
+        Group {
+            transform = translation(0.0, 1.0, 0.5) * rotationX(-PI / 4)
+            (1..6).forEach { n ->
+                Group {
+                    name = "Side $n"
+                    transform = rotationY(n * PI / 3)
+
+                    Sphere {
                         transform = translation(0.0, 0.0, -1.0) *
                             scaling(0.25, 0.25, 0.25)
                     }
-                )
-                addChild(
-                    Cylinder().apply {
+
+                    Cylinder {
                         minimum = 0.0
                         maximum = 1.0
                         transform = translation(0.0, 0.0, -1.0) *
@@ -66,43 +65,33 @@ fun main() {
                             rotationZ(-PI / 2) *
                             scaling(0.25, 1.0, 0.25)
                     }
-                )
+                }
             }
-            addChild(side)
         }
-    }
 
-    val right = Sphere().apply {
-        transform = translation(1.0, 0.5, -1.0) * scaling(0.5, 0.5, 0.5)
-        material = Material.build {
-            ambient = black
-            diffuse = black
-            reflective = grey(0.1)
-            transparency = grey(1.0)
-            refractiveIndex = 1.5
+        Sphere {
+            transform = translation(1.0, 0.5, -1.0) * scaling(0.5, 0.5, 0.5)
+            material = Material.build {
+                ambient = black
+                diffuse = black
+                reflective = grey(0.1)
+                transparency = grey(1.0)
+                refractiveIndex = 1.5
+            }
         }
-    }
 
-    val left = Sphere().apply {
-        transform = translation(-1.0, 0.5, -1.0) * scaling(0.5, 0.5, 0.5)
-        material = Material.build {
-            reflective = grey(1.0)
+        Sphere {
+            transform = translation(-1.0, 0.5, -1.0) * scaling(0.5, 0.5, 0.5)
+            material = Material.build {
+                reflective = grey(1.0)
+            }
         }
+
+        PointLight(point(-12.0, 10.0, -10.0), linearRgb(1.0, 0.0, 1.0))
+        PointLight(point(-8.0, 10.0, -10.0), linearRgb(0.0, 1.0, 1.0))
     }
 
-    val world = World().apply {
-        objects = mutableListOf(floor, leftWall, rightWall, middle, right, left)
-        lights = mutableListOf(
-            PointLight(point(-12.0, 10.0, -10.0), linearRgb(1.0, 0.0, 1.0)),
-            PointLight(point(-8.0, 10.0, -10.0), linearRgb(0.0, 1.0, 1.0))
-        )
-    }
-
-    val camera = Camera(500, 250, PI / 3).apply {
+    Camera(500, 250, PI / 3) {
         transform = viewTransform(point(0.0, 1.0, -5.0), point(0.0, 0.5, 0.0), vector(0.0, 1.0, 0.0))
     }
-
-    val canvas = camera.render(world)
-
-    Path("out.ppm").writeText(canvas.toPPM())
 }

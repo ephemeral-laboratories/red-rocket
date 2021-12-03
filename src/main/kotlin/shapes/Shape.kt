@@ -6,6 +6,7 @@ import garden.ephemeral.rocket.util.ToStringBuilder
 
 abstract class Shape {
     var parent: Shape? = null
+    var name: String = ""
     var transform: Matrix = Matrix.identity4x4
     var material: Material = Material.default
 
