@@ -2,6 +2,7 @@ package garden.ephemeral.rocket.shapes
 
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.Intersection
+import garden.ephemeral.rocket.Intersections
 import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Tuple.Companion.vector
@@ -9,7 +10,7 @@ import kotlin.math.abs
 import kotlin.math.sqrt
 
 class Cone : CylinderLikeShape() {
-    override fun intersectWall(localRay: Ray, xs: MutableList<Intersection>) {
+    override fun intersectWall(localRay: Ray, builder: Intersections.Builder) {
         val o = localRay.origin
         val d = localRay.direction
         val a = d.x * d.x - d.y * d.y + d.z * d.z
@@ -23,7 +24,7 @@ class Cone : CylinderLikeShape() {
             val t = -c / (2.0 * b)
             val y = o.y + t * d.y
             if (minimum < y && y < maximum) {
-                xs.add(Intersection(t, this))
+                builder.add(Intersection(t, this))
             }
         } else {
             val disc = b * b - 4 * a * c
@@ -42,12 +43,12 @@ class Cone : CylinderLikeShape() {
 
             val y0 = o.y + t0 * d.y
             if (minimum < y0 && y0 < maximum) {
-                xs.add(Intersection(t0, this))
+                builder.add(Intersection(t0, this))
             }
 
             val y1 = o.y + t1 * d.y
             if (minimum < y1 && y1 < maximum) {
-                xs.add(Intersection(t1, this))
+                builder.add(Intersection(t1, this))
             }
         }
     }

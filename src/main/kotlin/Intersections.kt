@@ -44,7 +44,33 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
          * Convenience constant to use for the case of no intersections.
          */
         val None = Intersections()
+
+        val ordering: Comparator<Intersection> = Comparator.comparing(Intersection::t)
     }
+
+    class Builder internal constructor() {
+        private val intersections = mutableListOf<Intersection>()
+
+        fun add(intersection: Intersection): Builder {
+            var insertionPoint = intersections.binarySearch(intersection, ordering)
+            if (insertionPoint < 0) {
+                insertionPoint = -insertionPoint - 1;
+            }
+            intersections.add(insertionPoint, intersection)
+            return this
+        }
+
+        internal fun build(): Intersections {
+            return Intersections(intersections.toList())
+        }
+    }
+}
+
+/**
+ * Factory method to build a list of intersections.
+ */
+fun buildIntersections(action: Intersections.Builder.() -> Unit): Intersections {
+    return Intersections.Builder().apply(action).build()
 }
 
 /**
@@ -56,7 +82,7 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
  */
 fun Sequence<Intersection>.toIntersections(): Intersections {
     return Intersections(
-        sortedBy { i -> i.t }
+        sortedBy(Intersection::t)
             .toList()
     )
 }
@@ -95,7 +121,7 @@ fun merge(multiple: Sequence<Intersections>): Intersections {
         }
 
         override fun compareTo(other: Candidate): Int {
-            return current.t.compareTo(other.current.t)
+            return Intersections.ordering.compare(current, other.current)
         }
     }
 
