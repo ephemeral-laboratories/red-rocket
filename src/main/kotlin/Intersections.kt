@@ -27,15 +27,41 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
     /**
      * Merges these intersections with another.
      *
+     * Uses the fact that both lists are already in order to optimise the number of
+     * elements which need to be checked.
+     *
      * @param other the other intersections.
      * @return the merged intersections.
      */
     fun merge(other: Intersections): Intersections {
-        // XXX: Could potentially optimise since we know both sides are already sorted,
-        //      but is there a Kotlin-friendly way to do this?
-        return asSequence()
-            .plus(other)
-            .toIntersections()
+        var indexLeft = 0
+        var indexRight = 0
+
+        return Intersections(
+            buildList {
+                while (indexLeft < this@Intersections.size && indexRight < other.size) {
+                    val left = this@Intersections[indexLeft]
+                    val right = other[indexRight]
+                    if (left.t <= right.t) {
+                        add(left)
+                        indexLeft++
+                    } else {
+                        add(right)
+                        indexRight++
+                    }
+                }
+
+                while (indexLeft < this@Intersections.size) {
+                    add(this@Intersections[indexLeft])
+                    indexLeft++
+                }
+
+                while (indexRight < other.size) {
+                    add(other[indexRight])
+                    indexRight++
+                }
+            }
+        )
     }
 
     // Delegate a bunch of stuff to `intersections`
