@@ -1,25 +1,34 @@
 package garden.ephemeral.rocket
 
+import garden.ephemeral.rocket.util.minus
+import garden.ephemeral.rocket.util.plus
+import garden.ephemeral.rocket.util.times
+import garden.ephemeral.rocket.util.unaryMinus
+import garden.ephemeral.rocket.util.yzxw
+import garden.ephemeral.rocket.util.zxyw
+import jdk.incubator.vector.DoubleVector
+import jdk.incubator.vector.VectorOperators
 import kotlin.math.sqrt
 
-data class Tuple(val cells: DoubleArray) {
+data class Tuple(val cells: DoubleVector) {
+    constructor(x: Double, y: Double, z: Double, w: Double) : this(doubleArrayOf(x, y, z, w))
+    private constructor(cells: DoubleArray) : this(DoubleVector.fromArray(DoubleVector.SPECIES_256, cells, 0))
+
     val isPoint: Boolean
         get() = w == 1.0
     val isVector: Boolean
         get() = w == 0.0
-    val magnitude: Double
-        get() = sqrt(cells.sumOf { cell -> cell * cell })
     val x: Double
-        get() = cells[0]
+        get() = cells.lane(0)
     val y: Double
-        get() = cells[1]
+        get() = cells.lane(1)
     val z: Double
-        get() = cells[2]
+        get() = cells.lane(2)
     val w: Double
-        get() = cells[3]
+        get() = cells.lane(3)
 
-    constructor(x: Double, y: Double, z: Double) : this(doubleArrayOf(x, y, z))
-    constructor(x: Double, y: Double, z: Double, w: Double) : this(doubleArrayOf(x, y, z, w))
+    val magnitude: Double
+        get() = sqrt(dot(this))
 
     companion object {
         val zero = vector(0.0, 0.0, 0.0)
@@ -29,79 +38,51 @@ data class Tuple(val cells: DoubleArray) {
         fun vector(x: Double, y: Double, z: Double): Tuple { return Tuple(x, y, z, 0.0) }
     }
 
-    private inline fun unaryOp(op: (Double) -> Double): Tuple {
-        val result = DoubleArray(4) { index -> op(cells[index]) }
-        return Tuple(result)
-    }
-
-    private inline fun binaryOp(their: Tuple, op: (Double, Double) -> Double): Tuple {
-        val result = DoubleArray(4) { index -> op(cells[index], their.cells[index]) }
-        return Tuple(result)
-    }
-
     operator fun plus(their: Tuple): Tuple {
-        return binaryOp(their) { a, b -> a + b }
+        return Tuple(cells + their.cells)
     }
 
     operator fun minus(their: Tuple): Tuple {
-        return binaryOp(their) { a, b -> a - b }
+        return Tuple(cells - their.cells)
     }
 
     operator fun unaryMinus(): Tuple {
-        return unaryOp { a -> -a }
+        return Tuple(-cells)
     }
 
     operator fun times(scalar: Double): Tuple {
-        return unaryOp { a -> a * scalar }
+        return Tuple(cells * scalar)
     }
 
     operator fun times(their: Tuple): Tuple {
-        return binaryOp(their) { a, b -> a * b }
+        return Tuple(cells * their.cells)
     }
 
     operator fun div(scalar: Double): Tuple {
-        return unaryOp { a -> a / scalar }
+        return Tuple(cells / scalar)
     }
 
     operator fun div(their: Tuple): Tuple {
-        return binaryOp(their) { a, b -> a / b }
+        return Tuple(cells / their.cells)
     }
 
     fun normalize(): Tuple {
-        return div(magnitude)
+        return this / magnitude
     }
 
     fun dot(their: Tuple): Double {
-        return x * their.x + y * their.y + z * their.z + w * their.w
+        return (cells * their.cells).reduceLanes(VectorOperators.ADD)
     }
 
     fun cross(their: Tuple): Tuple {
         if (!isVector || !their.isVector) {
             throw IllegalStateException("cross product only makes sense for vectors")
         }
-        return vector(
-            y * their.z - z * their.y,
-            z * their.x - x * their.z,
-            x * their.y - y * their.x
-        )
+
+        return Tuple((cells.yzxw * their.cells.zxyw) - (cells.zxyw * their.cells.yzxw))
     }
 
     fun reflect(normal: Tuple): Tuple {
         return this - normal * 2.0 * dot(normal)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Tuple
-
-        if (!cells.contentEquals(other.cells)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return cells.contentHashCode()
     }
 }

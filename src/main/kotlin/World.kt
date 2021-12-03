@@ -4,7 +4,6 @@ import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.black
 import garden.ephemeral.rocket.shapes.Shape
 import kotlin.math.sqrt
-import kotlin.streams.toList
 
 class World {
     var objects = mutableListOf<Shape>()

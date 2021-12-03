@@ -1,5 +1,8 @@
 package garden.ephemeral.rocket
 
+import jdk.incubator.vector.DoubleVector
+import jdk.incubator.vector.VectorOperators
+
 data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArray) {
     init {
         if (cells.size != rowCount * columnCount) {
@@ -70,6 +73,10 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
 
     fun getCell(rowIndex: Int, columnIndex: Int): Double {
         return cells[rowIndex * columnCount + columnIndex]
+    }
+
+    fun getRow(rowIndex: Int): DoubleVector {
+        return DoubleVector.fromArray(DoubleVector.SPECIES_256, cells, rowIndex * columnCount)
     }
 
     fun transpose(): Matrix {
@@ -159,6 +166,19 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
             }
         }
         return result
+    }
+
+    operator fun times(their: DoubleVector): DoubleVector {
+        if (columnCount != their.length()) {
+            throw IllegalArgumentException("Incompatible column count $columnCount with your row count ${their.length()}")
+        }
+
+        // XXX: Can we get this as a vector?
+        val result = DoubleArray(rowCount)
+        for (rowIndex in 0 until rowCount) {
+            result[rowIndex] = getRow(rowIndex).mul(their).reduceLanes(VectorOperators.ADD)
+        }
+        return DoubleVector.fromArray(DoubleVector.SPECIES_256, result, 0)
     }
 
     override fun equals(other: Any?): Boolean {

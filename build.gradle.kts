@@ -30,6 +30,10 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
 }
 
+tasks.withType<Test> {
+    jvmArgs("--add-modules=jdk.incubator.vector")
+}
+
 spotless {
     val ktlintVersion = "0.43.0"
     kotlin {
