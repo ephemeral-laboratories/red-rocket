@@ -24,46 +24,6 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
             .firstOrNull { intersection -> intersection.t > 0 }
     }
 
-    /**
-     * Merges these intersections with another.
-     *
-     * Uses the fact that both lists are already in order to optimise the number of
-     * elements which need to be checked.
-     *
-     * @param other the other intersections.
-     * @return the merged intersections.
-     */
-    fun merge(other: Intersections): Intersections {
-        var indexLeft = 0
-        var indexRight = 0
-
-        return Intersections(
-            buildList {
-                while (indexLeft < this@Intersections.size && indexRight < other.size) {
-                    val left = this@Intersections[indexLeft]
-                    val right = other[indexRight]
-                    if (left.t <= right.t) {
-                        add(left)
-                        indexLeft++
-                    } else {
-                        add(right)
-                        indexRight++
-                    }
-                }
-
-                while (indexLeft < this@Intersections.size) {
-                    add(this@Intersections[indexLeft])
-                    indexLeft++
-                }
-
-                while (indexRight < other.size) {
-                    add(other[indexRight])
-                    indexRight++
-                }
-            }
-        )
-    }
-
     // Delegate a bunch of stuff to `intersections`
     override val size: Int = intersections.size
     override fun isEmpty(): Boolean = intersections.isEmpty()
@@ -98,5 +58,66 @@ fun Sequence<Intersection>.toIntersections(): Intersections {
     return Intersections(
         sortedBy { i -> i.t }
             .toList()
+    )
+}
+
+/**
+ * Merges multiple lists of intersections.
+ *
+ * Uses the fact that both lists are already in order to optimise the number of
+ * elements which need to be checked.
+ *
+ * @param multiple the lists of intersections to merge.
+ * @return the merged list of intersections.
+ */
+fun merge(vararg multiple: Intersections): Intersections {
+    return merge(listOf(*multiple))
+}
+
+/**
+ * Merges multiple lists of intersections.
+ *
+ * Uses the fact that both lists are already in order to optimise the number of
+ * elements which need to be checked.
+ *
+ * @param multiple the lists of intersections to merge.
+ * @return the merged list of intersections.
+ */
+fun merge(multiple: Iterable<Intersections>): Intersections {
+    class Candidate(val iterator: Iterator<Intersection>, var current: Intersection) : Comparable<Candidate> {
+        fun next(): Boolean {
+            return if (iterator.hasNext()) {
+                current = iterator.next()
+                true
+            } else {
+                false
+            }
+        }
+
+        override fun compareTo(other: Candidate): Int {
+            return current.t.compareTo(other.current.t)
+        }
+    }
+
+    val candidates = sortedSetOf<Candidate>()
+
+    multiple.forEach { intersections ->
+        val iterator = intersections.iterator()
+        if (iterator.hasNext()) {
+            candidates.add(Candidate(iterator, iterator.next()))
+        }
+    }
+
+    return Intersections(
+        buildList {
+            while (candidates.isNotEmpty()) {
+                val nextCandidate = candidates.first()
+                candidates.remove(nextCandidate)
+                add(nextCandidate.current)
+                if (nextCandidate.next()) {
+                    candidates.add(nextCandidate)
+                }
+            }
+        }
     )
 }

@@ -10,7 +10,7 @@ class CSG(val operation: Operation, val left: Shape, val right: Shape) : Shape()
     }
 
     override fun localIntersect(localRay: Ray): Intersections {
-        val intersections = left.intersect(localRay).merge(right.intersect(localRay))
+        val intersections = merge(left.intersect(localRay), right.intersect(localRay))
 
         // XXX: For some reason we have to do this as a `List`. When I make an equivalent
         //      method for `Sequence` the wrong number of results comes out somehow.
