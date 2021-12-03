@@ -1,6 +1,9 @@
 package garden.ephemeral.rocket.shapes
 
-import garden.ephemeral.rocket.*
+import garden.ephemeral.rocket.Constants
+import garden.ephemeral.rocket.Intersection
+import garden.ephemeral.rocket.Intersections
+import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.util.ToStringBuilder
 import kotlin.math.abs
 
@@ -10,7 +13,7 @@ abstract class CylinderLikeShape : Shape() {
     var isClosed: Boolean = false
 
     final override fun localIntersect(localRay: Ray): Intersections {
-        return buildIntersections {
+        return Intersections.build {
             intersectWall(localRay, this)
             intersectCaps(localRay, this)
         }

@@ -46,6 +46,13 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
         val None = Intersections()
 
         val ordering: Comparator<Intersection> = Comparator.comparing(Intersection::t)
+
+        /**
+         * Factory method to build a list of intersections.
+         */
+        fun build(action: Builder.() -> Unit): Intersections {
+            return Builder().apply(action).build()
+        }
     }
 
     class Builder internal constructor() {
@@ -64,13 +71,6 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
             return Intersections(intersections.toList())
         }
     }
-}
-
-/**
- * Factory method to build a list of intersections.
- */
-fun buildIntersections(action: Intersections.Builder.() -> Unit): Intersections {
-    return Intersections.Builder().apply(action).build()
 }
 
 /**
