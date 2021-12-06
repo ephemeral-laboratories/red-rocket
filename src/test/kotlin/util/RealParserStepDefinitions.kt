@@ -1,6 +1,5 @@
 package garden.ephemeral.rocket.util
 
-import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
@@ -29,6 +28,3 @@ class RealParserStepDefinitions : En {
         }
     }
 }
-
-// Because for NaN, anything == NaN returns false
-private fun Assert<Double>.isNaN() = given { actual -> actual.isNaN() }

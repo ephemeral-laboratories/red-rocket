@@ -1,7 +1,9 @@
 package garden.ephemeral.rocket.util
 
 import assertk.assertThat
+import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
+import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.java8.En
@@ -58,35 +60,85 @@ class ComplexStepDefinitions : En {
             }
         }
 
-        When("z is {complex}") { complex: Complex ->
+        When("z ← {complex}") { complex: Complex ->
             z = complex
         }
-        When("z1 is {complex}") { complex: Complex ->
+        When("z1 ← {complex}") { complex: Complex ->
             z1 = complex
         }
-        When("z2 is {complex}") { complex: Complex ->
+        When("z2 ← {complex}") { complex: Complex ->
             z2 = complex
         }
 
+        When("z ← complex_from_polar\\({real}, {real})") { magnitude: Double, argument: Double ->
+            z = Complex.fromPolar(magnitude, argument.rad)
+        }
+
+        Then("z = {complex}") { expected: Complex ->
+            assertThat(z).isCloseTo(expected, epsilon)
+        }
         Then("z.to_string = {string}") { string: String ->
             assertThat(z.toString()).isEqualTo(string)
         }
 
         Then("z1 + z2 = {complex}") { complex: Complex ->
-            assertThat(z1 + z2).isEqualTo(complex)
+            assertThat(z1 + z2).isCloseTo(complex, epsilon)
+        }
+        Then("z + {real} = {complex}") { real: Double, complex: Complex ->
+            assertThat(z + real).isCloseTo(complex, epsilon)
+        }
+        Then("{real} + z = {complex}") { real: Double, complex: Complex ->
+            assertThat(real + z).isCloseTo(complex, epsilon)
         }
         Then("z1 - z2 = {complex}") { complex: Complex ->
-            assertThat(z1 - z2).isEqualTo(complex)
+            assertThat(z1 - z2).isCloseTo(complex, epsilon)
+        }
+        Then("z - {real} = {complex}") { real: Double, complex: Complex ->
+            assertThat(z - real).isCloseTo(complex, epsilon)
+        }
+        Then("{real} - z = {complex}") { real: Double, complex: Complex ->
+            assertThat(real - z).isCloseTo(complex, epsilon)
         }
         Then("z1 * z2 = {complex}") { complex: Complex ->
-            assertThat(z1 * z2).isEqualTo(complex)
+            assertThat(z1 * z2).isCloseTo(complex, epsilon)
+        }
+        Then("z * {real} = {complex}") { real: Double, complex: Complex ->
+            assertThat(z * real).isCloseTo(complex, epsilon)
+        }
+        Then("{real} * z = {complex}") { real: Double, complex: Complex ->
+            assertThat(real * z).isCloseTo(complex, epsilon)
         }
         Then("z1 \\/ z2 = {complex}") { complex: Complex ->
-            assertThat(z1 / z2).isEqualTo(complex)
+            assertThat(z1 / z2).isCloseTo(complex, epsilon)
+        }
+        Then("z \\/ {real} = {complex}") { real: Double, complex: Complex ->
+            assertThat(z / real).isCloseTo(complex, epsilon)
+        }
+        Then("{real} \\/ z = {complex}") { real: Double, complex: Complex ->
+            assertThat(real / z).isCloseTo(complex, epsilon)
         }
 
-        Then("z.conjugate = {complex}") { complex: Complex ->
-            assertThat(z.conjugate).isEqualTo(complex)
+        Then("z.conjugate = {complex}") { expected: Complex ->
+            assertThat(z.conjugate).isCloseTo(expected, epsilon)
+        }
+        Then("z.magnitude = {real}") { expected: Double ->
+            assertThat(z.magnitude).isCloseTo(expected, epsilon)
+        }
+        Then("z.argument = {real}") { expected: Double ->
+            assertThat(z.argument).isCloseTo(expected.rad, epsilon)
+        }
+        Then("z.argument = NaN") {
+            assertThat(z.argument.radians).isNaN()
+        }
+
+        Then("z^{real} = {complex}") { power: Double, complex: Complex ->
+            assertThat(z.pow(power)).isCloseTo(complex, epsilon)
+        }
+        Then("sqrt\\(z) = {complex}") { complex: Complex ->
+            assertThat(sqrt(z)).isCloseTo(complex, epsilon)
+        }
+        Then("sqrt\\({real}) = z") { real: Double ->
+            assertThat(complexSqrt(real)).isCloseTo(z, epsilon)
         }
     }
 }

@@ -1,25 +1,27 @@
 package garden.ephemeral.rocket.util
 
-import kotlin.math.sign
+import kotlin.math.*
 
-data class Complex(val real: Double, val imaginary: Double) {
+data class Complex(val real: Double, val imaginary: Double = 0.0) {
     val conjugate: Complex by lazy { Complex(real, -imaginary) }
-    val isZero: Boolean = this == zero
+    val isZero: Boolean = this == Zero
 
-    operator fun plus(addend: Complex): Any {
-        return Complex(real + addend.real, imaginary + addend.imaginary)
-    }
+    val squaredMagnitude: Double by lazy { real.pow(2) + imaginary.pow(2) }
+    val magnitude: Double by lazy { sqrt(squaredMagnitude) }
+    val argument: Angle by lazy { atan2(imaginary, real).rad }
 
-    operator fun minus(subtrahend: Complex): Complex {
-        return Complex(real - subtrahend.real, imaginary - subtrahend.imaginary)
-    }
+    operator fun plus(addend: Complex): Complex = Complex(real + addend.real, imaginary + addend.imaginary)
+    operator fun plus(addend: Double): Complex = Complex(real + addend, imaginary)
 
-    operator fun times(multiplier: Complex): Complex {
-        return Complex(
-            real * multiplier.real - imaginary * multiplier.imaginary,
-            real * multiplier.imaginary + imaginary * multiplier.real
-        )
-    }
+    operator fun minus(subtrahend: Complex): Complex = Complex(real - subtrahend.real, imaginary - subtrahend.imaginary)
+    operator fun minus(subtrahend: Double): Complex = Complex(real - subtrahend, imaginary)
+
+    operator fun times(multiplier: Complex): Complex = Complex(
+        real * multiplier.real - imaginary * multiplier.imaginary,
+        real * multiplier.imaginary + imaginary * multiplier.real
+    )
+
+    operator fun times(multiplier: Double): Complex = Complex(real * multiplier, imaginary * multiplier)
 
     operator fun div(divisor: Complex): Complex {
         if (divisor.isZero) {
@@ -37,7 +39,25 @@ data class Complex(val real: Double, val imaginary: Double) {
             assert(bottom.imaginary == 0.0)
         }
 
-        return Complex(top.real / bottom.real, top.imaginary / bottom.real)
+        return top / bottom.real
+    }
+
+    operator fun div(divisor: Double): Complex = Complex(real / divisor, imaginary / divisor)
+
+    fun squared(): Complex {
+        return times(this)
+    }
+
+    fun pow(value: Double): Complex {
+        // Complex number (a + bi) rewritten in polar form, {r = magnitude, θ = argument}
+        // is equivalent to the exponential form, a + bi = r e^(iθ)
+        // Then we take that to the power n, getting
+        // (a + bi)^n = (r e^(iθ))^n
+        //            = (r^n) (e^(iθ))^n
+        //            = (r^n) e^(inθ)
+        val resultR = magnitude.pow(value)
+        val resultTheta = argument * value
+        return fromPolar(resultR, resultTheta)
     }
 
     override fun toString(): String {
@@ -80,6 +100,44 @@ data class Complex(val real: Double, val imaginary: Double) {
     }
 
     companion object {
-        val zero = Complex(0.0, 0.0)
+        val Zero = Complex(0.0, 0.0)
+
+        /**
+         * Gets a complex number by its polar coordinates {r, θ}
+         *
+         * XXX: Is it worth also keeping the original values? Some formulae convert back to polar.
+         *
+         * @param r the radius. AKA `magnitude`.
+         * @param theta the angle. AKA `argument`.
+         */
+        fun fromPolar(r: Double, theta: Angle): Complex {
+            return Complex(r * cos(theta), r * sin(theta))
+        }
     }
 }
+
+/**
+ * Complex square root for value which may be negative.
+ * Considerably faster than creating a `Complex` just to square root it.
+ *
+ * @param value the input value.
+ * @return the square root.
+ */
+fun complexSqrt(value: Double): Complex {
+    return if (value >= 0.0) {
+        Complex(sqrt(value), 0.0)
+    } else {
+        Complex(0.0, sqrt(-value))
+    }
+}
+
+operator fun Double.plus(other: Complex): Complex = Complex(this) + other
+operator fun Double.minus(other: Complex): Complex = Complex(this) - other
+operator fun Double.times(other: Complex): Complex = Complex(this) * other
+operator fun Double.div(other: Complex): Complex = Complex(this) / other
+
+}
+
+fun sqrt(value: Complex): Complex = value.pow(0.5)
+
+val Double.i: Complex get() = Complex(0.0, this)
