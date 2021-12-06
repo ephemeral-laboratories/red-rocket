@@ -1,3 +1,4 @@
+#noinspection NonAsciiCharacters
 Feature: Complex Numbers
 
   Scenario Outline: Formatting a complex number
@@ -261,3 +262,45 @@ Feature: Complex Numbers
       | -1      | i             |
       | 81      | 9             |
       | -4      | 2i            |
+
+  Scenario Outline: Getting the sine of a complex number
+    When z ← complex(<value>)
+    Then sin(z) = complex(<expected sine>)
+
+    Examples:
+      | value      | expected sine            |
+      | 0          | 0                        |
+      | π          | 0                        |
+      | π/2        | 1                        |
+      | -π/2       | -1                       |
+      | π/2i       | 2.3012989i               |
+      | 0.3 + 0.4i | 0.31947873 + 0.39240669i |
+
+  Scenario Outline: Getting the cosine of a complex number
+    When z ← complex(<value>)
+    Then cos(z) = complex(<expected cosine>)
+
+    Examples:
+      | value      | expected cosine          |
+      | 0          | 1                        |
+      | π          | -1                       |
+      | π/2        | 0                        |
+      | -π/2       | -0                       |
+      | π/2i       | 2.50917847866            |
+      | 0.3 + 0.4i | 1.03278788 - 0.12138561i |
+
+  Scenario Outline: Getting the tangent of a complex number
+    When z ← complex(<value>)
+    Then tan(z) = complex(<expected tangent>)
+
+    Examples:
+      | value      | expected tangent         |
+      | 0          | 0                        |
+      | π          | 0                        |
+      # These cases _basically_ pass, they produce giant numbers which are practically infinity,
+      # but I will have to think about the correct behaviour of `isCloseTo` when the result is
+      # infinity. :(
+      #| π/2        | ∞                        |
+      #| -π/2       | -∞                       |
+      | π/2i       | 0.91715233i              |
+      | 0.3 + 0.4i | 0.26107368 + 0.41063348i |

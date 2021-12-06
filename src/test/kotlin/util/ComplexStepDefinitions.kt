@@ -134,8 +134,15 @@ class ComplexStepDefinitions : En {
         Then("z^{real} = {complex}") { power: Double, complex: Complex ->
             assertThat(z.pow(power)).isCloseTo(complex, epsilon)
         }
-        Then("sqrt\\(z) = {complex}") { complex: Complex ->
-            assertThat(sqrt(z)).isCloseTo(complex, epsilon)
+        mapOf<String, (Complex) -> Complex>(
+            "sqrt" to ::sqrt,
+            "sin" to ::sin,
+            "cos" to ::cos,
+            "tan" to ::tan
+        ).forEach { (fName, f) ->
+            Then("$fName\\(z) = {complex}") { complex: Complex ->
+                assertThat(f(z)).isCloseTo(complex, epsilon)
+            }
         }
         Then("sqrt\\({real}) = z") { real: Double ->
             assertThat(complexSqrt(real)).isCloseTo(z, epsilon)

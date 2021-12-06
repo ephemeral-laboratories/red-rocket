@@ -136,6 +136,23 @@ operator fun Double.minus(other: Complex): Complex = Complex(this) - other
 operator fun Double.times(other: Complex): Complex = Complex(this) * other
 operator fun Double.div(other: Complex): Complex = Complex(this) / other
 
+fun sin(value: Complex): Complex = Complex(
+    sin(value.real) * cosh(value.imaginary),
+    cos(value.real) * sinh(value.imaginary)
+)
+
+fun cos(value: Complex): Complex = Complex(
+    cos(value.real) * cosh(value.imaginary),
+    -sin(value.real) * sinh(value.imaginary)
+)
+
+fun tan(value: Complex): Complex {
+    // Just sin(value) / cos(value) but we can compute the individual parts once instead of twice
+    val cosR = cos(value.real)
+    val sinR = sin(value.real)
+    val coshI = cosh(value.imaginary)
+    val sinhI = sinh(value.imaginary)
+    return Complex(sinR * coshI, cosR * sinhI) / Complex(cosR * coshI, -sinR * sinhI)
 }
 
 fun sqrt(value: Complex): Complex = value.pow(0.5)
