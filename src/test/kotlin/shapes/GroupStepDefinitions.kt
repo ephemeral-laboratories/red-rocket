@@ -24,7 +24,6 @@ class GroupStepDefinitions : En {
         }
         When("{shape_var} ← second child of {shape_var}") { sv1: String, sv2: String ->
             shapes[sv1] = (shapes[sv2] as Group).children[1]
-            println("just set shapes[$sv1] to ${shapes[sv1]}")
         }
         When("{shape_var} ← third child of {shape_var}") { sv1: String, sv2: String ->
             shapes[sv1] = (shapes[sv2] as Group).children[2]
