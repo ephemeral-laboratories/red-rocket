@@ -116,8 +116,8 @@ Feature: Intersections
       | transform                 | translation(0, 0, -0.25) |
       | material.refractive_index | 2                        |
     And shape3 ← glass_sphere() with:
-      | transform | translation(0, 0, 0.25) |
-      | material.refractive_index | 2.5 |
+      | transform                 | translation(0, 0, 0.25) |
+      | material.refractive_index | 2.5                     |
     And ray ← ray(point(0, 0, -4), vector(0, 0, 1))
     And intersections ← intersections(2:shape1, 2.75:shape2, 3.25:shape3, 4.75:shape2, 5.25:shape3, 6:shape1)
     When comps ← prepare_computations(intersections[<index>], ray, intersections)
