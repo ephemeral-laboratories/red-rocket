@@ -1,6 +1,13 @@
 package garden.ephemeral.rocket.util
 
-import kotlin.math.*
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.cosh
+import kotlin.math.pow
+import kotlin.math.sign
+import kotlin.math.sin
+import kotlin.math.sinh
+import kotlin.math.sqrt
 
 data class Complex(val real: Double, val imaginary: Double = 0.0) {
     val conjugate: Complex by lazy { Complex(real, -imaginary) }
@@ -44,6 +51,8 @@ data class Complex(val real: Double, val imaginary: Double = 0.0) {
 
     operator fun div(divisor: Double): Complex = Complex(real / divisor, imaginary / divisor)
 
+    operator fun unaryMinus(): Complex = Complex(-real, -imaginary)
+
     fun squared(): Complex {
         return times(this)
     }
@@ -58,6 +67,17 @@ data class Complex(val real: Double, val imaginary: Double = 0.0) {
         val resultR = magnitude.pow(value)
         val resultTheta = argument * value
         return fromPolar(resultR, resultTheta)
+    }
+
+    fun pow(value: Int): Complex {
+        return when (value) {
+            0 -> Unit
+            1 -> this
+            2 -> this * this
+            else -> {
+                pow(value.toDouble())
+            }
+        }
     }
 
     override fun toString(): String {
@@ -101,6 +121,8 @@ data class Complex(val real: Double, val imaginary: Double = 0.0) {
 
     companion object {
         val Zero = Complex(0.0, 0.0)
+        val Unit = Complex(1.0, 0.0)
+        val ImaginaryUnit = Complex(0.0, 1.0)
 
         /**
          * Gets a complex number by its polar coordinates {r, θ}
