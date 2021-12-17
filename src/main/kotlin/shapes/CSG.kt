@@ -1,6 +1,11 @@
 package garden.ephemeral.rocket.shapes
 
-import garden.ephemeral.rocket.*
+import garden.ephemeral.rocket.Intersection
+import garden.ephemeral.rocket.Intersections
+import garden.ephemeral.rocket.Ray
+import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.merge
+import garden.ephemeral.rocket.toIntersections
 import garden.ephemeral.rocket.util.ToStringBuilder
 
 class CSG(val operation: Operation, val left: Shape, val right: Shape) : Shape() {

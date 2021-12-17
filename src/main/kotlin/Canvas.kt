@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.nio.file.Path
-import java.util.*
+import java.util.Scanner
 import java.util.regex.Pattern
 import java.util.stream.Stream
 import javax.imageio.ImageIO

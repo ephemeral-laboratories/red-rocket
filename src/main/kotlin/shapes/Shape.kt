@@ -1,6 +1,11 @@
 package garden.ephemeral.rocket.shapes
 
-import garden.ephemeral.rocket.*
+import garden.ephemeral.rocket.Intersection
+import garden.ephemeral.rocket.Intersections
+import garden.ephemeral.rocket.Material
+import garden.ephemeral.rocket.Matrix
+import garden.ephemeral.rocket.Ray
+import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.util.ToStringBuilder
 

@@ -2,7 +2,6 @@ package garden.ephemeral.rocket.patterns
 
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.color.Color
-import java.util.*
 import kotlin.math.abs
 
 class CubeMap(left: UVPattern, front: UVPattern, right: UVPattern, back: UVPattern, up: UVPattern, down: UVPattern) :
@@ -86,7 +85,7 @@ class CubeMap(left: UVPattern, front: UVPattern, right: UVPattern, back: UVPatte
 
         companion object {
             fun fromString(string: String): Face {
-                return valueOf(string.uppercase(Locale.ROOT))
+                return valueOf(string.uppercase())
             }
         }
     }

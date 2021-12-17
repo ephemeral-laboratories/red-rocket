@@ -113,7 +113,7 @@ class ColorStepDefinitions : En {
 }
 
 fun Assert<Color>.isCloseTo(expected: Color, delta: Double) {
-    this.matchesPredicate { c: Color -> c.isCloseTo(expected, delta) }
+    matchesPredicate { c: Color -> c.isCloseTo(expected, delta) }
 }
 
 fun Color.isCloseTo(their: Color, delta: Double): Boolean {

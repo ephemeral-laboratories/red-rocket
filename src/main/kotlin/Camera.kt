@@ -5,7 +5,11 @@ import garden.ephemeral.rocket.Tuple.Companion.origin
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.util.Angle
 import garden.ephemeral.rocket.util.tan
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.runBlocking
 
 data class Camera(val hSize: Int, val vSize: Int, val fieldOfView: Angle) {
     private val halfWidth: Double

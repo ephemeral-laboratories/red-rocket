@@ -1,9 +1,20 @@
 package garden.ephemeral.rocket.dsl
 
-import garden.ephemeral.rocket.*
+import garden.ephemeral.rocket.Camera
+import garden.ephemeral.rocket.Material
+import garden.ephemeral.rocket.Matrix
+import garden.ephemeral.rocket.PointLight
+import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.World
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.importers.ObjFileParser
-import garden.ephemeral.rocket.shapes.*
+import garden.ephemeral.rocket.shapes.Cone
+import garden.ephemeral.rocket.shapes.Cube
+import garden.ephemeral.rocket.shapes.Cylinder
+import garden.ephemeral.rocket.shapes.Group
+import garden.ephemeral.rocket.shapes.Plane
+import garden.ephemeral.rocket.shapes.Shape
+import garden.ephemeral.rocket.shapes.Sphere
 import garden.ephemeral.rocket.util.Angle
 import java.time.Duration
 import java.time.Instant

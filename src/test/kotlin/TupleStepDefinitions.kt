@@ -138,7 +138,7 @@ class TupleStepDefinitions : En {
 }
 
 fun Assert<Tuple>.isCloseTo(expected: Tuple, delta: Double) {
-    this.matchesPredicate { t: Tuple -> t.isCloseTo(expected, delta) }
+    matchesPredicate { t: Tuple -> t.isCloseTo(expected, delta) }
 }
 
 fun Tuple.isCloseTo(their: Tuple, delta: Double): Boolean {

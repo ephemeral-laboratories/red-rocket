@@ -35,9 +35,9 @@ tasks.withType<Test> {
 }
 
 spotless {
-    val ktlintVersion = "0.43.0"
+    val ktlintVersion = "0.43.2"
     kotlin {
-        ktlint(ktlintVersion).userData(mapOf("disabled_rules" to "no-wildcard-imports"))
+        ktlint(ktlintVersion)
     }
     kotlinGradle {
         ktlint(ktlintVersion)

@@ -2,7 +2,12 @@ package garden.ephemeral.rocket
 
 import assertk.Assert
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.isCloseTo
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isNotEqualTo
+import assertk.assertions.isTrue
+import assertk.assertions.matchesPredicate
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.rotationY
@@ -178,7 +183,7 @@ class MatrixStepDefinitions : En {
 }
 
 private fun Assert<Matrix>.isCloseTo(expected: Matrix, delta: Double) {
-    this.matchesPredicate { m: Matrix ->
+    matchesPredicate { m: Matrix ->
         if (!m.isCloseTo(expected, delta)) {
             System.err.println("FAIL: EXPECTED = $expected")
             System.err.println("FAIL: ACTUAL   = $m")

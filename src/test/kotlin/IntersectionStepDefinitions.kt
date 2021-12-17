@@ -1,7 +1,12 @@
 package garden.ephemeral.rocket
 
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.isCloseTo
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isGreaterThan
+import assertk.assertions.isLessThan
+import assertk.assertions.isNull
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapeVarRegex
