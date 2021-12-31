@@ -26,5 +26,4 @@ fun sin(angle: Angle): Double = sin(angle.radians)
 fun cos(angle: Angle): Double = cos(angle.radians)
 fun tan(angle: Angle): Double = tan(angle.radians)
 
-operator fun Double.times(angle: Angle) = angle * this
 operator fun Number.times(angle: Angle) = angle * this
