@@ -1,6 +1,6 @@
 Feature: Real Parser
 
-  Scenario Outline: Parses various values thrown at us in Jamis' examples
+  Scenario Outline: Parses various values thrown at us in Jamis' examples (<string>)
     Given a string to parse "<string>"
     Then parsing the string should produce <expected>
 
@@ -21,5 +21,6 @@ Feature: Real Parser
       | -π     | -3.14159265 |
       | π/2    |  1.57079632 |
       | -π/2   | -1.57079632 |
-      | ∞      | Infinity    |
+      | ∞      |  Infinity   |
       | -∞     | -Infinity   |
+      | √(π/6) |  0.72360125 |

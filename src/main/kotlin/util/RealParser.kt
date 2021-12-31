@@ -1,5 +1,11 @@
 package garden.ephemeral.rocket.util
 
+import org.antlr.v4.runtime.BailErrorStrategy
+import org.antlr.v4.runtime.BufferedTokenStream
+import org.antlr.v4.runtime.CharStreams
+import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.Token
+import kotlin.math.PI
 import kotlin.math.sqrt
 
 class RealParser {
@@ -9,12 +15,55 @@ class RealParser {
         const val realRegex = "(?:$realTermRegex(?:\\s*\\/\\s*$realTermRegex)?)"
 
         fun realFromString(string: String): Double {
-            // How long until we need a proper parser here just to parse numbers?
-            return if (string.contains("/")) {
-                val rational = string.split("/")
-                realTermFromString(rational[0].trim()) / realTermFromString(rational[1].trim())
-            } else {
-                realTermFromString(string)
+
+            val lexer = RealExpressionLexer(CharStreams.fromString(string))
+            val tokenStream = BufferedTokenStream(lexer)
+            val parser = RealExpressionParser(tokenStream)
+            parser.errorHandler = BailErrorStrategy()
+
+            return convert(parser.expression())
+        }
+
+        private fun convert(context: ParserRuleContext): Double {
+            return when (context) {
+                is RealExpressionParser.ExpressionContext -> convert(context.atom)
+                is RealExpressionParser.ParenthesizedExpressionContext -> convert(context.nested)
+                is RealExpressionParser.RationalExpressionContext ->
+                    if (context.atom != null) {
+                        convert(context.atom)
+                    } else {
+                        convert(context.numerator) / convert(context.denominator)
+                    }
+                is RealExpressionParser.SquareRootExpressionContext ->
+                    if (context.atom != null) {
+                        convert(context.atom)
+                    } else {
+                        sqrt(convert(context.nested ?: context.nestedInParentheses))
+                    }
+                is RealExpressionParser.MinusExpressionContext ->
+                    if (context.atom != null) {
+                        convert(context.atom)
+                    } else {
+                        -convert(context.nested)
+                    }
+                is RealExpressionParser.NPiExpressionContext ->
+                    if (context.atom != null) {
+                        convert(context.atom)
+                    } else {
+                        convert(context.n) * PI
+                    }
+                is RealExpressionParser.NumberContext -> convert(context.nested)
+                else -> throw UnsupportedNodeException(context)
+            }
+        }
+
+        private fun convert(token: Token): Double {
+            return when (token.type) {
+                RealExpressionLexer.INTEGER -> token.text.toInt().toDouble()
+                RealExpressionLexer.FLOAT -> token.text.toDouble()
+                RealExpressionLexer.PI -> PI
+                RealExpressionLexer.INFINITY -> Double.POSITIVE_INFINITY
+                else -> throw UnsupportedTokenException(token)
             }
         }
 
@@ -47,4 +96,10 @@ class RealParser {
             return n
         }
     }
+
+    class UnsupportedNodeException(val context: ParserRuleContext) :
+        UnsupportedOperationException("Unsupported node: <${context.text}> (${context.javaClass})")
+
+    class UnsupportedTokenException(val token: Token) :
+        UnsupportedOperationException("Unsupported token: <${token.text}> (${token.type})")
 }
