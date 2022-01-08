@@ -138,7 +138,11 @@ class ComplexStepDefinitions : En {
             "sqrt" to ::sqrt,
             "sin" to ::sin,
             "cos" to ::cos,
-            "tan" to ::tan
+            "tan" to ::tan,
+            "ln" to ::ln,
+            "arcsin" to ::arcsin,
+            "arccos" to ::arccos,
+            "arctan" to ::arctan
         ).forEach { (fName, f) ->
             Then("$fName\\(z) = {complex}") { complex: Complex ->
                 assertThat(f(z)).isCloseTo(complex, epsilon)

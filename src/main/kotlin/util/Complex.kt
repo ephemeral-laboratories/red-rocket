@@ -1,5 +1,6 @@
 package garden.ephemeral.rocket.util
 
+import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.cosh
@@ -178,5 +179,22 @@ fun tan(value: Complex): Complex {
 }
 
 fun sqrt(value: Complex): Complex = value.pow(0.5)
+
+fun ln(value: Complex): Complex {
+    var result = Complex(kotlin.math.ln(value.magnitude), atan2(value.imaginary, value.real))
+    while (result.imaginary > PI) result -= 2 * PI
+    while (result.imaginary <= -PI) result += 2 * PI
+    return result
+}
+
+fun arcsin(value: Complex): Complex =
+    -Complex.ImaginaryUnit * ln(sqrt(1.0 - value.pow(2)) + Complex.ImaginaryUnit * value)
+
+fun arccos(value: Complex): Complex =
+    (PI / 2) + Complex.ImaginaryUnit * ln(sqrt(1.0 - value.pow(2)) + Complex.ImaginaryUnit * value)
+
+fun arctan(value: Complex): Complex =
+    0.5 * Complex.ImaginaryUnit * ln(1.0 - Complex.ImaginaryUnit * value) -
+        0.5 * Complex.ImaginaryUnit * ln(1.0 + Complex.ImaginaryUnit * value)
 
 val Double.i: Complex get() = Complex(0.0, this)

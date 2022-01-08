@@ -285,7 +285,7 @@ Feature: Complex Numbers
       | 0          | 1                        |
       | π          | -1                       |
       | π/2        | 0                        |
-      | -π/2       | -0                       |
+      | -π/2       | 0                        |
       | π/2i       | 2.50917847866            |
       | 0.3 + 0.4i | 1.03278788 - 0.12138561i |
 
@@ -304,3 +304,50 @@ Feature: Complex Numbers
       #| -π/2       | -∞                       |
       | π/2i       | 0.91715233i              |
       | 0.3 + 0.4i | 0.26107368 + 0.41063348i |
+
+  Scenario Outline: Getting the natural logarithm of a complex number
+    When z ← complex(<value>)
+    Then ln(z) = complex(<expected logarithm>)
+
+    Examples:
+      | value | expected logarithm |
+      | 0     | -∞                 |
+      | 1     | 0                  |
+      | -1    | πi                 |
+      | i     | π/2 i              |
+      | -i    | -π/2 i             |
+      | 1 + i | 0.346573 + π/4 i   |
+
+  Scenario Outline: Getting the arcsine of a complex number
+    When z ← complex(<value>)
+    Then arcsin(z) = complex(<expected arcsine>)
+
+    Examples:
+      | value                    | expected arcsine |
+      | 0                        | 0                |
+      | 1                        | π/2              |
+      | -1                       | -π/2             |
+      | 2.3012989i               | π/2i             |
+      | 0.31947873 + 0.39240669i | 0.3 + 0.4i       |
+
+  Scenario Outline: Getting the arccosine of a complex number
+    When z ← complex(<value>)
+    Then arccos(z) = complex(<expected arccosine>)
+
+    Examples:
+      | value                    | expected arccosine |
+      | 1                        | 0                  |
+      | -1                       | π                  |
+      | 0                        | π/2                |
+      | 2.50917847866            | π/2i               |
+      | 1.03278788 - 0.12138561i | 0.3 + 0.4i         |
+
+  Scenario Outline: Getting the arctangent of a complex number
+    When z ← complex(<value>)
+    Then arctan(z) = complex(<expected arctangent>)
+
+    Examples:
+      | value                    | expected arctangent |
+      | 0                        | 0                   |
+      | 0.91715233i              | π/2i                |
+      | 0.26107368 + 0.41063348i | 0.3 + 0.4i          |
