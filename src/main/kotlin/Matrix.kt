@@ -16,7 +16,17 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         if (rowCount == 2 && columnCount == 2) {
             cells[0] * cells[3] - cells[1] * cells[2]
         } else {
-            (0 until columnCount).sumOf { columnIndex -> getCell(0, columnIndex) * cofactor(0, columnIndex) }
+            if (columnCount == 4) {
+                val a = getRow(0)
+                val b = DoubleVector.fromArray(
+                    DoubleVector.SPECIES_256,
+                    (0 until columnCount).map { columnIndex -> cofactor(0, columnIndex) }.toDoubleArray(),
+                    0
+                )
+                a.mul(b).reduceLanes(VectorOperators.ADD)
+            } else {
+                (0 until columnCount).sumOf { columnIndex -> getCell(0, columnIndex) * cofactor(0, columnIndex) }
+            }
         }
     }
 
