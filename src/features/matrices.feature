@@ -58,6 +58,18 @@ Feature: Matrices
       | 4 | 3 | 2 | 1 |
     Then A != B
 
+  Scenario: Multiplying a matrix by a scalar
+    Given the following matrix A:
+      | 1 | 2 | 3 | 4 |
+      | 5 | 6 | 7 | 8 |
+      | 9 | 8 | 7 | 6 |
+      | 5 | 4 | 3 | 2 |
+    Then A * 2 is the following 4x4 matrix:
+      |  2 |  4 |  6 |  8 |
+      | 10 | 12 | 14 | 16 |
+      | 18 | 16 | 14 | 12 |
+      | 10 |  8 |  6 |  4 |
+
   Scenario: Multiplying two matrices
     Given the following matrix A:
       | 1 | 2 | 3 | 4 |

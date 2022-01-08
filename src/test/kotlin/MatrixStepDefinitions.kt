@@ -125,6 +125,9 @@ class MatrixStepDefinitions : En {
         Then("{matrix_var} is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->
             assertThat(matrices[mv]!!).isCloseTo(matrixFromDataTable(dataTable), epsilon)
         }
+        Then("{matrix_var} * {real} is $theFollowingMatrix:") { mv: String?, scalar: Double, dataTable: DataTable ->
+            assertThat(matrices[mv]!! * scalar).isCloseTo(matrixFromDataTable(dataTable), epsilon)
+        }
         Then("{matrix_var} * {matrix_var} is $theFollowingMatrix:") { mv1: String?, mv2: String, dataTable: DataTable ->
             assertThat(matrices[mv1]!! * matrices[mv2]!!).isCloseTo(matrixFromDataTable(dataTable), epsilon)
         }

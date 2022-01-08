@@ -134,6 +134,12 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         }
     }
 
+    operator fun times(scalar: Double): Matrix {
+        val newCells = DoubleArray(cells.size)
+        cells.forEachIndexed { index, cell -> newCells[index] = cell * scalar }
+        return Matrix(rowCount, columnCount, newCells)
+    }
+
     operator fun times(their: Matrix): Matrix {
         if (columnCount != their.rowCount) {
             throw IllegalArgumentException("Incompatible column count $columnCount with your row count ${their.rowCount}")
