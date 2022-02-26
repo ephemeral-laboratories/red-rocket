@@ -58,3 +58,17 @@ Feature: Spectra
       | 400        | 1 | 2 | 3 | 4 |
       | 700        | 5 | 6 | 7 | 8 |
     Then spectrum[550] = tuple(3, 4, 5, 6)
+
+  Scenario: Adding two spectra
+    Given one spectrum with the following data:
+      | wavelength | value |
+      | 400        | 4     |
+      | 600        | 6     |
+    And another spectrum with the following data:
+      | wavelength | value |
+      | 500        | 5     |
+      | 700        | 7     |
+    When the two spectra are added
+    Then spectrum[400] = 8
+    And spectrum[600] = 12
+    And spectrum[700] = 14

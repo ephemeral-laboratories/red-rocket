@@ -12,6 +12,8 @@ import io.cucumber.java8.En
 
 class SpectrumStepDefinitions : En {
     lateinit var doubleSpectrum: Spectrum<Double>
+    lateinit var doubleSpectrum1: Spectrum<Double>
+    lateinit var doubleSpectrum2: Spectrum<Double>
     lateinit var tupleSpectrum: Spectrum<Tuple>
     var failure: IllegalArgumentException? = null
 
@@ -20,8 +22,20 @@ class SpectrumStepDefinitions : En {
             doubleSpectrum = spectrumFromDataTable(dataTable)
         }
 
+        Given("one spectrum with the following data:") { dataTable: DataTable ->
+            doubleSpectrum1 = spectrumFromDataTable(dataTable)
+        }
+
+        Given("another spectrum with the following data:") { dataTable: DataTable ->
+            doubleSpectrum2 = spectrumFromDataTable(dataTable)
+        }
+
         Given("a spectrum with the following tuple data:") { dataTable: DataTable ->
             tupleSpectrum = spectrumFromTupleDataTable(dataTable)
+        }
+
+        When("the two spectra are added") {
+            doubleSpectrum = doubleSpectrum1 + doubleSpectrum2
         }
 
         When("trying to create a spectrum with the following data:") { dataTable: DataTable ->

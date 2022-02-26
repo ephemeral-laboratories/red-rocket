@@ -14,6 +14,8 @@ class Spectrum<T>(
     private var data: List<SpectrumEntry<T>>,
     private var adapter: ValueAdapter<T>
 ) {
+    private val wavelengths get() = data.map { entry -> entry.wavelength }
+
     init {
         if (data.size < 2) {
             throw IllegalArgumentException("Must be at least two data points! Got: $data")
@@ -58,6 +60,14 @@ class Spectrum<T>(
 
         return adapter.add(entry1.value, adapter.times(m, wavelength - entry1.wavelength))
     }
+
+    operator fun plus(other: Spectrum<T>): Spectrum<T> = Spectrum(
+        (wavelengths.asSequence() + other.wavelengths.asSequence())
+            .sorted().distinct()
+            .map { wavelength -> SpectrumEntry(wavelength, adapter.add(this[wavelength], other[wavelength])) }
+            .toList(),
+        adapter
+    )
 
     data class SpectrumEntry<T>(
         val wavelength: Double,
