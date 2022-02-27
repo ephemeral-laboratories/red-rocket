@@ -72,3 +72,17 @@ Feature: Spectra
     Then spectrum[400] = 8
     And spectrum[600] = 12
     And spectrum[700] = 14
+
+  Scenario: Black body radiation
+    Given the spectrum of black body radiation at 5778 Kelvin
+    Then spectrum[380] = 67436936395798.0
+    And spectrum[500] = 82861471747495.05
+    And spectrum[780] = 55508985788916.53
+
+  Scenario: Converting a spectrum to CIE XYZ color
+    Given the spectrum of black body radiation at 5778 Kelvin
+    Then to_cie_xyz(spectrum) = cie_xyz_color(0.32644607014662996, 0.33575798782133853, 0.3377959420320315)
+
+  Scenario: Converting a spectrum to linear RGB color
+    Given the spectrum of black body radiation at 5778 Kelvin
+    Then to_linear_rgb(spectrum) = linear_rgb_color(0.37332512542188356, 0.3275099828794392, 0.30678762598616227)

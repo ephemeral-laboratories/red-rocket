@@ -5,8 +5,13 @@ import assertk.assertions.isCloseTo
 import assertk.assertions.isNotNull
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.color.CieXyzColor
+import garden.ephemeral.rocket.color.RgbColor
+import garden.ephemeral.rocket.color.isCloseTo
 import garden.ephemeral.rocket.isCloseTo
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
+import garden.ephemeral.rocket.util.Spectrum.Companion.toCieXyz
+import garden.ephemeral.rocket.util.Spectrum.Companion.toLinearRgb
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 
@@ -34,6 +39,10 @@ class SpectrumStepDefinitions : En {
             tupleSpectrum = spectrumFromTupleDataTable(dataTable)
         }
 
+        Given("the spectrum of black body radiation at {real} Kelvin") { temperature: Double ->
+            doubleSpectrum = Spectrum.forBlackBodyRadiation(temperature)
+        }
+
         When("the two spectra are added") {
             doubleSpectrum = doubleSpectrum1 + doubleSpectrum2
         }
@@ -56,6 +65,14 @@ class SpectrumStepDefinitions : En {
 
         Then("creation of the spectrum fails") {
             assertThat(failure).isNotNull()
+        }
+
+        Then("to_cie_xyz\\(spectrum\\) = {color}") { expected: CieXyzColor ->
+            assertThat(doubleSpectrum.toCieXyz()).isCloseTo(expected, epsilon)
+        }
+
+        Then("to_linear_rgb\\(spectrum\\) = {color}") { expected: RgbColor ->
+            assertThat(doubleSpectrum.toLinearRgb()).isCloseTo(expected, epsilon)
         }
     }
 
