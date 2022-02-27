@@ -1,0 +1,109 @@
+
+References
+----------
+-   :cite:`Broadbent2009a` : Broadbent, A. D. (2009). Calculation from the
+    Original Experimental Data of the Cie 1931 RGB Standard Observer Spectral
+    Chromaticity Co-Ordinates and Color Matching Functions. Québec, Canada:
+    Département de Génie Chimique, …. Retrieved June 12, 2014, from
+    http://www.cis.rit.edu/mcsl/research/1931.php
+-   :cite:`CVRLr` : CVRL. (n.d.). New CIE XYZ functions transformed from the
+    CIE (2006) LMS functions. Retrieved February 24, 2014, from
+    http://cvrl.ioo.ucl.ac.uk/ciexyzpr.htm
+-   :cite:`CVRLs` : CVRL. (n.d.). Older CIE Standards. Retrieved February 24,
+    2014, from http://cvrl.ioo.ucl.ac.uk/cie.htm
+-   :cite:`CVRLt` : CVRL. (n.d.). Stiles & Burch individual 10-deg colour
+    matching data. Retrieved February 24, 2014, from
+    http://www.cvrl.org/stilesburch10_ind.htm
+-   :cite:`CVRLw` : CVRL. (n.d.). Stiles & Burch individual 2-deg colour
+    matching data. Retrieved February 24, 2014, from
+    http://www.cvrl.org/stilesburch2_ind.htm
+-   :cite:`Machado2010a` : Machado, Gustavo Mello. (2010). A model for
+    simulation of color vision deficiency and a color contrast enhancement
+    technique for dichromats. (pp. 1-94).
+    http://www.lume.ufrgs.br/handle/10183/26950
+"""
+
+DATA_CMFS_STANDARD_OBSERVER: Dict = {
+    "CIE 1931 2 Degree Standard Observer": {
+    },
+    "CIE 1964 10 Degree Standard Observer": {
+    },
+    "CIE 2012 2 Degree Standard Observer": {
+    },
+    "CIE 2012 10 Degree Standard Observer": {
+    },
+}
+
+MSDS_CMFS_STANDARD_OBSERVER: (
+    LazyCaseInsensitiveMapping
+) = LazyCaseInsensitiveMapping(
+    {
+        "CIE 1931 2 Degree Standard Observer": partial(
+            XYZ_ColourMatchingFunctions,
+            DATA_CMFS_STANDARD_OBSERVER["CIE 1931 2 Degree Standard Observer"],
+            name="CIE 1931 2 Degree Standard Observer",
+            strict_name="CIE 1931 2$^\\circ$ Standard Observer",
+        ),
+        "CIE 1964 10 Degree Standard Observer": partial(
+            XYZ_ColourMatchingFunctions,
+            DATA_CMFS_STANDARD_OBSERVER[
+                "CIE 1964 10 Degree Standard Observer"
+            ],
+            name="CIE 1964 10 Degree Standard Observer",
+            strict_name="CIE 1964 10$^\\circ$ Standard Observer",
+        ),
+        "CIE 2012 2 Degree Standard Observer": partial(
+            XYZ_ColourMatchingFunctions,
+            DATA_CMFS_STANDARD_OBSERVER["CIE 2012 2 Degree Standard Observer"],
+            name="CIE 2012 2 Degree Standard Observer",
+            strict_name="CIE 2012 2$^\\circ$ Standard Observer",
+        ),
+        "CIE 2012 10 Degree Standard Observer": partial(
+            XYZ_ColourMatchingFunctions,
+            DATA_CMFS_STANDARD_OBSERVER[
+                "CIE 2012 10 Degree Standard Observer"
+            ],
+            name="CIE 2012 10 Degree Standard Observer",
+            strict_name="CIE 2012 10$^\\circ$ Standard Observer",
+        ),
+    }
+)
+MSDS_CMFS_STANDARD_OBSERVER.__doc__ = """
+Multi-spectral distributions of the *CIE* Standard Observer colour matching
+functions.
+References
+----------
+:cite:`CVRLr`, :cite:`CVRLs`
+Aliases:
+-   'cie_2_1931': 'CIE 1931 2 Degree Standard Observer'
+-   'cie_10_1964': 'CIE 1964 10 Degree Standard Observer'
+"""
+MSDS_CMFS_STANDARD_OBSERVER["cie_2_1931"] = MSDS_CMFS_STANDARD_OBSERVER[
+    "CIE 1931 2 Degree Standard Observer"
+]
+MSDS_CMFS_STANDARD_OBSERVER["cie_10_1964"] = MSDS_CMFS_STANDARD_OBSERVER[
+    "CIE 1964 10 Degree Standard Observer"
+]
+
+MSDS_CMFS = LazyCaseInsensitiveMapping(MSDS_CMFS_LMS)
+MSDS_CMFS.__doc__ = """
+Multi-spectral distributions of the colour matching functions.
+References
+----------
+:cite:`Broadbent2009a`, :cite:`CVRLr`, :cite:`CVRLs`, :cite:`CVRLt`,
+:cite:`CVRLu`, :cite:`CVRLw`, :cite:`Machado2010a`
+"""
+MSDS_CMFS.update(MSDS_CMFS_RGB)
+MSDS_CMFS.update(MSDS_CMFS_STANDARD_OBSERVER)
+© 2022 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About

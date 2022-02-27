@@ -2,6 +2,7 @@ package garden.ephemeral.rocket.util
 
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.color.CieXyzColor
+import garden.ephemeral.rocket.color.ColorMatchingFunction
 import garden.ephemeral.rocket.color.RgbColor
 import kotlin.math.PI
 import kotlin.math.exp
@@ -108,14 +109,13 @@ class Spectrum<T>(
             return Spectrum(values, ValueAdapter.forDouble)
         }
 
-        private val cieColorMatch by lazy { DataFiles.readCieXyzColorSpectrum("/cie_color_match.spectrum") }
-
         fun Spectrum<Double>.toCieXyz(): CieXyzColor {
             var total = CieXyzColor(0.0, 0.0, 0.0)
 
-            for (w in cieColorMatch.wavelengths) {
+            val colorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE.spectrum
+            for (w in colorMatchingFunction.wavelengths) {
                 val intensity = this[w]
-                val colorMatch = cieColorMatch[w]
+                val colorMatch = colorMatchingFunction[w]
                 total += colorMatch * intensity
             }
 
