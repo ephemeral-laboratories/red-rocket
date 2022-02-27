@@ -50,3 +50,4 @@ FLOAT: Digits '.' Digits;
 
 fragment Digits: [0-9]+;
 
+WS: ' '+ -> skip;
