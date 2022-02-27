@@ -108,7 +108,7 @@ class Spectrum<T>(
             return Spectrum(values, ValueAdapter.forDouble)
         }
 
-        private val cieColorMatch by lazy { DataFiles.readCieColorSpectrum("/cie_color_match.txt") }
+        private val cieColorMatch by lazy { DataFiles.readCieXyzColorSpectrum("/cie_color_match.spectrum") }
 
         fun Spectrum<Double>.toCieXyz(): CieXyzColor {
             var total = CieXyzColor(0.0, 0.0, 0.0)
