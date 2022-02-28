@@ -5,7 +5,7 @@ import assertk.assertThat
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import assertk.assertions.matchesPredicate
+import assertk.assertions.support.expected
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
@@ -112,8 +112,9 @@ class ColorStepDefinitions : En {
     }
 }
 
-fun Assert<Color>.isCloseTo(expected: Color, delta: Double) {
-    matchesPredicate { c: Color -> c.isCloseTo(expected, delta) }
+fun Assert<Color>.isCloseTo(expected: Color, delta: Double) = given { actual ->
+    if (actual.isCloseTo(expected, delta)) return
+    expected("close to: $expected but was: $actual")
 }
 
 fun Color.isCloseTo(their: Color, delta: Double): Boolean {

@@ -1,5 +1,6 @@
 package garden.ephemeral.rocket
 
+import garden.ephemeral.rocket.util.LUDecomposition
 import jdk.incubator.vector.DoubleVector
 import jdk.incubator.vector.VectorOperators
 
@@ -12,72 +13,33 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         }
     }
 
-    val determinant: Double by lazy {
-        if (rowCount == 2 && columnCount == 2) {
-            cells[0] * cells[3] - cells[1] * cells[2]
-        } else {
-            if (columnCount == 4) {
-                val a = getRow(0)
-                val b = DoubleVector.fromArray(
-                    DoubleVector.SPECIES_256,
-                    (0 until columnCount).map { columnIndex -> cofactor(0, columnIndex) }.toDoubleArray(),
-                    0
-                )
-                a.mul(b).reduceLanes(VectorOperators.ADD)
-            } else {
-                (0 until columnCount).sumOf { columnIndex -> getCell(0, columnIndex) * cofactor(0, columnIndex) }
-            }
-        }
-    }
+    private val luDecomposition by lazy { LUDecomposition(this) }
 
-    val inverse: Matrix by lazy {
-        if (!isInvertible) {
-            throw UnsupportedOperationException("This matrix is not invertible")
-        }
+    val determinant: Double by lazy { luDecomposition.determinant }
 
-        val inverseCells = DoubleArray(cells.size)
-        (0 until rowCount).forEach { rowIndex ->
-            (0 until columnCount).forEach { columnIndex ->
-                val c = cofactor(rowIndex, columnIndex)
-                inverseCells[columnIndex * rowCount + rowIndex] = c / determinant
-            }
-        }
-        Matrix(columnCount, rowCount, inverseCells)
-    }
+    val inverse: Matrix by lazy { luDecomposition.inverse }
 
-    val isInvertible: Boolean
-        get() = determinant != 0.0
+    val isInvertible: Boolean get() = luDecomposition.isNonSingular
 
     companion object {
-        val identity2x2 = Matrix(
-            2, 2,
-            doubleArrayOf(
-                1.0, 0.0,
-                0.0, 1.0
-            )
-        )
+        val identity2x2 = identityNxN(2)
+        val identity3x3 = identityNxN(3)
+        val identity4x4 = identityNxN(4)
 
-        val identity3x3 = Matrix(
-            3, 3,
-            doubleArrayOf(
-                1.0, 0.0, 0.0,
-                0.0, 1.0, 0.0,
-                0.0, 0.0, 1.0
-            )
-        )
-
-        val identity4x4 = Matrix(
-            4, 4,
-            doubleArrayOf(
-                1.0, 0.0, 0.0, 0.0,
-                0.0, 1.0, 0.0, 0.0,
-                0.0, 0.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 1.0
-            )
-        )
+        fun identityNxN(size: Int): Matrix {
+            val cells = DoubleArray(size * size)
+            for (i in 0 until size) {
+                cells[i * size + i] = 1.0
+            }
+            return Matrix(size, size, cells)
+        }
 
         fun fromLists(cells: List<List<Double>>): Matrix {
             return Matrix(cells.size, cells[0].size, cells.flatten().toDoubleArray())
+        }
+
+        fun fromArrays(cells: Array<DoubleArray>): Matrix {
+            return fromLists(cells.map { row -> row.toList() })
         }
     }
 
@@ -89,6 +51,14 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         return DoubleVector.fromArray(DoubleVector.SPECIES_256, cells, rowIndex * columnCount)
     }
 
+    fun toArrays(): Array<DoubleArray> {
+        return Array(rowCount) { row -> DoubleArray(columnCount) { col -> getCell(row, col) } }
+    }
+
+    fun toLists(): List<List<Double>> {
+        return toArrays().map { row -> row.toList() }
+    }
+
     fun transpose(): Matrix {
         val transposedCells = DoubleArray(cells.size)
         (0 until rowCount).forEach { rowIndex: Int ->
@@ -97,51 +67,6 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
             }
         }
         return Matrix(columnCount, rowCount, transposedCells)
-    }
-
-    fun submatrix(rowIndexToOmit: Int, columnIndexToOmit: Int): Matrix {
-        if (rowCount == 1 || columnCount == 1) {
-            throw IllegalStateException("We can't go any smaller")
-        }
-
-        val subRowCount = rowCount - 1
-        val subColumnCount = columnCount - 1
-
-        val subCells = DoubleArray(subRowCount * subColumnCount)
-        (0 until rowCount).forEach { rowIndex: Int ->
-            if (rowIndex != rowIndexToOmit) {
-                val subRowIndex = if (rowIndex > rowIndexToOmit) {
-                    rowIndex - 1
-                } else {
-                    rowIndex
-                }
-
-                (0 until columnCount).forEach { columnIndex: Int ->
-                    if (columnIndex != columnIndexToOmit) {
-                        val subColumnIndex = if (columnIndex > columnIndexToOmit) {
-                            columnIndex - 1
-                        } else {
-                            columnIndex
-                        }
-
-                        subCells[subRowIndex * subRowCount + subColumnIndex] = getCell(rowIndex, columnIndex)
-                    }
-                }
-            }
-        }
-        return Matrix(subRowCount, subColumnCount, subCells)
-    }
-
-    fun minor(row: Int, column: Int): Double {
-        return submatrix(row, column).determinant
-    }
-
-    fun cofactor(row: Int, column: Int): Double {
-        return minor(row, column) * if ((row + column) % 2 != 0) {
-            -1.0
-        } else {
-            1.0
-        }
     }
 
     operator fun times(scalar: Double): Matrix {

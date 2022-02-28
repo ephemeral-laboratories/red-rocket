@@ -78,10 +78,6 @@ class MatrixStepDefinitions : En {
         Given("{matrix_var} ← inverse\\({matrix_var})(.)") { mv1: String, mv2: String ->
             matrices[mv1] = matrices[mv2]!!.inverse
         }
-        Given("{matrix_var} ← submatrix\\({matrix_var}, {int}, {int})") {
-            mv1: String, mv2: String, row: Int, column: Int ->
-            matrices[mv1] = matrices[mv2]!!.submatrix(row, column)
-        }
         Given("{matrix_var} ← {transform}") { mv: String, m: Matrix ->
             matrices[mv] = m
         }
@@ -104,7 +100,7 @@ class MatrixStepDefinitions : En {
         }
 
         Then("{matrix_var}[{int}, {int}] = {real}") { v: String, r: Int, c: Int, e: Double ->
-            assertThat(matrices[v]!!.getCell(r, c)).isEqualTo(e)
+            assertThat(matrices[v]!!.getCell(r, c)).isCloseTo(e, epsilon)
         }
 
         Then("transpose\\({matrix_var}) is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->
@@ -158,16 +154,6 @@ class MatrixStepDefinitions : En {
             )
         }
 
-        Then("submatrix\\({matrix_var}, {int}, {int}) is $theFollowingMatrix:") {
-            mv: String, row: Int, column: Int, dataTable: DataTable ->
-            assertThat(matrices[mv]!!.submatrix(row, column)).isEqualTo(matrixFromDataTable(dataTable))
-        }
-        Then("minor\\({matrix_var}, {int}, {int}) = {real}") { mv: String, row: Int, column: Int, e: Double ->
-            assertThat(matrices[mv]!!.minor(row, column)).isCloseTo(e, epsilon)
-        }
-        Then("cofactor\\({matrix_var}, {int}, {int}) = {real}") { mv: String, row: Int, column: Int, e: Double ->
-            assertThat(matrices[mv]!!.cofactor(row, column)).isCloseTo(e, epsilon)
-        }
         Then("{matrix_var} is invertible") { mv: String ->
             assertThat(matrices[mv]!!.isInvertible).isTrue()
         }
