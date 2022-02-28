@@ -1,5 +1,6 @@
 package garden.ephemeral.rocket
 
+import garden.ephemeral.rocket.util.DoubleArrays
 import garden.ephemeral.rocket.util.LUDecomposition
 import jdk.incubator.vector.DoubleVector
 import jdk.incubator.vector.VectorOperators
@@ -47,16 +48,27 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         return cells[rowIndex * columnCount + columnIndex]
     }
 
-    fun getRow(rowIndex: Int): DoubleVector {
+    fun getRow(rowIndex: Int): DoubleArray {
+        val start = rowIndex * columnCount
+        val end = start + columnCount - 1
+        return cells.sliceArray(start..end)
+    }
+
+    private fun getRowAsVector(rowIndex: Int): DoubleVector {
         return DoubleVector.fromArray(DoubleVector.SPECIES_256, cells, rowIndex * columnCount)
     }
 
-    fun toArrays(): Array<DoubleArray> {
-        return Array(rowCount) { row -> DoubleArray(columnCount) { col -> getCell(row, col) } }
+    fun getRows(): List<DoubleArray> {
+        return (0 until rowCount).map { rowIndex -> getRow(rowIndex) }
     }
 
-    fun toLists(): List<List<Double>> {
-        return toArrays().map { row -> row.toList() }
+    fun getColumn(columnIndex: Int): DoubleArray {
+        val progression = columnIndex .. cells.lastIndex step columnCount
+        return cells.sliceArray(progression.toList())
+    }
+
+    fun getColumns(): List<DoubleArray> {
+        return (0 until columnCount).map { columnIndex -> getColumn(columnIndex) }
     }
 
     fun transpose(): Matrix {
@@ -70,8 +82,7 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
     }
 
     operator fun times(scalar: Double): Matrix {
-        val newCells = DoubleArray(cells.size)
-        cells.forEachIndexed { index, cell -> newCells[index] = cell * scalar }
+        val newCells = DoubleArrays.multiply(cells, scalar)
         return Matrix(rowCount, columnCount, newCells)
     }
 
@@ -81,11 +92,13 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         }
 
         val resultCells = DoubleArray(rowCount * their.columnCount)
-        (0 until rowCount).forEach { rowIndex ->
-            (0 until their.columnCount).forEach { columnIndex ->
-                resultCells[rowIndex * their.columnCount + columnIndex] = (0 until columnCount).sumOf { index ->
-                    getCell(rowIndex, index) * their.getCell(index, columnIndex)
-                }
+        val ourRows = getRows()
+        val theirColumns = their.getColumns()
+        var i = 0
+        ourRows.forEach { ourRow ->
+            theirColumns.forEach { theirColumn ->
+                resultCells[i] = DoubleArrays.dotProduct(ourRow, theirColumn)
+                i++
             }
         }
         return Matrix(rowCount, their.columnCount, resultCells)
@@ -101,10 +114,10 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         }
 
         val result = DoubleArray(rowCount)
-        for (rowIndex in 0 until rowCount) {
-            result[rowIndex] = (0 until columnCount).sumOf { index ->
-                getCell(rowIndex, index) * their[index]
-            }
+        var i = 0
+        getRows().forEach { ourRow ->
+            result[i] = DoubleArrays.dotProduct(ourRow, their)
+            i++
         }
         return result
     }
@@ -117,7 +130,7 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         // XXX: Can we get this as a vector?
         val result = DoubleArray(rowCount)
         for (rowIndex in 0 until rowCount) {
-            result[rowIndex] = getRow(rowIndex).mul(their).reduceLanes(VectorOperators.ADD)
+            result[rowIndex] = getRowAsVector(rowIndex).mul(their).reduceLanes(VectorOperators.ADD)
         }
         return DoubleVector.fromArray(DoubleVector.SPECIES_256, result, 0)
     }
