@@ -1,9 +1,5 @@
 # CIE Standard Illuminant F2
-#
-# Original data source:
-#     R. W. G. Hunt. Measuring Colour, 2nd ed.
-#     Ellis Horwood Limited, Chichester, 1991.
-
+# https://web.archive.org/web/20110725185449/http://www.colour.org/tc8-04/Data/F.txt
 380  1.18
 385  1.48
 390  1.84
