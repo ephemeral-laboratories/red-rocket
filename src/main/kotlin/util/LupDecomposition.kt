@@ -1,22 +1,5 @@
 package garden.ephemeral.rocket.util
 
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.util.LupDecomposition.NotSquareMatrixException
 import kotlin.math.abs
@@ -38,11 +21,10 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
     private val pivot: IntArray
 
     /** Parity of the permutation.  */
-    private var even = true
+    private val even: Boolean
 
     /** Singularity indicator.  */
-    var isSingular = false
-
+    val isSingular: Boolean
     val isNonSingular: Boolean
         get() = !isSingular
 
@@ -71,13 +53,16 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
         }
 
         val m = matrix.rowCount
-        lu = Array(m) { row -> DoubleArray(m) { col -> matrix.getCell(row, col) } }
+        lu = Array(m) { row -> DoubleArray(m) { col -> matrix[row, col] } }
         pivot = IntArray(m)
 
         // Initialize permutation array and parity
         for (row in 0 until m) {
             pivot[row] = row
         }
+
+        var isSingular = false
+        var even = true
 
         // Loop over columns
         for (col in 0 until m) {
@@ -114,7 +99,6 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
             if (abs(lu[max][col]) < singularityThreshold) {
                 isSingular = true
             } else {
-
                 // Pivot if necessary
                 if (max != col) {
                     var tmp: Double
@@ -138,9 +122,11 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
                 }
             }
         }
+
+        this.isSingular = isSingular
+        this.even = even
     }
 
-    /** {@inheritDoc}  */
     fun solve(b: DoubleArray): DoubleArray {
         val m = pivot.size
         if (b.size != m) {
@@ -176,7 +162,6 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
         return bp
     }
 
-    /** {@inheritDoc}  */
     fun solve(b: Matrix): Matrix {
         val m = pivot.size
         if (b.rowCount != m) {
@@ -194,7 +179,7 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
             val bpRow = bp[row]
             val pRow = pivot[row]
             for (col in 0 until nColB) {
-                bpRow[col] = b.getCell(pRow, col)
+                bpRow[col] = b[pRow, col]
             }
         }
 
