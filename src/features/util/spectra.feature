@@ -7,8 +7,12 @@ Feature: Spectra
       | 500        | 5     |
       | 600        | 6     |
       | 700        | 7     |
-    Then spectrum[400] = 4
-    And spectrum[600] = 6
+    Then spectrum contains data:
+      | wavelength | value |
+      | 400        | 4     |
+      | 500        | 5     |
+      | 600        | 6     |
+      | 700        | 7     |
 
   Scenario: Illegally creating a spectrum with no data
     When trying to create a spectrum with the following data:
@@ -72,6 +76,19 @@ Feature: Spectra
     Then spectrum[400] = 8
     And spectrum[600] = 12
     And spectrum[700] = 14
+
+  Scenario: Multiplying two spectra
+    Given one spectrum with the following data:
+      | wavelength | value |
+      | 400        | 4     |
+      | 600        | 6     |
+    And another spectrum with the following data:
+      | wavelength | value |
+      | 500        | 5     |
+      | 700        | 7     |
+    When the two spectra are multiplied
+    Then spectrum[400] = 16
+    And spectrum[600] = 36
 
   Scenario: Black body radiation
     Given the spectrum of black body radiation at 5778 Kelvin

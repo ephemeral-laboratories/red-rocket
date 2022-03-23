@@ -2,6 +2,7 @@ package garden.ephemeral.rocket.util
 
 import assertk.assertThat
 import assertk.assertions.isCloseTo
+import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.Tuple
@@ -46,6 +47,9 @@ class SpectrumStepDefinitions : En {
         When("the two spectra are added") {
             doubleSpectrum = doubleSpectrum1 + doubleSpectrum2
         }
+        When("the two spectra are multiplied") {
+            doubleSpectrum = doubleSpectrum1 * doubleSpectrum2
+        }
 
         When("trying to create a spectrum with the following data:") { dataTable: DataTable ->
             try {
@@ -61,6 +65,14 @@ class SpectrumStepDefinitions : En {
 
         Then("spectrum[{real}] = {tuple}") { wavelength: Double, expectedValue: Tuple ->
             assertThat(tupleSpectrum[wavelength]).isCloseTo(expectedValue, epsilon)
+        }
+
+        Then("spectrum contains data:") { dataTable: DataTable ->
+            val expectedSpectrum = spectrumFromDataTable(dataTable)
+            assertThat(doubleSpectrum.wavelengths).isEqualTo(expectedSpectrum.wavelengths)
+            for (wavelength in doubleSpectrum.wavelengths) {
+                assertThat(doubleSpectrum[wavelength]).isCloseTo(expectedSpectrum[wavelength], epsilon)
+            }
         }
 
         Then("creation of the spectrum fails") {

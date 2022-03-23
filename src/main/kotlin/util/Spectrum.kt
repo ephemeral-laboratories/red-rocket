@@ -20,7 +20,7 @@ class Spectrum<T>(
     private var data: List<SpectrumEntry<T>>,
     private var adapter: ValueAdapter<T>
 ) {
-    private val wavelengths get() = data.map { entry -> entry.wavelength }
+    val wavelengths get() = data.map { entry -> entry.wavelength }
 
     init {
         if (data.size < 2) {
@@ -71,6 +71,14 @@ class Spectrum<T>(
         (wavelengths.asSequence() + other.wavelengths.asSequence())
             .sorted().distinct()
             .map { wavelength -> SpectrumEntry(wavelength, adapter.add(this[wavelength], other[wavelength])) }
+            .toList(),
+        adapter
+    )
+
+    operator fun times(other: Spectrum<T>): Spectrum<T> = Spectrum(
+        (wavelengths.asSequence() + other.wavelengths.asSequence())
+            .sorted().distinct()
+            .map { wavelength -> SpectrumEntry(wavelength, adapter.times(this[wavelength], other[wavelength])) }
             .toList(),
         adapter
     )
@@ -137,6 +145,7 @@ class Spectrum<T>(
         fun add(x: T, y: T): T
         fun sub(x: T, y: T): T
         fun times(x: T, y: Double): T
+        fun times(x: T, y: T): T
 
         companion object {
             val forDouble = object : ValueAdapter<Double> {
@@ -149,12 +158,14 @@ class Spectrum<T>(
                 override fun add(x: Tuple, y: Tuple): Tuple = x + y
                 override fun sub(x: Tuple, y: Tuple): Tuple = x - y
                 override fun times(x: Tuple, y: Double): Tuple = x * y
+                override fun times(x: Tuple, y: Tuple): Tuple = x * y
             }
 
             val forCieXyzColor = object : ValueAdapter<CieXyzColor> {
                 override fun add(x: CieXyzColor, y: CieXyzColor): CieXyzColor = x + y
                 override fun sub(x: CieXyzColor, y: CieXyzColor): CieXyzColor = x - y
                 override fun times(x: CieXyzColor, y: Double): CieXyzColor = x * y
+                override fun times(x: CieXyzColor, y: CieXyzColor): CieXyzColor = x * y
             }
         }
     }
