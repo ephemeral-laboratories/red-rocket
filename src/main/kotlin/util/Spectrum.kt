@@ -119,6 +119,21 @@ class Spectrum<T>(
             return Spectrum(entries, ValueAdapter.forDouble)
         }
 
+        /**
+         * Divides this spectrum by another spectrum.
+         *
+         * @receiver a spectrum.
+         * @param other the other spectrum.
+         * @return the result of element-wise division by the other spectrum.
+         */
+        operator fun Spectrum<Double>.div(other: Spectrum<Double>): Spectrum<Double> = Spectrum(
+            (wavelengths.asSequence() + other.wavelengths.asSequence())
+                .sorted().distinct()
+                .map { wavelength -> SpectrumEntry(wavelength, this[wavelength] / other[wavelength]) }
+                .toList(),
+            adapter
+        )
+
         fun Spectrum<Double>.toCieXyz(): CieXyzColor {
             var total = CieXyzColor(0.0, 0.0, 0.0)
 

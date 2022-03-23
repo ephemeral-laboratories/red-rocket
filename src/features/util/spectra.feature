@@ -84,11 +84,24 @@ Feature: Spectra
       | 600        | 6     |
     And another spectrum with the following data:
       | wavelength | value |
-      | 500        | 5     |
-      | 700        | 7     |
+      | 500        | 0.5   |
+      | 700        | 0.7   |
     When the two spectra are multiplied
-    Then spectrum[400] = 16
-    And spectrum[600] = 36
+    Then spectrum[400] = 1.6
+    And spectrum[600] = 3.6
+
+  Scenario: Dividing two spectra
+    Given one spectrum with the following data:
+      | wavelength | value |
+      | 400        | 4     |
+      | 600        | 6     |
+    And another spectrum with the following data:
+      | wavelength | value |
+      | 500        | 0.5   |
+      | 700        | 0.7   |
+    When the first spectrum is divided by the second spectrum
+    Then spectrum[400] = 10
+    And spectrum[600] = 10
 
   Scenario: Black body radiation
     Given the spectrum of black body radiation at 5778 Kelvin

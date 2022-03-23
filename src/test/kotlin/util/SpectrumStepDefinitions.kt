@@ -11,6 +11,7 @@ import garden.ephemeral.rocket.color.RgbColor
 import garden.ephemeral.rocket.color.isCloseTo
 import garden.ephemeral.rocket.isCloseTo
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
+import garden.ephemeral.rocket.util.Spectrum.Companion.div
 import garden.ephemeral.rocket.util.Spectrum.Companion.toCieXyz
 import garden.ephemeral.rocket.util.Spectrum.Companion.toLinearRgb
 import io.cucumber.datatable.DataTable
@@ -49,6 +50,9 @@ class SpectrumStepDefinitions : En {
         }
         When("the two spectra are multiplied") {
             doubleSpectrum = doubleSpectrum1 * doubleSpectrum2
+        }
+        When("the first spectrum is divided by the second spectrum") {
+            doubleSpectrum = doubleSpectrum1 / doubleSpectrum2
         }
 
         When("trying to create a spectrum with the following data:") { dataTable: DataTable ->

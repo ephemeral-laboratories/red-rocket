@@ -1,7 +1,7 @@
 package garden.ephemeral.rocket
 
 import garden.ephemeral.rocket.util.DoubleArrays
-import garden.ephemeral.rocket.util.LUDecomposition
+import garden.ephemeral.rocket.util.LupDecomposition
 import jdk.incubator.vector.DoubleVector
 import jdk.incubator.vector.VectorOperators
 
@@ -14,13 +14,13 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         }
     }
 
-    private val luDecomposition by lazy { LUDecomposition(this) }
+    private val lupDecomposition by lazy { LupDecomposition(this) }
 
-    val determinant: Double by lazy { luDecomposition.determinant }
+    val determinant: Double by lazy { lupDecomposition.determinant }
 
-    val inverse: Matrix by lazy { luDecomposition.inverse }
+    val inverse: Matrix by lazy { lupDecomposition.inverse }
 
-    val isInvertible: Boolean get() = luDecomposition.isNonSingular
+    val isInvertible: Boolean get() = lupDecomposition.isNonSingular
 
     companion object {
         val identity2x2 = identityNxN(2)

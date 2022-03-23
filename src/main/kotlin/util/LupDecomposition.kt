@@ -18,7 +18,7 @@ package garden.ephemeral.rocket.util
  */
 
 import garden.ephemeral.rocket.Matrix
-import garden.ephemeral.rocket.util.LUDecomposition.NotSquareMatrixException
+import garden.ephemeral.rocket.util.LupDecomposition.NotSquareMatrixException
 import kotlin.math.abs
 
 /**
@@ -30,7 +30,7 @@ import kotlin.math.abs
  * @throws NotSquareMatrixException if the matrix is not square.
  * @see [Wikipedia](http://en.wikipedia.org/wiki/LU_decomposition)
  */
-class LUDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TOO_SMALL) {
+class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TOO_SMALL) {
     /** Entries of LU decomposition.  */
     private val lu: Array<DoubleArray>
 
@@ -111,7 +111,7 @@ class LUDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TOO
             }
 
             // Singularity check
-            if (abs(lu[max][col]) /*< singularityThreshold */ == 0.0) {
+            if (abs(lu[max][col]) < singularityThreshold) {
                 isSingular = true
             } else {
 
