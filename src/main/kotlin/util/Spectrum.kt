@@ -13,14 +13,15 @@ import kotlin.math.pow
  * or computing (interpolating and extrapolating) values which are between the
  * known values.
  *
- * @param data the pair-wise data, each pair being wavelength and value.
+ * @param data the list of entries for the spectrum.
  * @param adapter an adapter class specifying how to manipulate values.
  */
 class Spectrum<T>(
-    private var data: List<SpectrumEntry<T>>,
+    data: List<SpectrumEntry<T>>,
     private var adapter: ValueAdapter<T>
 ) {
-    val wavelengths get() = data.map { entry -> entry.wavelength }
+    val wavelengths = data.map { entry -> entry.wavelength }
+    val values = data.map { entry -> entry.value }
 
     init {
         if (data.size < 2) {
@@ -35,36 +36,33 @@ class Spectrum<T>(
     }
 
     operator fun get(wavelength: Double): T {
-        var lowerEntry: SpectrumEntry<T>? = null
-        for (i in data.indices) {
-            val entry = data[i]
-            val currentWavelength = entry.wavelength
-            val currentValue = entry.value
+        for (i in wavelengths.indices) {
+            val currentWavelength = wavelengths[i]
             if (currentWavelength == wavelength) {
-                return currentValue
+                return values[i]
             }
 
             if (currentWavelength > wavelength) {
-                return if (lowerEntry == null) {
-                    interpolate(wavelength, entry, data[1])
-                } else {
-                    interpolate(wavelength, lowerEntry, entry)
-                }
+                // Coercing to >= 1 handles the lower extrapolation case for free
+                return interpolate(wavelength, i.coerceAtLeast(1))
             }
-
-            lowerEntry = entry
         }
 
-        return interpolate(wavelength, data[data.size - 2], data[data.size - 1])
+        return interpolate(wavelength, wavelengths.lastIndex)
     }
 
-    private fun interpolate(wavelength: Double, entry1: SpectrumEntry<T>, entry2: SpectrumEntry<T>): T {
+    private fun interpolate(wavelength: Double, upperIndex: Int): T {
+        val wavelength1 = wavelengths[upperIndex - 1]
+        val value1 = values[upperIndex - 1]
+        val wavelength2 = wavelengths[upperIndex]
+        val value2 = values[upperIndex]
+
         // Compute slope between the two points
-        val dy = adapter.sub(entry2.value, entry1.value)
-        val dx = entry2.wavelength - entry1.wavelength
+        val dy = adapter.sub(value2, value1)
+        val dx = wavelength2 - wavelength1
         val m = adapter.times(dy, 1.0 / dx)
 
-        return adapter.add(entry1.value, adapter.times(m, wavelength - entry1.wavelength))
+        return adapter.add(value1, adapter.times(m, wavelength - wavelength1))
     }
 
     operator fun plus(other: Spectrum<T>): Spectrum<T> = Spectrum(
@@ -86,12 +84,16 @@ class Spectrum<T>(
     companion object {
         // Planck's constant (units: m² kg s⁻¹)
         private const val h: Double = 6.62607004E-34
+
         // Speed of light in a vacuum (units: m s⁻¹)
         private const val c: Double = 299_792_458.0
+
         // Boltzmann constant (units: m² kg s⁻² K⁻¹)
         private const val k: Double = 1.38064852E-23
+
         // Radiation constant c₁ = 2π h c² (units: m⁴ kg s⁻³ = W m²)
         private const val c1: Double = 2 * PI * h * c * c
+
         // Radiation constant c₂ = h c / k (units: m K)
         private const val c2: Double = h * c / k
 
@@ -102,7 +104,7 @@ class Spectrum<T>(
          * @return the spectrum.
          */
         fun forBlackBodyRadiation(temperature: Double): Spectrum<Double> {
-            val values = buildList {
+            val entries = buildList {
                 for (w in 380..780 step 5) {
                     val wavelength = w * 1E-9
 
@@ -114,7 +116,7 @@ class Spectrum<T>(
                     add(SpectrumEntry(w.toDouble(), p))
                 }
             }
-            return Spectrum(values, ValueAdapter.forDouble)
+            return Spectrum(entries, ValueAdapter.forDouble)
         }
 
         fun Spectrum<Double>.toCieXyz(): CieXyzColor {
