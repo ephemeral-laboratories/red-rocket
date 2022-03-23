@@ -1,0 +1,4 @@
+# Cornell box light reflectance
+# http://www.graphics.cornell.edu/online/box/data.html
+400 0.78
+700 0.78
