@@ -1,4 +1,4 @@
 # CIE Standard Illuminant E
 # Basically a trivial curve with a constant value.
-300   100.0
-830   100.0
+400   100.0
+700   100.0

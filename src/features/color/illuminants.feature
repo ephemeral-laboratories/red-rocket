@@ -21,3 +21,8 @@ Feature: Illuminants
       | CIE Standard Illuminant F10 | 1.48            |
       | CIE Standard Illuminant F11 | 1.29            |
       | CIE Standard Illuminant F12 | 1.19            |
+      | CIE Standard Illuminant HP1 | 3.10            |
+      | CIE Standard Illuminant HP2 | 4.33            |
+      | CIE Standard Illuminant HP3 | 12.97           |
+      | CIE Standard Illuminant HP4 | 24.69           |
+      | CIE Standard Illuminant HP5 | 14.95           |

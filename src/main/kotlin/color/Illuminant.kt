@@ -26,6 +26,12 @@ enum class Illuminant(val humanName: String, filename: String) {
     F10("CIE Standard Illuminant F10", "/illuminants/f10.spectrum"),
     F11("CIE Standard Illuminant F11", "/illuminants/f11.spectrum"),
     F12("CIE Standard Illuminant F12", "/illuminants/f12.spectrum"),
+
+    HP1("CIE Standard Illuminant HP1", "/illuminants/hp1.spectrum"),
+    HP2("CIE Standard Illuminant HP2", "/illuminants/hp2.spectrum"),
+    HP3("CIE Standard Illuminant HP3", "/illuminants/hp3.spectrum"),
+    HP4("CIE Standard Illuminant HP4", "/illuminants/hp4.spectrum"),
+    HP5("CIE Standard Illuminant HP5", "/illuminants/hp5.spectrum"),
     ;
 
     val spectrum by lazy { DataFiles.readDoubleSpectrum(filename) }

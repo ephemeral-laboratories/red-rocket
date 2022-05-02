@@ -9,7 +9,7 @@ class IlluminantStepDefinitions : En {
     lateinit var illuminant: Illuminant
 
     init {
-        Given("^(CIE Standard Illuminant [A-Z]\\d*)$") { humanName: String ->
+        Given("^(CIE Standard Illuminant [A-Z]+\\d*)$") { humanName: String ->
             illuminant = Illuminant.forHumanName(humanName)
         }
 
