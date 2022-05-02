@@ -100,7 +100,7 @@ class MatrixStepDefinitions : En {
         }
 
         Then("{matrix_var}[{int}, {int}] = {real}") { v: String, r: Int, c: Int, e: Double ->
-            assertThat(matrices[v]!!.getCell(r, c)).isCloseTo(e, epsilon)
+            assertThat(matrices[v]!![r, c]).isCloseTo(e, epsilon)
         }
 
         Then("transpose\\({matrix_var}) is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->

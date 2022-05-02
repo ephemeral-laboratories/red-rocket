@@ -44,7 +44,7 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         }
     }
 
-    fun getCell(rowIndex: Int, columnIndex: Int): Double {
+    operator fun get(rowIndex: Int, columnIndex: Int): Double {
         return cells[rowIndex * columnCount + columnIndex]
     }
 
@@ -75,7 +75,7 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: DoubleArra
         val transposedCells = DoubleArray(cells.size)
         (0 until rowCount).forEach { rowIndex: Int ->
             (0 until columnCount).forEach { columnIndex: Int ->
-                transposedCells[columnIndex * rowCount + rowIndex] = getCell(rowIndex, columnIndex)
+                transposedCells[columnIndex * rowCount + rowIndex] = this[rowIndex, columnIndex]
             }
         }
         return Matrix(columnCount, rowCount, transposedCells)
