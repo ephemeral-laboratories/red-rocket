@@ -1,6 +1,8 @@
 package garden.ephemeral.rocket.color
 
 import garden.ephemeral.rocket.util.DataFiles
+import garden.ephemeral.rocket.util.SpectralShape
+import garden.ephemeral.rocket.util.Spectrum
 
 enum class Illuminant(val humanName: String, filename: String) {
     /** [Illuminant A](https://en.wikipedia.org/wiki/Standard_illuminant#Illuminant_A) */
@@ -34,7 +36,11 @@ enum class Illuminant(val humanName: String, filename: String) {
     HP5("CIE Standard Illuminant HP5", "/illuminants/hp5.spectrum"),
     ;
 
-    val spectrum by lazy { DataFiles.readDoubleSpectrum(filename) }
+    val spectralData by lazy { DataFiles.readDoubleSpectralData(filename) }
+
+    fun spectrum(shape: SpectralShape = SpectralShape.Default): Spectrum<Double> {
+        return spectralData.createSpectrum(shape)
+    }
 
     companion object {
         fun forHumanName(humanName: String): Illuminant {

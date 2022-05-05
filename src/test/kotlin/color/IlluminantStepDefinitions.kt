@@ -3,6 +3,7 @@ package garden.ephemeral.rocket.color
 import assertk.assertThat
 import assertk.assertions.isCloseTo
 import garden.ephemeral.rocket.Constants.Companion.epsilon
+import garden.ephemeral.rocket.util.atWavelength
 import io.cucumber.java8.En
 
 class IlluminantStepDefinitions : En {
@@ -14,7 +15,7 @@ class IlluminantStepDefinitions : En {
         }
 
         Then("illuminant.spectrum[{real}] = {real}") { wavelength: Double, expected: Double ->
-            assertThat(illuminant.spectrum[wavelength]).isCloseTo(expected, epsilon)
+            assertThat(illuminant.spectrum().atWavelength(wavelength)).isCloseTo(expected, epsilon)
         }
     }
 }

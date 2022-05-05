@@ -1,7 +1,8 @@
 package garden.ephemeral.rocket.color
 
 import assertk.assertThat
-import garden.ephemeral.rocket.Constants
+import garden.ephemeral.rocket.Constants.Companion.epsilon
+import garden.ephemeral.rocket.util.atWavelength
 import io.cucumber.java8.En
 
 class ColorMatchingFunctionStepDefinitions : En {
@@ -13,7 +14,7 @@ class ColorMatchingFunctionStepDefinitions : En {
         }
 
         Then("cmf.spectrum[{real}] = {color}") { wavelength: Double, expected: CieXyzColor ->
-            assertThat(cmf.spectrum[wavelength]).isCloseTo(expected, Constants.epsilon)
+            assertThat(cmf.spectrum().atWavelength(wavelength)).isCloseTo(expected, epsilon)
         }
     }
 }
