@@ -1,5 +1,8 @@
 package garden.ephemeral.rocket.color
 
+import garden.ephemeral.rocket.util.ImmutableDoubleArray
+import garden.ephemeral.rocket.util.immutableDoubleArrayOf
+
 data class RgbColor(val r: Double, val g: Double, val b: Double) : Color() {
     override val isBlack: Boolean get() = r == 0.0 && g == 0.0 && b == 0.0
 
@@ -29,11 +32,11 @@ data class RgbColor(val r: Double, val g: Double, val b: Double) : Color() {
     }
 
     override fun toCieXyz(): CieXyzColor {
-        val (x, y, z) = ColorTransforms.linearRgbToCieXyz(doubleArrayOf(r, g, b))
+        val (x, y, z) = ColorTransforms.linearRgbToCieXyz(immutableDoubleArrayOf(r, g, b))
         return CieXyzColor(x, y, z)
     }
 
-    override fun toLinearRgbDoubles(): DoubleArray {
-        return doubleArrayOf(r, g, b)
+    override fun toLinearRgbDoubles(): ImmutableDoubleArray {
+        return immutableDoubleArrayOf(r, g, b)
     }
 }

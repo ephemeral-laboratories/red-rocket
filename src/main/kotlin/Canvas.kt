@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.nio.file.Path
-import java.util.Scanner
+import java.util.*
 import java.util.regex.Pattern
 import java.util.stream.Stream
 import javax.imageio.ImageIO
@@ -27,7 +27,7 @@ class Canvas(val width: Int, val height: Int) {
 
     fun setPixel(x: Int, y: Int, color: Color) {
         val offset = getOffset(x, y)
-        System.arraycopy(color.toLinearRgbDoubles(), 0, data, offset, 3)
+        color.toLinearRgbDoubles().copyInto(data, offset, 0, 3)
     }
 
     fun fill(color: Color) {
@@ -35,7 +35,7 @@ class Canvas(val width: Int, val height: Int) {
         (0 until height).forEach { y ->
             (0 until width).forEach { x ->
                 val offset = getOffset(x, y)
-                System.arraycopy(doubles, 0, data, offset, 3)
+                doubles.copyInto(data, offset, 0, 3)
             }
         }
     }

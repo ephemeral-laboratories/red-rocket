@@ -5,7 +5,7 @@ import garden.ephemeral.rocket.Matrix
 object MuellerMatrices {
     val LinearPolarizerHorizontal = Matrix(
         4, 4,
-        doubleArrayOf(
+        immutableDoubleArrayOf(
             0.5, 0.5, 0.0, 0.0,
             0.5, 0.5, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0,
@@ -15,7 +15,7 @@ object MuellerMatrices {
 
     val LinearPolarizerVertical = Matrix(
         4, 4,
-        doubleArrayOf(
+        immutableDoubleArrayOf(
             0.5, -0.5, 0.0, 0.0,
             -0.5, 0.5, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0,
@@ -25,7 +25,7 @@ object MuellerMatrices {
 
     val LinearPolarizerPlus45 = Matrix(
         4, 4,
-        doubleArrayOf(
+        immutableDoubleArrayOf(
             0.5, 0.0, 0.5, 0.0,
             0.0, 0.0, 0.0, 0.0,
             0.5, 0.0, 0.5, 0.0,
@@ -35,7 +35,7 @@ object MuellerMatrices {
 
     val LinearPolarizerMinus45 = Matrix(
         4, 4,
-        doubleArrayOf(
+        immutableDoubleArrayOf(
             0.5, 0.0, -0.5, 0.0,
             0.0, 0.0, 0.0, 0.0,
             -0.5, 0.0, 0.5, 0.0,
@@ -45,7 +45,7 @@ object MuellerMatrices {
 
     val QuarterWavePlateFastAxisVertical = Matrix(
         4, 4,
-        doubleArrayOf(
+        immutableDoubleArrayOf(
             1.0, 0.0, 0.0, 0.0,
             0.0, 1.0, 0.0, 0.0,
             0.0, 0.0, 0.0, -1.0,
@@ -55,7 +55,7 @@ object MuellerMatrices {
 
     val QuarterWavePlateFastAxisHorizontal = Matrix(
         4, 4,
-        doubleArrayOf(
+        immutableDoubleArrayOf(
             1.0, 0.0, 0.0, 0.0,
             0.0, 1.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 1.0,
@@ -65,7 +65,7 @@ object MuellerMatrices {
 
     val HalfWavePlate = Matrix(
         4, 4,
-        doubleArrayOf(
+        immutableDoubleArrayOf(
             1.0, 0.0, 0.0, 0.0,
             0.0, 1.0, 0.0, 0.0,
             0.0, 0.0, -1.0, 0.0,
@@ -78,7 +78,7 @@ object MuellerMatrices {
         val sin2Theta = sin(2.0 * angle)
         return Matrix(
             4, 4,
-            doubleArrayOf(
+            immutableDoubleArrayOf(
                 1.0, 0.0, 0.0, 0.0,
                 0.0, cos2Theta, sin2Theta, 0.0,
                 0.0, -sin2Theta, cos2Theta, 0.0,
@@ -96,7 +96,7 @@ object MuellerMatrices {
         val sinDelta = sin(phaseDifference)
         return Matrix(
             4, 4,
-            doubleArrayOf(
+            immutableDoubleArrayOf(
                 1.0, 0.0, 0.0, 0.0,
                 0.0, cos22Theta + sin22Theta * cosDelta, cos2Theta * sin2Theta * (1 - cosDelta), sin2Theta * sinDelta,
                 0.0, cos2Theta * sin2Theta * (1 - cosDelta), cos22Theta * cosDelta + sin22Theta, -cos2Theta * sinDelta,

@@ -1,5 +1,7 @@
 package garden.ephemeral.rocket.color
 
+import garden.ephemeral.rocket.util.ImmutableDoubleArray
+import garden.ephemeral.rocket.util.immutableDoubleArrayOf
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -15,11 +17,11 @@ abstract class Color {
 
     abstract operator fun times(their: Color): Color
 
-    abstract fun toLinearRgbDoubles(): DoubleArray
+    abstract fun toLinearRgbDoubles(): ImmutableDoubleArray
 
     abstract fun toCieXyz(): CieXyzColor
 
-    fun toSRgbDoubles(): DoubleArray {
+    fun toSRgbDoubles(): ImmutableDoubleArray {
         fun convert(v: Double): Double {
             return if (v <= 0.0031308) {
                 12.92 * v
@@ -28,7 +30,7 @@ abstract class Color {
             }
         }
         val (r, g, b) = toLinearRgbDoubles()
-        return doubleArrayOf(convert(r), convert(g), convert(b))
+        return immutableDoubleArrayOf(convert(r), convert(g), convert(b))
     }
 
     fun toSRgbInts(): IntArray {

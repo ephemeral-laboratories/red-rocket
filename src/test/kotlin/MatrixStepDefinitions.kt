@@ -187,9 +187,11 @@ fun Matrix.isCloseTo(their: Matrix, delta: Double): Boolean {
         return false
     }
 
-    cells.forEachIndexed { index, value ->
-        if (abs(their.cells[index] - value) > delta) {
-            return false
+    for (rowIndex in 0 until rowCount) {
+        for (columnIndex in 0 until columnCount) {
+            if (abs(this[rowIndex, columnIndex] - their[rowIndex, columnIndex]) > delta) {
+                return false
+            }
         }
     }
 
