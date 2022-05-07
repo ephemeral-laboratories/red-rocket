@@ -1,4 +1,4 @@
-package garden.ephemeral.rocket.util
+package garden.ephemeral.rocket.spectra
 
 data class SpectralShape(
     val min: Double,

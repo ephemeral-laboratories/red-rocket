@@ -3,7 +3,7 @@ package garden.ephemeral.rocket.color
 import assertk.assertThat
 import assertk.assertions.isCloseTo
 import garden.ephemeral.rocket.Constants.Companion.epsilon
-import garden.ephemeral.rocket.util.atWavelength
+import garden.ephemeral.rocket.spectra.atWavelength
 import io.cucumber.java8.En
 
 class IlluminantStepDefinitions : En {

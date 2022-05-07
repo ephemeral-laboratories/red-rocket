@@ -1,4 +1,4 @@
-package garden.ephemeral.rocket.util
+package garden.ephemeral.rocket.spectra
 
 import assertk.assertThat
 import assertk.assertions.isCloseTo
@@ -11,21 +11,20 @@ import garden.ephemeral.rocket.color.CieXyzColor
 import garden.ephemeral.rocket.color.RgbColor
 import garden.ephemeral.rocket.color.isCloseTo
 import garden.ephemeral.rocket.isCloseTo
+import garden.ephemeral.rocket.util.ImmutableDoubleArray
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
-import garden.ephemeral.rocket.util.Spectrum.Companion.div
-import garden.ephemeral.rocket.util.Spectrum.Companion.toCieXyz
-import garden.ephemeral.rocket.util.Spectrum.Companion.toLinearRgb
+import garden.ephemeral.rocket.util.toImmutableDoubleArray
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import kotlin.math.abs
 
 class SpectrumStepDefinitions : En {
-    lateinit var spectralShape: SpectralShape
-    lateinit var spectralShape2: SpectralShape
-    lateinit var doubleSpectrum: Spectrum<Double>
-    lateinit var doubleSpectrum1: Spectrum<Double>
-    lateinit var doubleSpectrum2: Spectrum<Double>
-    lateinit var tupleSpectrum: Spectrum<Tuple>
+    private lateinit var spectralShape: SpectralShape
+    private lateinit var spectralShape2: SpectralShape
+    private lateinit var doubleSpectrum: DoubleSpectrum
+    private lateinit var doubleSpectrum1: DoubleSpectrum
+    private lateinit var doubleSpectrum2: DoubleSpectrum
+    private lateinit var tupleSpectrum: TupleSpectrum
     var failure: IllegalArgumentException? = null
 
     init {
@@ -56,7 +55,7 @@ class SpectrumStepDefinitions : En {
         }
 
         Given("the spectrum of black body radiation at {real} Kelvin") { temperature: Double ->
-            doubleSpectrum = Spectrum.forBlackBodyRadiation(temperature)
+            doubleSpectrum = DoubleSpectrum.forBlackBodyRadiation(temperature)
         }
 
         When("the two spectra are added") {
@@ -72,7 +71,7 @@ class SpectrumStepDefinitions : En {
         When("trying to create a spectrum with the following values:") { dataTable: DataTable ->
             try {
                 val values = valuesFromDataTable(dataTable)
-                doubleSpectrum = Spectrum(spectralShape, values, Spectrum.ValueAdapter.forDouble)
+                doubleSpectrum = DoubleSpectrum(spectralShape, values)
             } catch (e: IllegalArgumentException) {
                 failure = e
             }
@@ -126,37 +125,33 @@ class SpectrumStepDefinitions : En {
         }
     }
 
-    private fun spectrumFromDataTable(dataTable: DataTable): Spectrum<Double> = SpectralData(
-        dataTable.asMaps()
-            .map { row ->
-                Pair(
-                    realFromString(row["wavelength"]!!),
-                    realFromString(row["value"]!!)
-                )
-            },
-        Spectrum.ValueAdapter.forDouble
-    ).createSpectrum()
+    private fun spectrumFromDataTable(dataTable: DataTable, valueColumn: String = "value"): DoubleSpectrum {
+        return DoubleSpectralData(
+            dataTable.asMaps()
+                .map { row ->
+                    Pair(
+                        realFromString(row["wavelength"]!!),
+                        realFromString(row[valueColumn]!!)
+                    )
+                }
+        ).createSpectrum()
+    }
 
-    private fun valuesFromDataTable(dataTable: DataTable): List<Double> = dataTable.asMaps()
+    private fun valuesFromDataTable(dataTable: DataTable): ImmutableDoubleArray = dataTable.asMaps()
         .map { row ->
             realFromString(row["value"]!!)
         }
+        .toImmutableDoubleArray()
 
-    private fun spectrumFromTupleDataTable(dataTable: DataTable): Spectrum<Tuple> = SpectralData(
-        dataTable.asMaps()
-            .map { row ->
-                Pair(
-                    realFromString(row["wavelength"]!!),
-                    Tuple(
-                        realFromString(row["x"]!!),
-                        realFromString(row["y"]!!),
-                        realFromString(row["z"]!!),
-                        realFromString(row["w"]!!)
-                    )
-                )
-            },
-        Spectrum.ValueAdapter.forTuple
-    ).createSpectrum()
+    private fun spectrumFromTupleDataTable(dataTable: DataTable): TupleSpectrum {
+        return TupleSpectrum(
+            SpectralShape.Default,
+            spectrumFromDataTable(dataTable, "x").values,
+            spectrumFromDataTable(dataTable, "y").values,
+            spectrumFromDataTable(dataTable, "z").values,
+            spectrumFromDataTable(dataTable, "w").values
+        )
+    }
 }
 
 /**
@@ -172,8 +167,20 @@ class SpectrumStepDefinitions : En {
  * @return the spectrum value at that wavelength.
  * @throws IllegalArgumentException if the wavelength is not in the spectrum.
  */
-fun <T> Spectrum<T>.atWavelength(wavelength: Double): T {
-    val index = wavelengths.indexOfFirst { w -> abs(w - wavelength) < epsilon }
-    require (index >= 0) { "Wavelength ${wavelength}nm is not in the spectrum" }
+fun DoubleSpectrum.atWavelength(wavelength: Double): Double {
+    val index = findIndex(wavelength)
     return values[index]
+}
+fun TupleSpectrum.atWavelength(wavelength: Double): Tuple {
+    val index = findIndex(wavelength)
+    return Tuple(xValues[index], yValues[index], zValues[index], wValues[index])
+}
+fun CieXyzColorSpectrum.atWavelength(wavelength: Double): CieXyzColor {
+    val index = findIndex(wavelength)
+    return CieXyzColor(xValues[index], yValues[index], zValues[index])
+}
+private fun Spectrum<*, *>.findIndex(wavelength: Double): Int {
+    val index = wavelengths.indexOfFirst { w -> abs(w - wavelength) < epsilon }
+    require(index >= 0) { "Wavelength ${wavelength}nm is not in the spectrum" }
+    return index
 }
