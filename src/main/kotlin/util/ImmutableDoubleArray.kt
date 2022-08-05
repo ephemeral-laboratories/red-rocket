@@ -3,11 +3,13 @@ package garden.ephemeral.rocket.util
 import jdk.incubator.vector.DoubleVector
 import jdk.incubator.vector.VectorOperators
 import jdk.incubator.vector.VectorSpecies
+import java.lang.Math.fma
+import kotlin.math.sqrt
 
 /**
  * Wrapper for a double array to ensure nobody can mutate it.
  */
-class ImmutableDoubleArray(private val array: DoubleArray) {
+class ImmutableDoubleArray(private val array: DoubleArray) : Iterable<Double> {
     val size: Int
         get() = array.size
     val lastIndex: Int
@@ -42,23 +44,156 @@ class ImmutableDoubleArray(private val array: DoubleArray) {
         array.copyInto(destination, destinationOffset, startIndex, endIndex)
     }
 
-    operator fun plus(other: ImmutableDoubleArray): ImmutableDoubleArray {
-        return biFunctionOp(other, DoubleVector::add, Double::plus)
+    /**
+     * Copies the contents as a mutable `DoubleArray`.
+     *
+     * @return the copy.
+     */
+    fun toMutableArray(): DoubleArray {
+        return array.copyInto(DoubleArray(size))
     }
 
-    operator fun times(other: ImmutableDoubleArray): ImmutableDoubleArray {
-        return biFunctionOp(other, DoubleVector::mul, Double::times)
+    operator fun plus(other: ImmutableDoubleArray) = biFunctionOp(other, DoubleVector::add, Double::plus)
+
+    operator fun plus(scalar: Double) = functionOp(
+        { v -> v.add(scalar) },
+        { e -> e + scalar }
+    )
+
+    operator fun minus(other: ImmutableDoubleArray) = biFunctionOp(other, DoubleVector::sub, Double::minus)
+
+    operator fun minus(scalar: Double) = functionOp(
+        { v -> v.sub(scalar) },
+        { e -> e - scalar }
+    )
+
+    operator fun times(other: ImmutableDoubleArray) = biFunctionOp(other, DoubleVector::mul, Double::times)
+
+    operator fun times(scalar: Double) = functionOp(
+        { v -> v.mul(scalar) },
+        { e -> e * scalar }
+    )
+
+    operator fun div(other: ImmutableDoubleArray) = biFunctionOp(other, DoubleVector::div, Double::div)
+
+    fun reciprocal(): ImmutableDoubleArray {
+        val result = DoubleArray(this.array.size)
+        val species = this.bestVectorSpecies
+        var i = 0
+        if (species != null) {
+            val laneCount = species.length()
+            // XXX: Is there really no simpler operation that can avoid this broadcast? :(
+            val one = DoubleVector.broadcast(species, 1.0)
+
+            while (i + laneCount - 1 < this.array.size) {
+                val vector1 = DoubleVector.fromArray(species, this.array, i)
+                one.div(vector1).intoArray(result, i)
+                i += laneCount
+            }
+        }
+
+        while (i < this.array.size) {
+            result[i] = 1.0 / this.array[i]
+            i++
+        }
+
+        return ImmutableDoubleArray(result)
     }
 
-    operator fun times(scalar: Double): ImmutableDoubleArray {
-        return functionOp(
-            { v -> v.mul(scalar) },
-            { e -> e * scalar }
-        )
+    fun sqrt() = functionOp(
+        { v -> v.sqrt() },
+        { e -> sqrt(e) }
+    )
+
+    /**
+     * Fused multiply and add.
+     *
+     * Computes `a * b + c` using the native FMA instruction when possible.
+     *
+     * @param b the array to multiply by.
+     * @param c the array to add afterwards.
+     * @return the resulting array.
+     */
+    fun fma(b: ImmutableDoubleArray, c: ImmutableDoubleArray): ImmutableDoubleArray {
+        requireSameSize(b)
+        requireSameSize(c)
+
+        val result = DoubleArray(array.size)
+        val species = bestVectorSpecies
+        var i = 0
+
+        if (species != null) {
+            val laneCount = species.length()
+
+            while (i + laneCount - 1 < array.size) {
+                val vector1 = DoubleVector.fromArray(species, array, i)
+                val vector2 = DoubleVector.fromArray(species, b.array, i)
+                val vector3 = DoubleVector.fromArray(species, c.array, i)
+                vector1.fma(vector2, vector3).intoArray(result, i)
+                i += laneCount
+            }
+        }
+
+        while (i < array.size) {
+            result[i] = fma(array[i], b.array[i], c.array[i])
+            i++
+        }
+
+        return ImmutableDoubleArray(result)
     }
 
-    operator fun div(other: ImmutableDoubleArray): ImmutableDoubleArray {
-        return biFunctionOp(other, DoubleVector::div, Double::div)
+    /**
+     * Fused multiply and add.
+     *
+     * Computes `a * b + c` using the native FMA instruction when possible.
+     *
+     * @param b the array to multiply by.
+     * @param c the scalar to add afterwards.
+     * @return the resulting array.
+     */
+    fun fma(b: ImmutableDoubleArray, c: Double): ImmutableDoubleArray {
+        requireSameSize(b)
+
+        val result = DoubleArray(array.size)
+        val species = bestVectorSpecies
+        var i = 0
+
+        if (species != null) {
+            val laneCount = species.length()
+
+            while (i + laneCount - 1 < array.size) {
+                val vector1 = DoubleVector.fromArray(species, array, i)
+                val vector2 = DoubleVector.fromArray(species, b.array, i)
+                vector1.lanewise(VectorOperators.FMA, vector2, c).intoArray(result, i)
+                i += laneCount
+            }
+        }
+
+        while (i < array.size) {
+            result[i] = fma(array[i], b.array[i], c)
+            i++
+        }
+
+        return ImmutableDoubleArray(result)
+    }
+
+    /**
+     * Fused multiply and add.
+     *
+     * Computes `a * b + c` using the native FMA instruction when possible.
+     *
+     * @param b the scalar to multiply by.
+     * @param c the scalar to add afterwards.
+     * @return the resulting array.
+     */
+    fun fma(b: Double, c: Double) = functionOp(
+        { v -> v.fma(b, c) },
+        { e -> fma(e, b, c) }
+    )
+
+    fun rsqrt(): ImmutableDoubleArray {
+        // XXX: No direct way to get rsqrt? Math also lacks rsqrt() function :(
+        return sqrt().reciprocal()
     }
 
     private inline fun functionOp(
@@ -143,6 +278,29 @@ class ImmutableDoubleArray(private val array: DoubleArray) {
         return result
     }
 
+    fun sum(): Double {
+        var result = 0.0
+        val species = bestVectorSpecies
+        var i = 0
+
+        if (species != null) {
+            val laneCount = species.length()
+
+            while (i + laneCount - 1 < array.size) {
+                val vector = DoubleVector.fromArray(species, array, i)
+                result += vector.reduceLanes(VectorOperators.ADD)
+                i += laneCount
+            }
+        }
+
+        while (i < array.size) {
+            result += array[i]
+            i++
+        }
+
+        return result
+    }
+
     fun slice(range: IntRange): ImmutableDoubleArray {
         return ImmutableDoubleArray(array.sliceArray(range))
     }
@@ -157,6 +315,12 @@ class ImmutableDoubleArray(private val array: DoubleArray) {
 
     fun forEachIndexed(action: (Int, Double) -> Unit) = array.forEachIndexed(action)
 
+    fun forEach(action: (Double) -> Unit) = array.forEach(action)
+
+    fun count(predicate: (Double) -> Boolean) = array.count(predicate)
+
+    override fun iterator(): DoubleIterator = array.iterator()
+
     private fun requireSameSize(other: ImmutableDoubleArray) {
         require(other.size == size) { "Required arrays with same size! Got: $other, $this"}
     }
@@ -167,9 +331,9 @@ class ImmutableDoubleArray(private val array: DoubleArray) {
         return array.contentEquals(other.array)
     }
 
-    override fun hashCode(): Int {
-        return array.contentHashCode()
-    }
+    override fun hashCode(): Int = array.contentHashCode()
+
+    override fun toString(): String = array.contentToString()
 }
 
 /**

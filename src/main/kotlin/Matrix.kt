@@ -84,6 +84,16 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: ImmutableD
         return Matrix(columnCount, rowCount, transposedCells)
     }
 
+    operator fun plus(other: Matrix): Matrix {
+        requireSameSize(other)
+        return Matrix(rowCount, columnCount, cells + other.cells)
+    }
+
+    operator fun minus(other: Matrix): Matrix {
+        requireSameSize(other)
+        return Matrix(rowCount, columnCount, cells - other.cells)
+    }
+
     operator fun times(scalar: Double): Matrix {
         return Matrix(rowCount, columnCount, cells * scalar)
     }
@@ -145,5 +155,13 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: ImmutableD
 
     override fun hashCode(): Int {
         return Objects.hash(rowCount, columnCount, cells)
+    }
+
+    private fun requireSameSize(other: Matrix) {
+        require(rowCount == other.rowCount && columnCount == other.columnCount) {
+            "Other matrix does not match the size of this matrix: " +
+                    "our size = $rowCount x $columnCount, " +
+                    "other size = ${other.rowCount} x ${other.columnCount}"
+        }
     }
 }

@@ -16,11 +16,11 @@ Feature: Spectra
     And another spectral shape from <b_min>nm to <b_max>nm in steps of <b_step>nm
     Then the spectral shapes are <result>
     Examples:
-      | a_min | a_max | a_step | b_min | b_max | b_step | result     |
-      | 380   | 780   | 10     | 380   | 780   | 10     | equal      |
-      | 380   | 780   | 10     | 380   | 780   | 5      | not equal  |
-      | 380   | 780   | 10     | 380   | 800   | 10     | not equal  |
-      | 380   | 780   | 10     | 360   | 780   | 10     | not equal  |
+      | a_min | a_max | a_step | b_min | b_max | b_step | result    |
+      | 380   | 780   | 10     | 380   | 780   | 10     | equal     |
+      | 380   | 780   | 10     | 380   | 780   | 5      | not equal |
+      | 380   | 780   | 10     | 380   | 800   | 10     | not equal |
+      | 380   | 780   | 10     | 360   | 780   | 10     | not equal |
 
   Scenario: Creating a spectrum
     Given a spectrum with the following data:
@@ -145,3 +145,16 @@ Feature: Spectra
       | 780        | 0.000669 |
     Then to_cie_xyz(spectrum) = cie_xyz_color(573.5369, 479.4662, 63.2889)
     And to_linear_rgb(spectrum) = linear_rgb_color(1089.9627, 346.2040, 1.0007)
+
+  Scenario Template: Recovering a spectrum from CIE XYZ color
+    Given color ← <input>
+    When a spectrum is recovered from the color
+    Then spectrum contains no negative values
+    And to_cie_xyz(spectrum) = <input>
+    Examples:
+      | input                                      |
+      | cie_xyz_color(573.5369, 479.4662, 63.2889) |
+      | cie_xyz_color(0.000005735369, 0.000004794662, 0.000000632889) |
+      | cie_xyz_color(0.0, 0.0, 0.0)               |
+      | cie_xyz_color(20.0, 20.0, 20.0)            |
+      | cie_xyz_color(0.9642, 1.0000, 0.8249)      |

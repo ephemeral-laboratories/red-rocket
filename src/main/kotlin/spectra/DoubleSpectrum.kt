@@ -3,6 +3,7 @@ package garden.ephemeral.rocket.spectra
 import garden.ephemeral.rocket.color.CieXyzColor
 import garden.ephemeral.rocket.color.ColorMatchingFunction
 import garden.ephemeral.rocket.color.RgbColor
+import garden.ephemeral.rocket.spectra.recovery.Burns2020Method1
 import garden.ephemeral.rocket.util.ImmutableDoubleArray
 import garden.ephemeral.rocket.util.buildImmutableDoubleArray
 import kotlin.math.PI
@@ -38,6 +39,16 @@ class DoubleSpectrum(
         return DoubleSpectrum(shape, values / other.values)
     }
 
+    /**
+     * Converts a spectrum of values to a CIE XYZ color.
+     *
+     * The spectrum is taken to be in units of W sr⁻¹ m⁻² nm⁻¹.
+     * The Y value of the resulting color (luminance) is thus in units of lm sr⁻¹ m⁻², or cd m⁻², or nit.
+     *
+     * @receiver the spectrum.
+     * @param colorMatchingFunction the color matching function to use.
+     * @return the color.
+     */
     fun toCieXyz(
         colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE
     ): CieXyzColor {
@@ -53,6 +64,21 @@ class DoubleSpectrum(
     }
 
     fun toLinearRgb(): RgbColor = toCieXyz().toLinearRgb()
+
+    /**
+     * Reshapes the spectrum to a different shape.
+     *
+     * Depending on the original shape and the desired shape, this can be a somewhat
+     * costly operation due to interpolation calculations, which you don't want to
+     * be doing frequently, thus most operations between two spectra do not reshape
+     * the spectra automatically.
+     *
+     * @param newShape the shape of the new spectrum.
+     * @return the spectrum in that shape.
+     */
+    fun reshape(newShape: SpectralShape): DoubleSpectrum {
+        return DoubleSpectralData(newShape.wavelengths.zip(values)).createSpectrum(newShape)
+    }
 
     companion object {
         // Planck's constant (units: m² kg s⁻¹)
@@ -96,6 +122,31 @@ class DoubleSpectrum(
                 }
             }
             return DoubleSpectrum(shape, values)
+        }
+
+        /**
+         * Recovers a spectrum from a CIE XYZ color.
+         *
+         * This is essentially the inverse of [toCieXyz] and the units are the same.
+         *
+         * There is no single correct solution for this operation, so this implementation tries to
+         * produce the result with the lowest possible norm, i.e. a least-squares solution.
+         *
+         * @param color the input color.
+         * @param shape the shape you want for the resulting spectrum.
+         * @param colorMatchingFunction the color matching function to use.
+         * @return the spectrum.
+         */
+        fun recoverFromCieXyz(
+            color: CieXyzColor,
+            shape: SpectralShape = SpectralShape.Default,
+            colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE
+        ): DoubleSpectrum {
+            // Inverse of factor used when converting in the other direction.
+            val factor = 1.0 / (Km * shape.step)
+
+            return Burns2020Method1.get(colorMatchingFunction, shape)
+                .recoverSpectrum(color * factor)
         }
     }
 }

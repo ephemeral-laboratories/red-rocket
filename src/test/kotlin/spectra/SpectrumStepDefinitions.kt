@@ -1,13 +1,16 @@
 package garden.ephemeral.rocket.spectra
 
 import assertk.assertThat
+import assertk.assertions.each
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
+import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.isNotNull
 import garden.ephemeral.rocket.Constants.Companion.epsilon
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.color.CieXyzColor
+import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.color.RgbColor
 import garden.ephemeral.rocket.color.isCloseTo
 import garden.ephemeral.rocket.isCloseTo
@@ -77,6 +80,10 @@ class SpectrumStepDefinitions : En {
             }
         }
 
+        When("a spectrum is recovered from the color") {
+            doubleSpectrum = DoubleSpectrum.recoverFromCieXyz(colors["color"] as CieXyzColor)
+        }
+
         Then("the spectral shapes are equal") {
             assertThat(spectralShape).isEqualTo(spectralShape2)
         }
@@ -122,6 +129,10 @@ class SpectrumStepDefinitions : En {
 
         Then("to_linear_rgb\\(spectrum\\) = {color}") { expected: RgbColor ->
             assertThat(doubleSpectrum.toLinearRgb()).isCloseTo(expected, epsilon)
+        }
+
+        Then("spectrum contains no negative values") {
+            assertThat(doubleSpectrum.values).each { a -> a.isGreaterThanOrEqualTo(0.0) }
         }
     }
 

@@ -30,6 +30,9 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
 
     /**
      * The determinant of the matrix.
+     *
+     * 0.0 if the matrix is singular.
+     * Otherwise, computed by taking the product of the diagonal, negated if parity requires it.
      */
     val determinant: Double
         get() = if (isSingular) {
@@ -54,13 +57,9 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
 
         val m = matrix.rowCount
         lu = Array(m) { row -> DoubleArray(m) { col -> matrix[row, col] } }
-        pivot = IntArray(m)
 
         // Initialize permutation array and parity
-        for (row in 0 until m) {
-            pivot[row] = row
-        }
-
+        pivot = IntArray(m) { row -> row }
         var isSingular = false
         var even = true
 
@@ -136,12 +135,8 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
             throw SingularMatrixException()
         }
 
-        val bp = DoubleArray(m)
-
         // Apply permutations to b
-        for (row in 0 until m) {
-            bp[row] = b[pivot[row]]
-        }
+        val bp = DoubleArray(m) { row -> b[pivot[row]] }
 
         // Solve LY = b
         for (col in 0 until m) {
@@ -171,16 +166,12 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
             throw SingularMatrixException()
         }
 
-        val nColB: Int = b.columnCount
+        val nColB = b.columnCount
 
         // Apply permutations to b
-        val bp = Array(m) { DoubleArray(nColB) }
-        for (row in 0 until m) {
-            val bpRow = bp[row]
+        val bp = Array(m) { row ->
             val pRow = pivot[row]
-            for (col in 0 until nColB) {
-                bpRow[col] = b[pRow, col]
-            }
+            DoubleArray(nColB) { col -> b[pRow, col] }
         }
 
         // Solve LY = b
