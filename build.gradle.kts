@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.6.0"
-    id("com.diffplug.spotless") version "6.0.0"
+    id("com.diffplug.spotless") version "6.9.0"
     antlr
 }
 
@@ -50,9 +50,11 @@ tasks.generateGrammarSource {
 }
 
 spotless {
-    val ktlintVersion = "0.43.2"
+    val ktlintVersion = "0.46.1"
     kotlin {
         ktlint(ktlintVersion)
+            .setUseExperimental(true)
+            .editorConfigOverride(mapOf("disabled_rules" to "filename"))
     }
     kotlinGradle {
         ktlint(ktlintVersion)
