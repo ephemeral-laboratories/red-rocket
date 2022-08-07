@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm") version "1.6.0"
     id("com.diffplug.spotless") version "6.9.0"
     antlr
+    id("nebula.facet") version "9.4.0"
 }
 
 group = "garden.ephemeral.rocket"
@@ -11,6 +12,11 @@ version = "0.1.0"
 
 repositories {
     mavenCentral()
+}
+
+facets {
+    @Suppress("UNUSED_VARIABLE")
+    val samples by registering
 }
 
 dependencies {
@@ -24,12 +30,6 @@ dependencies {
     testImplementation("io.cucumber:cucumber-java8:${project.property("cucumber.version")}")
     testImplementation("io.cucumber:cucumber-junit:${project.property("cucumber.version")}")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:${project.property("assertk.version")}")
-}
-
-tasks.compileKotlin {
-    doFirst {
-        println("Inputs: ${inputs.files.asPath}")
-    }
 }
 
 extensions.configure<JavaPluginExtension> {

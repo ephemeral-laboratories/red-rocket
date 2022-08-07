@@ -47,13 +47,11 @@ fun mappedCube(): Shape {
 }
 
 fun main() {
-
     val camera = Camera(800, 400, 45.deg).apply {
         transform = viewTransform(point(0.0, 0.0, -20.0), point(0.0, 0.0, 0.0), vector(0.0, 1.0, 0.0))
     }
 
     val world = World().apply {
-
         lights = mutableListOf(
             PointLight(point(0.0, 100.0, -100.0), grey(0.25)),
             PointLight(point(0.0, -100.0, -100.0), grey(0.25)),

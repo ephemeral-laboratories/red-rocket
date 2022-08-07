@@ -73,10 +73,18 @@ fun main() = render {
 }
 
 private fun WorldBuilder.quad(
-    x1: Double, y1: Double, z1: Double,
-    x2: Double, y2: Double, z2: Double,
-    x3: Double, y3: Double, z3: Double,
-    x4: Double, y4: Double, z4: Double,
+    x1: Double,
+    y1: Double,
+    z1: Double,
+    x2: Double,
+    y2: Double,
+    z2: Double,
+    x3: Double,
+    y3: Double,
+    z3: Double,
+    x4: Double,
+    y4: Double,
+    z4: Double,
     material: Material
 ) {
     val p1 = point(x1, y1, z1)
