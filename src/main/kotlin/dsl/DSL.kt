@@ -1,11 +1,12 @@
 package garden.ephemeral.rocket.dsl
 
-import garden.ephemeral.rocket.Camera
 import garden.ephemeral.rocket.Material
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.PointLight
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.World
+import garden.ephemeral.rocket.camera.Camera
+import garden.ephemeral.rocket.camera.SamplingStrategy
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.importers.ObjFileParser
 import garden.ephemeral.rocket.shapes.Cone
@@ -32,8 +33,14 @@ class RenderBuilder {
         world = WorldBuilder().apply(block).build()
     }
 
-    fun Camera(hSize: Int, vSize: Int, fieldOfView: Angle, block: Camera.() -> Unit) {
-        camera = Camera(hSize, vSize, fieldOfView).apply(block)
+    fun Camera(
+        hSize: Int,
+        vSize: Int,
+        fieldOfView: Angle,
+        samplingStrategy: SamplingStrategy = SamplingStrategy.center,
+        block: Camera.() -> Unit
+    ) {
+        camera = Camera(hSize, vSize, fieldOfView, samplingStrategy).apply(block)
     }
 
     fun render() {

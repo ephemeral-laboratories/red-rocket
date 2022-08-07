@@ -9,6 +9,8 @@ import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
 import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
 import garden.ephemeral.rocket.WorldStepDefinitions.Companion.world
+import garden.ephemeral.rocket.camera.Camera
+import garden.ephemeral.rocket.camera.SamplingStrategy
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.isCloseTo
 import garden.ephemeral.rocket.util.Angle
@@ -33,16 +35,24 @@ class CameraStepDefinitions : En {
         Given("camera ← camera\\(hsize, vsize, field_of_view)") {
             camera = Camera(hSize, vSize, fieldOfView)
         }
+        Given("camera ← camera\\({int}, {int}, {real}, multi\\({int}))") { h: Int, v: Int, fov: Double, sampleCount: Int ->
+            camera = Camera(h, v, fov.rad, when (sampleCount) {
+                2 -> SamplingStrategy.multi2
+                4 -> SamplingStrategy.multi4
+                8 -> SamplingStrategy.multi8
+                16 -> SamplingStrategy.multi16
+                else -> throw IllegalArgumentException("Unsupported sample count: $sampleCount")
+            })
+        }
 
-        When("{ray_var} ← ray_for_pixel\\(camera, {int}, {int})") { rv: String, x: Int, y: Int ->
-            rays[rv] = camera.rayForPixel(x, y)
+        When("{ray_var} ← ray_for_pixel_offset\\(camera, {real}, {real})") { rv: String, x: Double, y: Double ->
+            rays[rv] = camera.rayForPixelOffset(x, y)
         }
 
         When("camera.transform ← {transform} * {transform}") { m1: Matrix, m2: Matrix ->
             camera.transform = m1 * m2
         }
-        When("camera.transform ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") {
-            tv1: String, tv2: String, tv3: String ->
+        When("camera.transform ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") { tv1: String, tv2: String, tv3: String ->
             camera.transform = viewTransform(tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!)
         }
 
@@ -59,6 +69,10 @@ class CameraStepDefinitions : En {
         }
         Then("camera.pixel_size = {real}") { e: Double ->
             assertThat(camera.pixelSize).isCloseTo(e, epsilon)
+        }
+
+        Then("color_at_pixel\\(camera, world, {int}, {int}) = {color}") { x: Int, y: Int, e: Color ->
+            assertThat(camera.colorAtPixel(world, x, y)).isCloseTo(e, epsilon)
         }
 
         Then("pixel_at\\(image, {int}, {int}) = {color}") { x: Int, y: Int, e: Color ->
