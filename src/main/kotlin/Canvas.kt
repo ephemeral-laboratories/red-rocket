@@ -108,7 +108,8 @@ class Canvas(val width: Int, val height: Int) {
                     (0 until width).forEach { x: Int ->
                         val rgb = image.getRGB(x, y)
                         setPixel(
-                            x, y,
+                            x,
+                            y,
                             Color.fromSRgbInts(
                                 rgb.shr(16).and(0xff),
                                 rgb.shr(8).and(0xff),

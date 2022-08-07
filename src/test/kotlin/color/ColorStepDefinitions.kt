@@ -28,7 +28,7 @@ class ColorStepDefinitions : En {
         }
 
         ParameterType("color", "(linear_rgb_color|srgb_color|cie_xyz_color)\\(($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
-            type, s1: String, s2: String, s3: String ->
+                type, s1: String, s2: String, s3: String ->
             when (type) {
                 "linear_rgb_color" -> linearRgb(realFromString(s1), realFromString(s2), realFromString(s3))
                 "srgb_color" -> Color.srgb(realFromString(s1), realFromString(s2), realFromString(s3))
@@ -38,7 +38,7 @@ class ColorStepDefinitions : En {
         }
 
         ParameterType("array3", "\\(($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
-            s1: String, s2: String, s3: String ->
+                s1: String, s2: String, s3: String ->
             doubleArrayOf(realFromString(s1), realFromString(s2), realFromString(s3))
         }
 

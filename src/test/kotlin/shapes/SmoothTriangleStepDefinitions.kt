@@ -10,7 +10,7 @@ import io.cucumber.java8.En
 class SmoothTriangleStepDefinitions : En {
     init {
         Given("{shape_var} ← smooth_triangle\\({point}, {point}, {point}, {vector}, {vector}, {vector})") {
-            sv: String, p1: Tuple, p2: Tuple, p3: Tuple, n1: Tuple, n2: Tuple, n3: Tuple ->
+                sv: String, p1: Tuple, p2: Tuple, p3: Tuple, n1: Tuple, n2: Tuple, n3: Tuple ->
             shapes[sv] = SmoothTriangle(p1, p2, p3, null, null, null, n1, n2, n3)
         }
         Given(

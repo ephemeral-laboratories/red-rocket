@@ -45,17 +45,21 @@ class PatternStepDefinitions : En {
                 "{uv_pattern_var}, {uv_pattern_var}, {uv_pattern_var})"
         ) { upv1: String, upv2: String, upv3: String, upv4: String, upv5: String, upv6: String ->
             pattern = CubeMap(
-                uvPatterns[upv1]!!, uvPatterns[upv2]!!, uvPatterns[upv3]!!,
-                uvPatterns[upv4]!!, uvPatterns[upv5]!!, uvPatterns[upv6]!!
+                uvPatterns[upv1]!!,
+                uvPatterns[upv2]!!,
+                uvPatterns[upv3]!!,
+                uvPatterns[upv4]!!,
+                uvPatterns[upv5]!!,
+                uvPatterns[upv6]!!
             )
         }
 
         Given("{uv_pattern_var} ← uv_align_check\\({color_var}, {color_var}, {color_var}, {color_var}, {color_var})") {
-            upv: String, cv1: String, cv2: String, cv3: String, cv4: String, cv5: String ->
+                upv: String, cv1: String, cv2: String, cv3: String, cv4: String, cv5: String ->
             uvPatterns[upv] = UVAlignCheck(colors[cv1]!!, colors[cv2]!!, colors[cv3]!!, colors[cv4]!!, colors[cv5]!!)
         }
         Given("{uv_pattern_var} ← uv_checkers\\({int}, {int}, {color_var}, {color_var})") {
-            upv: String, width: Int, height: Int, cv1: String, cv2: String ->
+                upv: String, width: Int, height: Int, cv1: String, cv2: String ->
             uvPatterns[upv] = UVCheckers(width, height, colors[cv1]!!, colors[cv2]!!)
         }
         Given("{uv_pattern_var} ← uv_image\\(canvas)") { upv: String ->
@@ -74,7 +78,7 @@ class PatternStepDefinitions : En {
         }
 
         When("{color_var} ← uv_pattern_at\\({uv_pattern_var}, {real}, {real})") {
-            cv: String, upv: String, u: Double, v: Double ->
+                cv: String, upv: String, u: Double, v: Double ->
             colors[cv] = uvPatterns[upv]!!.uvPatternAt(u, v)
         }
 

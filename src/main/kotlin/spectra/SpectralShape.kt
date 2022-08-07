@@ -3,7 +3,7 @@ package garden.ephemeral.rocket.spectra
 data class SpectralShape(
     val min: Double,
     val max: Double,
-    val step: Double,
+    val step: Double
 ) {
     init {
         if (min <= 0) {

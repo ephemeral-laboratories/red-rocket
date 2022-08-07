@@ -55,7 +55,7 @@ class MatrixStepDefinitions : En {
         matrices["identity_matrix"] = Matrix.identity4x4
 
         ParameterType("matrix_var", "(A|B|C|m|M|t|T|identity_matrix|transform|inv|half_quarter|full_quarter)\\d?") {
-            string ->
+                string ->
             string
         }
 
@@ -82,11 +82,11 @@ class MatrixStepDefinitions : En {
             matrices[mv] = m
         }
         Given("{matrix_var} ← shearing\\({real}, {real}, {real}, {real}, {real}, {real})") {
-            mv: String, xy: Double, xz: Double, yx: Double, yz: Double, zx: Double, zy: Double ->
+                mv: String, xy: Double, xz: Double, yx: Double, yz: Double, zx: Double, zy: Double ->
             matrices[mv] = shearing(xy, xz, yx, yz, zx, zy)
         }
         Given("{matrix_var} ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") {
-            mv: String, tv1: String, tv2: String, tv3: String ->
+                mv: String, tv1: String, tv2: String, tv3: String ->
             matrices[mv] = viewTransform(tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!)
         }
 
@@ -95,7 +95,7 @@ class MatrixStepDefinitions : En {
         }
 
         When("{matrix_var} ← {matrix_var} * {matrix_var} * {matrix_var}") {
-            mv1: String, mv2: String, mv3: String, mv4: String ->
+                mv1: String, mv2: String, mv3: String, mv4: String ->
             matrices[mv1] = matrices[mv2]!! * matrices[mv3]!! * matrices[mv4]!!
         }
 
@@ -150,7 +150,8 @@ class MatrixStepDefinitions : En {
 
         Then("{matrix_var} * inverse\\({matrix_var}) = {matrix_var}") { mv1: String, mv2: String, mv3: String ->
             assertThat(matrices[mv1]!! * matrices[mv2]!!.inverse).isCloseTo(
-                matrices[mv3]!!, epsilon
+                matrices[mv3]!!,
+                epsilon
             )
         }
 

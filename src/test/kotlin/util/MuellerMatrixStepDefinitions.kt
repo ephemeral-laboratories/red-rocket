@@ -13,7 +13,7 @@ class MuellerMatrixStepDefinitions : En {
             "linear polarizer \\(-45° transmission)" to MuellerMatrices.LinearPolarizerMinus45,
             "quarter-wave plate \\(fast-axis vertical)" to MuellerMatrices.QuarterWavePlateFastAxisVertical,
             "quarter-wave plate \\(fast-axis horizontal)" to MuellerMatrices.QuarterWavePlateFastAxisHorizontal,
-            "half-wave plate" to MuellerMatrices.HalfWavePlate,
+            "half-wave plate" to MuellerMatrices.HalfWavePlate
         )
 
         mappings.forEach { (thing, matrix) ->
@@ -27,7 +27,7 @@ class MuellerMatrixStepDefinitions : En {
         }
 
         When("{matrix_var} is a Mueller matrix for a reference rotation of {real} degrees") {
-            matrixVar: String, degrees: Double ->
+                matrixVar: String, degrees: Double ->
             matrices[matrixVar] = MuellerMatrices.forReferenceFrameRotation(degrees.deg)
         }
 

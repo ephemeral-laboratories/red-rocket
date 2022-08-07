@@ -149,8 +149,8 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: ImmutableD
         if (other !is Matrix) return false
 
         return rowCount == other.rowCount &&
-                columnCount == other.columnCount &&
-                cells == other.cells
+            columnCount == other.columnCount &&
+            cells == other.cells
     }
 
     override fun hashCode(): Int {
@@ -160,8 +160,8 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: ImmutableD
     private fun requireSameSize(other: Matrix) {
         require(rowCount == other.rowCount && columnCount == other.columnCount) {
             "Other matrix does not match the size of this matrix: " +
-                    "our size = $rowCount x $columnCount, " +
-                    "other size = ${other.rowCount} x ${other.columnCount}"
+                "our size = $rowCount x $columnCount, " +
+                "other size = ${other.rowCount} x ${other.columnCount}"
         }
     }
 }

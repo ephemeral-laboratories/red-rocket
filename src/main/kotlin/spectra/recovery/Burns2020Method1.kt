@@ -48,52 +48,64 @@ class Burns2020Method1 private constructor(
         // [  0  0  0 ...  4 -2  0 ]
         // [  0  0  0 ... -2  4 -2 ]
         // [  0  0  0 ...  0 -2  2 ]
-        val d = Matrix(n, n, buildImmutableDoubleArray {
-            for (row in 0 until n) {
-                for (col in 0 until n) {
-                    add(
-                        when {
-                            row == 0 && col == 0 -> 2.0
-                            row == n - 1 && col == n - 1 -> 2.0
-                            row == col -> 4.0
-                            abs(row - col) == 1 -> -2.0
-                            else -> 0.0
-                        }
-                    )
+        val d = Matrix(
+            n,
+            n,
+            buildImmutableDoubleArray {
+                for (row in 0 until n) {
+                    for (col in 0 until n) {
+                        add(
+                            when {
+                                row == 0 && col == 0 -> 2.0
+                                row == n - 1 && col == n - 1 -> 2.0
+                                row == col -> 4.0
+                                abs(row - col) == 1 -> -2.0
+                                else -> 0.0
+                            }
+                        )
+                    }
                 }
             }
-        })
+        )
 
         scalingFactor = 1.0 / colorMatchingFunctionSpectrum.yValues.sum()
 
-        val awTransposed = Matrix(3, n, buildImmutableDoubleArray {
-            addAll(colorMatchingFunctionSpectrum.xValues * scalingFactor)
-            addAll(colorMatchingFunctionSpectrum.yValues * scalingFactor)
-            addAll(colorMatchingFunctionSpectrum.zValues * scalingFactor)
-        })
+        val awTransposed = Matrix(
+            3,
+            n,
+            buildImmutableDoubleArray {
+                addAll(colorMatchingFunctionSpectrum.xValues * scalingFactor)
+                addAll(colorMatchingFunctionSpectrum.yValues * scalingFactor)
+                addAll(colorMatchingFunctionSpectrum.zValues * scalingFactor)
+            }
+        )
         val aw = awTransposed.transpose()
 
         // Pack matrix like this:
         // [ d    Aw ]
         // [ Aw'  0  ]
-        val bInverse = Matrix(n + 3, n + 3, buildImmutableDoubleArray {
-            for (row in 0 until n) {
-                for (col in 0 until n) {
-                    add(d[row, col])
+        val bInverse = Matrix(
+            n + 3,
+            n + 3,
+            buildImmutableDoubleArray {
+                for (row in 0 until n) {
+                    for (col in 0 until n) {
+                        add(d[row, col])
+                    }
+                    for (col in 0 until 3) {
+                        add(aw[row, col])
+                    }
                 }
-                for (col in 0 until 3) {
-                    add(aw[row, col])
+                for (row in 0 until 3) {
+                    for (col in 0 until n) {
+                        add(awTransposed[row, col])
+                    }
+                    for (col in 0 until 3) {
+                        add(0.0)
+                    }
                 }
             }
-            for (row in 0 until 3) {
-                for (col in 0 until n) {
-                    add(awTransposed[row, col])
-                }
-                for (col in 0 until 3) {
-                    add(0.0)
-                }
-            }
-        })
+        )
 
         val b = bInverse.inverse
 

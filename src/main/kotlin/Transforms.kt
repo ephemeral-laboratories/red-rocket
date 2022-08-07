@@ -9,7 +9,8 @@ class Transforms {
     companion object {
         fun translation(x: Double, y: Double, z: Double): Matrix {
             return Matrix(
-                4, 4,
+                4,
+                4,
                 immutableDoubleArrayOf(
                     1.0, 0.0, 0.0, x,
                     0.0, 1.0, 0.0, y,
@@ -21,7 +22,8 @@ class Transforms {
 
         fun scaling(x: Double, y: Double, z: Double): Matrix {
             return Matrix(
-                4, 4,
+                4,
+                4,
                 immutableDoubleArrayOf(
                     x, 0.0, 0.0, 0.0,
                     0.0, y, 0.0, 0.0,
@@ -35,7 +37,8 @@ class Transforms {
             val cosR = cos(theta)
             val sinR = sin(theta)
             return Matrix(
-                4, 4,
+                4,
+                4,
                 immutableDoubleArrayOf(
                     1.0, 0.0, 0.0, 0.0,
                     0.0, cosR, -sinR, 0.0,
@@ -49,7 +52,8 @@ class Transforms {
             val cosR = cos(theta)
             val sinR = sin(theta)
             return Matrix(
-                4, 4,
+                4,
+                4,
                 immutableDoubleArrayOf(
                     cosR, 0.0, sinR, 0.0,
                     0.0, 1.0, 0.0, 0.0,
@@ -63,7 +67,8 @@ class Transforms {
             val cosR = cos(theta)
             val sinR = sin(theta)
             return Matrix(
-                4, 4,
+                4,
+                4,
                 immutableDoubleArrayOf(
                     cosR, -sinR, 0.0, 0.0,
                     sinR, cosR, 0.0, 0.0,
@@ -75,7 +80,8 @@ class Transforms {
 
         fun shearing(xy: Double, xz: Double, yx: Double, yz: Double, zx: Double, zy: Double): Matrix {
             return Matrix(
-                4, 4,
+                4,
+                4,
                 immutableDoubleArrayOf(
                     1.0, xy, xz, 0.0,
                     yx, 1.0, yz, 0.0,
@@ -90,7 +96,8 @@ class Transforms {
             val left = forward.cross(up.normalize())
             val trueUp = left.cross(forward)
             val orientation = Matrix(
-                4, 4,
+                4,
+                4,
                 immutableDoubleArrayOf(
                     left.x, left.y, left.z, 0.0,
                     trueUp.x, trueUp.y, trueUp.z, 0.0,

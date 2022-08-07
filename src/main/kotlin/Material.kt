@@ -49,7 +49,6 @@ data class Material(
         worldNormal: Tuple,
         inShadow: Boolean
     ): Color {
-
         val color = pattern?.patternAtShape(shape, worldPoint) ?: color
 
         // Combine the surface color with the light's color/intensity

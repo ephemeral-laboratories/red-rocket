@@ -27,10 +27,11 @@ class ComplexStepDefinitions : En {
             |     (-?(?:$realRegex \s*)? i)
             |   )
             | \s* \)
-            |""".trimMargin()
+            |
+            """.trimMargin()
         ) {
-            realPartString: String?, joiner: String?,
-            imaginaryPartString1: String?, imaginaryPartString2: String? ->
+                realPartString: String?, joiner: String?,
+                imaginaryPartString1: String?, imaginaryPartString2: String? ->
 
             fun imaginaryPartFromString(string: String): Double {
                 if (!string.endsWith("i")) {

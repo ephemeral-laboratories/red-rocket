@@ -62,15 +62,15 @@ class MaterialStepDefinitions : En {
         Given("in_shadow ← {boolean}") { v: Boolean -> inShadow = v }
 
         When("{color_var} ← lighting\\(material, light, {tuple_var}, {tuple_var}, {tuple_var})") {
-            cv: String, tv1: String, tv2: String, tv3: String ->
+                cv: String, tv1: String, tv2: String, tv3: String ->
             colors[cv] = material.lighting(Sphere(), light, tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!, false)
         }
         When("{color_var} ← lighting\\(material, light, {tuple_var}, {tuple_var}, {tuple_var}, in_shadow)") {
-            cv: String, tv1: String, tv2: String, tv3: String ->
+                cv: String, tv1: String, tv2: String, tv3: String ->
             colors[cv] = material.lighting(Sphere(), light, tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!, inShadow)
         }
         When("{color_var} ← lighting\\(material, light, {point}, {tuple_var}, {tuple_var}, {boolean})") {
-            cv: String, p: Tuple, tv1: String, tv2: String, b: Boolean ->
+                cv: String, p: Tuple, tv1: String, tv2: String, b: Boolean ->
             colors[cv] = material.lighting(Sphere(), light, p, tuples[tv1]!!, tuples[tv2]!!, b)
         }
 

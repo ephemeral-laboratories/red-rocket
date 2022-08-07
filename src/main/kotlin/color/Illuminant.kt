@@ -1,7 +1,7 @@
 package garden.ephemeral.rocket.color
 
-import garden.ephemeral.rocket.spectra.SpectralDataFiles
 import garden.ephemeral.rocket.spectra.DoubleSpectrum
+import garden.ephemeral.rocket.spectra.SpectralDataFiles
 import garden.ephemeral.rocket.spectra.SpectralShape
 
 enum class Illuminant(val humanName: String, filename: String) {

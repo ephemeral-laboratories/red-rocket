@@ -15,7 +15,7 @@ class CieXyzColorSpectrum(
     shape: SpectralShape,
     var xValues: ImmutableDoubleArray,
     var yValues: ImmutableDoubleArray,
-    var zValues: ImmutableDoubleArray,
+    var zValues: ImmutableDoubleArray
 ) : Spectrum<CieXyzColor, CieXyzColorSpectrum>(shape) {
     init {
         requireSameSize("xValues", xValues)

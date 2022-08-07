@@ -18,7 +18,7 @@ class ImmutableDoubleArray(private val array: DoubleArray) : Iterable<Double> {
         get() = array.indices
 
     private val bestVectorSpecies: VectorSpecies<Double>? by lazy {
-        val bestForArraySize = when(array.size) {
+        val bestForArraySize = when (array.size) {
             1 -> return@lazy null
             in (2..3) -> DoubleVector.SPECIES_128
             in (4..7) -> DoubleVector.SPECIES_256
@@ -322,7 +322,7 @@ class ImmutableDoubleArray(private val array: DoubleArray) : Iterable<Double> {
     override fun iterator(): DoubleIterator = array.iterator()
 
     private fun requireSameSize(other: ImmutableDoubleArray) {
-        require(other.size == size) { "Required arrays with same size! Got: $other, $this"}
+        require(other.size == size) { "Required arrays with same size! Got: $other, $this" }
     }
 
     override fun equals(other: Any?): Boolean {

@@ -36,13 +36,18 @@ class CameraStepDefinitions : En {
             camera = Camera(hSize, vSize, fieldOfView)
         }
         Given("camera ← camera\\({int}, {int}, {real}, multi\\({int}))") { h: Int, v: Int, fov: Double, sampleCount: Int ->
-            camera = Camera(h, v, fov.rad, when (sampleCount) {
-                2 -> SamplingStrategy.multi2
-                4 -> SamplingStrategy.multi4
-                8 -> SamplingStrategy.multi8
-                16 -> SamplingStrategy.multi16
-                else -> throw IllegalArgumentException("Unsupported sample count: $sampleCount")
-            })
+            camera = Camera(
+                h,
+                v,
+                fov.rad,
+                when (sampleCount) {
+                    2 -> SamplingStrategy.multi2
+                    4 -> SamplingStrategy.multi4
+                    8 -> SamplingStrategy.multi8
+                    16 -> SamplingStrategy.multi16
+                    else -> throw IllegalArgumentException("Unsupported sample count: $sampleCount")
+                }
+            )
         }
 
         When("{ray_var} ← ray_for_pixel_offset\\(camera, {real}, {real})") { rv: String, x: Double, y: Double ->

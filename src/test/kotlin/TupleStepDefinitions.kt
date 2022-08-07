@@ -31,7 +31,7 @@ class TupleStepDefinitions : En {
         }
 
         ParameterType("tuple", "tuple\\(($realRegex),\\s*($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
-            s1: String, s2: String, s3: String, s4: String ->
+                s1: String, s2: String, s3: String, s4: String ->
             Tuple(
                 realFromString(s1),
                 realFromString(s2),
@@ -41,12 +41,12 @@ class TupleStepDefinitions : En {
         }
 
         ParameterType("point", "point\\(($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
-            s1: String, s2: String, s3: String ->
+                s1: String, s2: String, s3: String ->
             point(realFromString(s1), realFromString(s2), realFromString(s3))
         }
 
         ParameterType("vector", "vector\\(($realRegex),\\s*($realRegex),\\s*($realRegex)\\)") {
-            s1: String, s2: String, s3: String ->
+                s1: String, s2: String, s3: String ->
             vector(realFromString(s1), realFromString(s2), realFromString(s3))
         }
 

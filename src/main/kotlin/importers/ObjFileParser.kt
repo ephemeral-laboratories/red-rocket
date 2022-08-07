@@ -85,8 +85,12 @@ class ObjFileParser(file: Path, lenient: Boolean = false) {
                                 )
                             } else {
                                 Triangle(
-                                    p1Data.vertex, p2Data.vertex, p3Data.vertex,
-                                    p1Data.textureVertex, p2Data.textureVertex, p3Data.textureVertex
+                                    p1Data.vertex,
+                                    p2Data.vertex,
+                                    p3Data.vertex,
+                                    p1Data.textureVertex,
+                                    p2Data.textureVertex,
+                                    p3Data.textureVertex
                                 )
                             }.apply {
                                 material = currentMaterial

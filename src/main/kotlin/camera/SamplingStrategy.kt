@@ -40,8 +40,14 @@ interface SamplingStrategy {
 
         /** Sampling strategy using 8 points per pixel. */
         val multi8 = multi(
-            UV(0.9375, 0.0625), UV(0.3125, 0.1875), UV(0.5625, 0.3125), UV(0.0625, 0.4375),
-            UV(0.8125, 0.5625), UV(0.4375, 0.6875), UV(0.1875, 0.8125), UV(0.6875, 0.9375)
+            UV(0.9375, 0.0625),
+            UV(0.3125, 0.1875),
+            UV(0.5625, 0.3125),
+            UV(0.0625, 0.4375),
+            UV(0.8125, 0.5625),
+            UV(0.4375, 0.6875),
+            UV(0.1875, 0.8125),
+            UV(0.6875, 0.9375)
         )
 
         /** Sampling strategy using 16 points per pixel. */
@@ -49,7 +55,7 @@ interface SamplingStrategy {
             UV(0.0625, 0.0), UV(0.5, 0.0625), UV(0.25, 0.125), UV(0.6875, 0.1875),
             UV(0.9375, 0.25), UV(0.4375, 0.3125), UV(0.1875, 0.375), UV(0.75, 0.4375),
             UV(0.0, 0.5), UV(0.5625, 0.5625), UV(0.3125, 0.625), UV(0.8125, 0.6875),
-            UV(0.125, 0.75), UV(0.625, 0.8125), UV(0.375, 0.875), UV(0.875, 0.9375),
+            UV(0.125, 0.75), UV(0.625, 0.8125), UV(0.375, 0.875), UV(0.875, 0.9375)
         )
 
         private fun multi(vararg sampleOffsets: UV): SamplingStrategy = object : SamplingStrategy {

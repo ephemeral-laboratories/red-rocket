@@ -30,7 +30,12 @@ class World {
             val material = precomputed.obj.material
             val shadowed = isShadowed(precomputed.overPoint, light)
             val surface = material.lighting(
-                precomputed.obj, light, precomputed.overPoint, precomputed.eyeline, precomputed.normal, shadowed
+                precomputed.obj,
+                light,
+                precomputed.overPoint,
+                precomputed.eyeline,
+                precomputed.normal,
+                shadowed
             )
 
             val reflected = reflectedColor(precomputed, recursionsAllowed)

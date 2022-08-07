@@ -107,7 +107,7 @@ class DoubleSpectrum(
          */
         fun forBlackBodyRadiation(
             temperature: Double,
-            shape: SpectralShape = SpectralShape.Default,
+            shape: SpectralShape = SpectralShape.Default
         ): DoubleSpectrum {
             val values = buildImmutableDoubleArray {
                 shape.wavelengths.forEach { w ->

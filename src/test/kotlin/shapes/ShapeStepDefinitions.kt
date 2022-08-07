@@ -38,7 +38,8 @@ class ShapeStepDefinitions : En {
                         val params = row[1].substring(1, row[1].length - 1).split(", ")
                         shape.material = shape.material.build {
                             color = linearRgb(
-                                realFromString(params[0]), realFromString(params[1]),
+                                realFromString(params[0]),
+                                realFromString(params[1]),
                                 realFromString(params[2])
                             )
                         }
@@ -119,7 +120,7 @@ class ShapeStepDefinitions : En {
             tuples[tv] = shapes[sv]!!.worldNormalAt(p, dummyIntersection())
         }
         When("{tuple_var} ← normal_at\\({shape_var}, {point}, {intersection_var})") {
-            tv: String, sv: String, p: Tuple, iv: String ->
+                tv: String, sv: String, p: Tuple, iv: String ->
             tuples[tv] = shapes[sv]!!.worldNormalAt(p, namedIntersections[iv]!!)
         }
 

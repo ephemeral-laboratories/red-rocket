@@ -42,7 +42,7 @@ class IntersectionStepDefinitions : En {
             namedIntersections[iv] = Intersection(t, shapes[sv]!!)
         }
         When("{intersection_var} ← intersection_with_uv\\({real}, {shape_var}, {real}, {real})") {
-            iv: String, t: Double, sv: String, u: Double, v: Double ->
+                iv: String, t: Double, sv: String, u: Double, v: Double ->
             namedIntersections[iv] = Intersection(t, shapes[sv]!!, u, v)
         }
 
@@ -57,10 +57,12 @@ class IntersectionStepDefinitions : En {
                 .toIntersections()
         }
         When("intersections ← intersections\\({intersection_var}, {intersection_var}, {intersection_var}, {intersection_var})") {
-            iv1: String, iv2: String, iv3: String, iv4: String ->
+                iv1: String, iv2: String, iv3: String, iv4: String ->
             intersections = sequenceOf(
-                namedIntersections[iv1]!!, namedIntersections[iv2]!!,
-                namedIntersections[iv3]!!, namedIntersections[iv4]!!
+                namedIntersections[iv1]!!,
+                namedIntersections[iv2]!!,
+                namedIntersections[iv3]!!,
+                namedIntersections[iv4]!!
             )
                 .toIntersections()
         }
