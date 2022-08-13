@@ -172,6 +172,14 @@ Feature: World
     And color ← refracted_color(world, comps, 5)
     Then color = linear_rgb_color(0, 0, 0)
 
+  Scenario: The refracted intensity with an opaque surface
+    Given world ← default_world()
+    And shape ← the first object in world
+    And ray ← ray(point(0, 0, -5), vector(0, 0, 1))
+    And intersections ← intersections(4:shape, 6:shape)
+    When comps ← prepare_computations(intersections[0], ray, 600nm, intersections)
+    Then refracted_intensity(world, comps, 5) = 0
+
   Scenario: The refracted color at the maximum recursive depth
     Given world ← default_world()
     And shape ← the first object in world
@@ -183,6 +191,17 @@ Feature: World
     When comps ← prepare_computations(intersections[0], ray, intersections)
     And color ← refracted_color(world, comps, 0)
     Then color = linear_rgb_color(0, 0, 0)
+
+  Scenario: The refracted intensity at the maximum recursive depth
+    Given world ← default_world()
+    And shape ← the first object in world
+    And shape has:
+      | material.transparency     | 1.0 |
+      | material.refractive_index | 1.5 |
+    And ray ← ray(point(0, 0, -5), vector(0, 0, 1))
+    And intersections ← intersections(4:shape, 6:shape)
+    When comps ← prepare_computations(intersections[0], ray, 600nm, intersections)
+    Then refracted_intensity(world, comps, 0) = 0
 
   Scenario: The refracted color under total internal reflection
     Given world ← default_world()
@@ -197,6 +216,19 @@ Feature: World
     When comps ← prepare_computations(intersections[1], ray, intersections)
     And color ← refracted_color(world, comps, 5)
     Then color = linear_rgb_color(0, 0, 0)
+
+  Scenario: The refracted intensity under total internal reflection
+    Given world ← default_world()
+    And shape ← the first object in world
+    And shape has:
+      | material.transparency     | 1.0 |
+      | material.refractive_index | 1.5 |
+    And ray ← ray(point(0, 0, √2/2), vector(0, 1, 0))
+    And intersections ← intersections(-√2/2:shape, √2/2:shape)
+    # NOTE: this time you're inside the sphere, so you need
+    # to look at the second intersection, intersections[1], not intersections[0]
+    When comps ← prepare_computations(intersections[1], ray, 600nm, intersections)
+    Then refracted_intensity(world, comps, 5) = 0
 
   Scenario: The refracted color with a refracted ray
     Given world ← default_world()

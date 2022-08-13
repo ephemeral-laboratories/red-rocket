@@ -102,6 +102,7 @@ data class Material(
             result += diffuseColor + specularColor
         }
 
+        // FIXME: This should be applied once total, not once per light
         result += emission
 
         return result
@@ -123,13 +124,13 @@ data class Material(
 
         // Combine the surface color with the light's color/intensity
         val lightIntensity = light.intensitySpectrum[wavelength]
-        val effectiveColor = surface * lightIntensity
+        val effectiveIntensity = surface * lightIntensity
 
         // Direction to the light source
         val lightDirection = (light.position - worldPoint).normalize()
 
         // Ambient contribution
-        var result = effectiveColor * ambientSpectrum[wavelength]
+        var result = effectiveIntensity * ambientSpectrum[wavelength]
 
         if (!inShadow) {
             // lightDotNormal represents the cosine of the angle between the
@@ -145,7 +146,7 @@ data class Material(
                 specularIntensity = 0.0
             } else {
                 // compute the diffuse contribution
-                diffuseIntensity = effectiveColor * diffuseSpectrum[wavelength] * lightDotNormal
+                diffuseIntensity = effectiveIntensity * diffuseSpectrum[wavelength] * lightDotNormal
                 // reflect_dot_eye represents the cosine of the angle between the
                 // reflection vector and the eye vector . A negative number means the
                 // light reflects away from the eye .
@@ -164,6 +165,7 @@ data class Material(
             result += diffuseIntensity + specularIntensity
         }
 
+        // FIXME: This should be applied once total, not once per light
         result += emissionSpectrum[wavelength]
 
         return result

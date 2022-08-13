@@ -1,5 +1,6 @@
 package garden.ephemeral.rocket.dsl
 
+import garden.ephemeral.rocket.Canvas
 import garden.ephemeral.rocket.Material
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.PointLight
@@ -18,9 +19,9 @@ import garden.ephemeral.rocket.shapes.Shape
 import garden.ephemeral.rocket.shapes.Sphere
 import garden.ephemeral.rocket.spectra.SpectralShape
 import garden.ephemeral.rocket.util.Angle
-import java.time.Duration
-import java.time.Instant
 import kotlin.io.path.Path
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 fun render(block: RenderBuilder.() -> Unit) {
     RenderBuilder().apply(block).render()
@@ -45,15 +46,18 @@ class RenderBuilder {
     }
 
     fun render() {
-        val t0 = Instant.now()
+        val canvas: Canvas
+        @OptIn(ExperimentalTime::class)
+        val time = measureTime {
 
-        // Quick check here, code won't be like this in the commit
-        val spectralShape = SpectralShape.Default
-        val oneWavelength = spectralShape.wavelengths[spectralShape.wavelengths.size / 2]
-        val canvas = camera.render(world, oneWavelength)
+            val wavelength = SpectralShape.Default.wavelengths[20]
 
-        val t1 = Instant.now()
-        println("Render time: ${Duration.between(t0, t1)}")
+//            canvas = camera.render(world)
+            canvas = camera.render2(world, wavelength)
+//            canvas = camera.render(world, SpectralShape.Default)
+        }
+
+        println("Render time: $time")
 
         canvas.toPPM(Path("out.ppm"))
         canvas.toPNG(Path("out.png"))

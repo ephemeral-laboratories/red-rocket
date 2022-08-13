@@ -45,7 +45,7 @@ class Canvas(val width: Int, val height: Int) {
         }
     }
 
-    fun fill(function: (Int, Int) -> Color) {
+    fun applyFill(function: (Int, Int) -> Color): Canvas {
         runBlocking {
             suspend fun <E> Iterable<E>.parallelForEach(f: suspend (E) -> Unit): Unit = coroutineScope {
                 map { job -> async(Dispatchers.Default) { f(job) } }.joinAll()
@@ -58,6 +58,8 @@ class Canvas(val width: Int, val height: Int) {
                 }
             }
         }
+
+        return this
     }
 
     fun toPNG(file: Path) {

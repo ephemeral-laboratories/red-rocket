@@ -8,10 +8,12 @@ import garden.ephemeral.rocket.Tuple.Companion.origin
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.World
 import garden.ephemeral.rocket.color.Color
-import garden.ephemeral.rocket.color.RgbColor
+import garden.ephemeral.rocket.spectra.DoubleSpectrum
+import garden.ephemeral.rocket.spectra.SpectralShape
 import garden.ephemeral.rocket.spectra.Wavelength
 import garden.ephemeral.rocket.util.Angle
 import garden.ephemeral.rocket.util.tan
+import garden.ephemeral.rocket.util.toImmutableDoubleArray
 
 data class Camera(
     val hSize: Int,
@@ -70,28 +72,37 @@ data class Camera(
      * @return the captured canvas.
      */
     fun render(world: World): Canvas {
-        return Canvas(hSize, vSize).apply {
-            fill { px, py -> colorAtPixel(world, px, py) }
+        return Canvas(hSize, vSize).applyFill { px, py ->
+            colorAtPixel(world, px, py)
         }
     }
 
-    /**
-     * Renders a monochrome image of the world in the camera.
-     *
-     * @param world the world.
-     * @param wavelength the wavelength to capture.
-     * @return the captured canvas.
-     */
-    fun render(world: World, wavelength: Wavelength): Canvas {
-        return Canvas(hSize, vSize).apply {
-            fill { px, py ->
-                val intensity = samplingStrategy.sample(this@Camera, world, px, py, wavelength)
+    fun render2(world: World, wavelength: Wavelength): Canvas {
+        return Canvas(hSize, vSize).applyFill { px, py ->
+            val intensity = samplingStrategy.sample(this@Camera, world, px, py, wavelength)
 
-                // TODO: Figure out scaling in camera. This value is esoteric
-                val pixelValue = intensity * 1.0e15
+            // TODO: Figure out scaling in camera, units are arbitrary right now.
+            val scale = 1e15
+            val value = intensity * scale
 
-                RgbColor(pixelValue, pixelValue, pixelValue)
-            }
+            Color.grey(value)
+        }
+    }
+
+    fun render(world: World, spectralShape: SpectralShape = SpectralShape.Default): Canvas {
+        return Canvas(hSize, vSize).applyFill { px, py ->
+            val intensities = spectralShape.wavelengths.map { wavelength ->
+                samplingStrategy.sample(this@Camera, world, px, py, wavelength)
+            }.toImmutableDoubleArray()
+
+            // TODO: Figure out scaling in camera, units are arbitrary right now.
+            // 1e5 too dim
+            val scale = 1e10
+            // 1e10 too bright
+
+            val spectrum = DoubleSpectrum(spectralShape, intensities * scale)
+
+            spectrum.toCieXyz().toLinearRgb()
         }
     }
 
