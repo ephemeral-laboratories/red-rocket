@@ -2,6 +2,7 @@ package garden.ephemeral.rocket
 
 import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.shapes.Shape
+import garden.ephemeral.rocket.spectra.Wavelength
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -43,7 +44,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
         return Precomputed(t, obj, point, overPoint, underPoint, eyeline, normal, reflection, inside, n1, n2)
     }
 
-    fun prepareComputations2(ray: Ray, wavelength: Double, wavelengthIndex: Int, allIntersections: Intersections): Precomputed2 {
+    fun prepareComputations2(ray: Ray, wavelength: Wavelength, allIntersections: Intersections): Precomputed2 {
         val point = ray.position(t)
         val eyeline = -ray.direction
         var normal = obj.worldNormalAt(point, this)
@@ -77,7 +78,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
             }
         }
 
-        return Precomputed2(wavelength, wavelengthIndex, t, obj, point, overPoint, underPoint, eyeline, normal, reflection, inside, n1, n2)
+        return Precomputed2(wavelength, t, obj, point, overPoint, underPoint, eyeline, normal, reflection, inside, n1, n2)
     }
 
     // faster removal routine because we only care about object identity, not deep equality
@@ -153,8 +154,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
     }
 
     data class Precomputed2(
-        val wavelength: Double,
-        val wavelengthIndex: Int,
+        val wavelength: Wavelength,
         val t: Double,
         val obj: Shape,
         val point: Tuple,

@@ -9,7 +9,7 @@ import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.World
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.RgbColor
-import garden.ephemeral.rocket.spectra.SpectralShape
+import garden.ephemeral.rocket.spectra.Wavelength
 import garden.ephemeral.rocket.util.Angle
 import garden.ephemeral.rocket.util.tan
 
@@ -82,13 +82,10 @@ data class Camera(
      * @param wavelength the wavelength to capture.
      * @return the captured canvas.
      */
-    fun render(world: World, wavelength: Double): Canvas {
+    fun render(world: World, wavelength: Wavelength): Canvas {
         return Canvas(hSize, vSize).apply {
             fill { px, py ->
-                val spectralShape = SpectralShape.Default
-                // Shady double comparison but it's OK, this code is temporary
-                val wavelengthIndex = spectralShape.wavelengths.indexOf(wavelength)
-                val intensity = samplingStrategy.sample(this@Camera, world, px, py, wavelength, wavelengthIndex)
+                val intensity = samplingStrategy.sample(this@Camera, world, px, py, wavelength)
 
                 // TODO: Figure out scaling in camera. This value is esoteric
                 val pixelValue = intensity * 1.0e15

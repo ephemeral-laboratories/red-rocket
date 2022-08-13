@@ -205,7 +205,7 @@ fun CieXyzColorSpectrum.atWavelength(wavelength: Double): CieXyzColor {
     return CieXyzColor(xValues[index], yValues[index], zValues[index])
 }
 private fun Spectrum<*, *>.findIndex(wavelength: Double): Int {
-    val index = wavelengths.indexOfFirst { w -> abs(w - wavelength) < epsilon }
+    val index = wavelengths.map(Wavelength::inNanometres).indexOfFirst { w -> abs(w - wavelength) < epsilon }
     require(index >= 0) { "Wavelength ${wavelength}nm is not in the spectrum" }
     return index
 }

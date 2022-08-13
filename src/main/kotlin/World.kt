@@ -3,6 +3,7 @@ package garden.ephemeral.rocket
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.black
 import garden.ephemeral.rocket.shapes.Shape
+import garden.ephemeral.rocket.spectra.Wavelength
 
 class World {
     var objects = mutableListOf<Shape>()
@@ -58,7 +59,6 @@ class World {
             val shadowed = isShadowed(precomputed.overPoint, light)
             val surface = material.lighting2(
                 precomputed.wavelength,
-                precomputed.wavelengthIndex,
                 precomputed.obj,
                 light,
                 precomputed.overPoint,
@@ -88,10 +88,10 @@ class World {
         return shadeHit(precomputed, recursionsAllowed)
     }
 
-    fun intensityAt(ray: Ray, wavelength: Double, wavelengthIndex: Int, recursionsAllowed: Int = 5): Double {
+    fun intensityAt(ray: Ray, wavelength: Wavelength, recursionsAllowed: Int = 5): Double {
         val intersections = intersect(ray)
         val hit = intersections.hit() ?: return 0.0
-        val precomputed = hit.prepareComputations2(ray, wavelength, wavelengthIndex, intersections)
+        val precomputed = hit.prepareComputations2(ray, wavelength, intersections)
         return shadeHit(precomputed, recursionsAllowed)
     }
 
@@ -119,8 +119,8 @@ class World {
         }
 
         val reflectRay = Ray(comps.overPoint, comps.reflection)
-        val color = intensityAt(reflectRay, comps.wavelength, comps.wavelengthIndex, recursionsAllowed - 1)
-        return color * comps.obj.material.reflectiveSpectrum.values[comps.wavelengthIndex]
+        val color = intensityAt(reflectRay, comps.wavelength, recursionsAllowed - 1)
+        return color * comps.obj.material.reflectiveSpectrum.values[comps.wavelength.index]
     }
 
     fun refractedColor(comps: Intersection.Precomputed, recursionsAllowed: Int = 5): Color {
@@ -166,7 +166,7 @@ class World {
         val refractRay = Ray(comps.underPoint, direction)
         // Find the color of the refracted ray, making sure to multiply
         // by the transparency value to account for any opacity
-        return intensityAt(refractRay, comps.wavelength, comps.wavelengthIndex, recursionsAllowed - 1) *
-                comps.obj.material.transparencySpectrum.values[comps.wavelengthIndex]
+        return intensityAt(refractRay, comps.wavelength, recursionsAllowed - 1) *
+                comps.obj.material.transparencySpectrum.values[comps.wavelength.index]
     }
 }

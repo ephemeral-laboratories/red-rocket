@@ -20,20 +20,21 @@ class DoubleSpectralData(val data: List<Pair<Double, Double>>) : SpectralData<Do
     override fun createSpectrum(shape: SpectralShape): DoubleSpectrum {
         var dataIndex = 0
         val values = buildImmutableDoubleArray {
-            for (w in shape.wavelengths) {
+            for (wavelength in shape.wavelengths) {
+                val value = wavelength.inNanometres
                 when {
-                    w == data[dataIndex].first -> add(data[dataIndex].second)
-                    w < data[dataIndex].first -> {
+                    value == data[dataIndex].first -> add(data[dataIndex].second)
+                    value < data[dataIndex].first -> {
                         // Low extrapolation case handled here by coercing to >= 1
-                        add(interpolate(w, dataIndex.coerceAtLeast(1)))
+                        add(interpolate(value, dataIndex.coerceAtLeast(1)))
                     }
                     else -> { // w > data[dataIndex].first
                         // Move data pointer until we either find a value which is higher, _or_ we hit the end.
                         // Takes care of the high extrapolation case automatically.
-                        while (w > data[dataIndex].first && dataIndex < data.lastIndex) {
+                        while (value > data[dataIndex].first && dataIndex < data.lastIndex) {
                             dataIndex++
                         }
-                        add(interpolate(w, dataIndex))
+                        add(interpolate(value, dataIndex))
                     }
                 }
             }

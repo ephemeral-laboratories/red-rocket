@@ -16,6 +16,7 @@ import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.Plane
 import garden.ephemeral.rocket.shapes.Shape
 import garden.ephemeral.rocket.shapes.Sphere
+import garden.ephemeral.rocket.spectra.SpectralShape
 import garden.ephemeral.rocket.util.Angle
 import java.time.Duration
 import java.time.Instant
@@ -47,7 +48,9 @@ class RenderBuilder {
         val t0 = Instant.now()
 
         // Quick check here, code won't be like this in the commit
-        val canvas = camera.render(world, 600.0)
+        val spectralShape = SpectralShape.Default
+        val oneWavelength = spectralShape.wavelengths[spectralShape.wavelengths.size / 2]
+        val canvas = camera.render(world, oneWavelength)
 
         val t1 = Instant.now()
         println("Render time: ${Duration.between(t0, t1)}")

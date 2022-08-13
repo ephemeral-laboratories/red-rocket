@@ -22,6 +22,7 @@ data class SpectralShape(
 
     val wavelengths = generateSequence(min) { x -> x + step }
         .takeWhile { x -> x <= max }
+        .mapIndexed { index, wavelength -> Wavelength(wavelength, index) }
         .toList()
 
     val size get() = wavelengths.size

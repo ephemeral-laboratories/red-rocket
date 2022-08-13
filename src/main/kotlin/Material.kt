@@ -7,6 +7,7 @@ import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.patterns.Pattern
 import garden.ephemeral.rocket.shapes.Shape
 import garden.ephemeral.rocket.spectra.DoubleSpectrum
+import garden.ephemeral.rocket.spectra.Wavelength
 import kotlin.math.pow
 
 data class Material(
@@ -107,8 +108,7 @@ data class Material(
     }
 
     fun lighting2(
-        wavelength: Double,
-        wavelengthIndex: Int,
+        wavelength: Wavelength,
         shape: Shape,
         light: PointLight,
         worldPoint: Tuple,
@@ -118,17 +118,17 @@ data class Material(
     ): Double {
         // TODO: Push spectrum down into pattern code
         val surface = DoubleSpectrum.recoverFromCieXyz((pattern?.patternAtShape(shape, worldPoint) ?: color).toCieXyz())
-            .values[wavelengthIndex]
+            .values[wavelength.index]
 
         // Combine the surface color with the light's color/intensity
-        val lightIntensity = light.intensitySpectrum.values[wavelengthIndex]
+        val lightIntensity = light.intensitySpectrum.values[wavelength.index]
         val effectiveColor = surface * lightIntensity
 
         // Direction to the light source
         val lightDirection = (light.position - worldPoint).normalize()
 
         // Ambient contribution
-        var result = effectiveColor * ambientSpectrum.values[wavelengthIndex]
+        var result = effectiveColor * ambientSpectrum.values[wavelength.index]
 
         if (!inShadow) {
             // lightDotNormal represents the cosine of the angle between the
@@ -144,7 +144,7 @@ data class Material(
                 specularIntensity = 0.0
             } else {
                 // compute the diffuse contribution
-                diffuseIntensity = effectiveColor * diffuseSpectrum.values[wavelengthIndex] * lightDotNormal
+                diffuseIntensity = effectiveColor * diffuseSpectrum.values[wavelength.index] * lightDotNormal
                 // reflect_dot_eye represents the cosine of the angle between the
                 // reflection vector and the eye vector . A negative number means the
                 // light reflects away from the eye .
@@ -156,14 +156,14 @@ data class Material(
                 } else {
                     // compute the specular contribution
                     val factor = reflectDotEye.pow(shininess)
-                    lightIntensity * specularSpectrum.values[wavelengthIndex] * factor
+                    lightIntensity * specularSpectrum.values[wavelength.index] * factor
                 }
             }
 
             result += diffuseIntensity + specularIntensity
         }
 
-        result += emissionSpectrum.values[wavelengthIndex]
+        result += emissionSpectrum.values[wavelength.index]
 
         return result
     }

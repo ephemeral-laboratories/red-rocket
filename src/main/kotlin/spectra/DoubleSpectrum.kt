@@ -109,7 +109,8 @@ class DoubleSpectrum(
      * @return the spectrum in that shape.
      */
     fun reshape(newShape: SpectralShape): DoubleSpectrum {
-        return DoubleSpectralData(newShape.wavelengths.zip(values)).createSpectrum(newShape)
+        // TODO: This is a bit gross now
+        return DoubleSpectralData(newShape.wavelengths.map(Wavelength::inNanometres).zip(values)).createSpectrum(newShape)
     }
 
     companion object {
@@ -126,7 +127,7 @@ class DoubleSpectrum(
         ): DoubleSpectrum {
             val values = buildImmutableDoubleArray {
                 shape.wavelengths.forEach { w ->
-                    val wavelength = w * 1E-9
+                    val wavelength = w.inMetres
 
                     // Planck's Law of radiation
                     // P_λ dλ = (c₁/λ⁵)/(exp(c₂/λT) - 1) dλ  (units: W m^-3)

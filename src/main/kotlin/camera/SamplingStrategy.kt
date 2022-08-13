@@ -3,6 +3,7 @@ package garden.ephemeral.rocket.camera
 import garden.ephemeral.rocket.World
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.patterns.UV
+import garden.ephemeral.rocket.spectra.Wavelength
 
 /**
  * Different strategies for sampling pixel values in the camera.
@@ -28,7 +29,7 @@ interface SamplingStrategy {
      * @param py the pixel's Y offset.
      * @param wavelength the wavelength to sample.
      */
-    fun sample(camera: Camera, world: World, px: Int, py: Int, wavelength: Double, wavelengthIndex: Int): Double
+    fun sample(camera: Camera, world: World, px: Int, py: Int, wavelength: Wavelength): Double
 
     companion object {
         /**
@@ -42,10 +43,10 @@ interface SamplingStrategy {
                 return world.colorAt(ray)
             }
 
-            override fun sample(camera: Camera, world: World, px: Int, py: Int, wavelength: Double, wavelengthIndex: Int): Double {
+            override fun sample(camera: Camera, world: World, px: Int, py: Int, wavelength: Wavelength): Double {
                 // Always samples at the middle of the pixel
                 val ray = camera.rayForPixelOffset(px + 0.5, py + 0.5)
-                return world.intensityAt(ray, wavelength, wavelengthIndex)
+                return world.intensityAt(ray, wavelength)
             }
         }
 
@@ -89,11 +90,11 @@ interface SamplingStrategy {
                     }
             }
 
-            override fun sample(camera: Camera, world: World, px: Int, py: Int, wavelength: Double, wavelengthIndex: Int): Double {
+            override fun sample(camera: Camera, world: World, px: Int, py: Int, wavelength: Wavelength): Double {
                 return sampleOffsets
                     .map { offset ->
                         val ray = camera.rayForPixelOffset(px + offset.u, py + offset.v)
-                        world.intensityAt(ray, wavelength, wavelengthIndex)
+                        world.intensityAt(ray, wavelength)
                     }
                     .fold(0.0) { accumulator, sampledColor ->
                         accumulator + sampledColor * weightPerSample
