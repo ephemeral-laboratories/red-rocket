@@ -45,7 +45,10 @@ class RenderBuilder {
 
     fun render() {
         val t0 = Instant.now()
-        val canvas = camera.render(world)
+
+        // Quick check here, code won't be like this in the commit
+        val canvas = camera.render(world, 600.0)
+
         val t1 = Instant.now()
         println("Render time: ${Duration.between(t0, t1)}")
 

@@ -52,10 +52,46 @@ class World {
         }
     }
 
+    fun shadeHit(precomputed: Intersection.Precomputed2, recursionsAllowed: Int = 5): Double {
+        return lights.fold(0.0) { accumulator, light ->
+            val material = precomputed.obj.material
+            val shadowed = isShadowed(precomputed.overPoint, light)
+            val surface = material.lighting2(
+                precomputed.wavelength,
+                precomputed.wavelengthIndex,
+                precomputed.obj,
+                light,
+                precomputed.overPoint,
+                precomputed.eyeline,
+                precomputed.normal,
+                shadowed
+            )
+
+            val reflected = reflectedIntensity(precomputed, recursionsAllowed)
+            val refracted = refractedIntensity(precomputed, recursionsAllowed)
+
+            val reflectRefract = if (material.reflective.isNonBlack && material.transparency.isNonBlack) {
+                val reflectance = precomputed.fresnel()
+                reflected * reflectance + refracted * (1.0 - reflectance)
+            } else {
+                reflected + refracted
+            }
+
+            accumulator + surface + reflectRefract
+        }
+    }
+
     fun colorAt(ray: Ray, recursionsAllowed: Int = 5): Color {
         val intersections = intersect(ray)
         val hit = intersections.hit() ?: return black
         val precomputed = hit.prepareComputations(ray, intersections)
+        return shadeHit(precomputed, recursionsAllowed)
+    }
+
+    fun intensityAt(ray: Ray, wavelength: Double, wavelengthIndex: Int, recursionsAllowed: Int = 5): Double {
+        val intersections = intersect(ray)
+        val hit = intersections.hit() ?: return 0.0
+        val precomputed = hit.prepareComputations2(ray, wavelength, wavelengthIndex, intersections)
         return shadeHit(precomputed, recursionsAllowed)
     }
 
@@ -71,6 +107,20 @@ class World {
         val reflectRay = Ray(comps.overPoint, comps.reflection)
         val color = colorAt(reflectRay, recursionsAllowed - 1)
         return color * comps.obj.material.reflective
+    }
+
+    fun reflectedIntensity(comps: Intersection.Precomputed2, recursionsAllowed: Int = 5): Double {
+        if (recursionsAllowed == 0) {
+            return 0.0
+        }
+
+        if (comps.obj.material.reflective.isBlack) {
+            return 0.0
+        }
+
+        val reflectRay = Ray(comps.overPoint, comps.reflection)
+        val color = intensityAt(reflectRay, comps.wavelength, comps.wavelengthIndex, recursionsAllowed - 1)
+        return color * comps.obj.material.reflectiveSpectrum.values[comps.wavelengthIndex]
     }
 
     fun refractedColor(comps: Intersection.Precomputed, recursionsAllowed: Int = 5): Color {
@@ -94,5 +144,29 @@ class World {
         // Find the color of the refracted ray, making sure to multiply
         // by the transparency value to account for any opacity
         return colorAt(refractRay, recursionsAllowed - 1) * comps.obj.material.transparency
+    }
+
+    fun refractedIntensity(comps: Intersection.Precomputed2, recursionsAllowed: Int = 5): Double {
+        if (recursionsAllowed == 0) {
+            return 0.0
+        }
+
+        if (comps.obj.material.transparency.isBlack) {
+            return 0.0
+        }
+
+        // Find the ratio of first index of refraction to the second.
+        val nRatio = comps.n1 / comps.n2
+        if (comps.sin2ThetaT > 1.0) {
+            // Total internal reflection
+            return 0.0
+        }
+
+        val direction = comps.normal * (nRatio * comps.cosThetaI - comps.cosThetaT) - comps.eyeline * nRatio
+        val refractRay = Ray(comps.underPoint, direction)
+        // Find the color of the refracted ray, making sure to multiply
+        // by the transparency value to account for any opacity
+        return intensityAt(refractRay, comps.wavelength, comps.wavelengthIndex, recursionsAllowed - 1) *
+                comps.obj.material.transparencySpectrum.values[comps.wavelengthIndex]
     }
 }

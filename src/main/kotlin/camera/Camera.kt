@@ -8,13 +8,10 @@ import garden.ephemeral.rocket.Tuple.Companion.origin
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.World
 import garden.ephemeral.rocket.color.Color
+import garden.ephemeral.rocket.color.RgbColor
+import garden.ephemeral.rocket.spectra.SpectralShape
 import garden.ephemeral.rocket.util.Angle
 import garden.ephemeral.rocket.util.tan
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.runBlocking
 
 data class Camera(
     val hSize: Int,
@@ -66,19 +63,37 @@ data class Camera(
         return Ray(origin, direction)
     }
 
+    /**
+     * Renders a colour image of the world in the camera.
+     *
+     * @param world the world.
+     * @return the captured canvas.
+     */
     fun render(world: World): Canvas {
         return Canvas(hSize, vSize).apply {
-            runBlocking {
-                suspend fun <E> Iterable<E>.parallelForEach(f: suspend (E) -> Unit): Unit = coroutineScope {
-                    map { job -> async(Dispatchers.Default) { f(job) } }.joinAll()
-                }
+            fill { px, py -> colorAtPixel(world, px, py) }
+        }
+    }
 
-                (0 until vSize).parallelForEach { py ->
-                    (0 until hSize).forEach { px ->
-                        val color = colorAtPixel(world, px, py)
-                        setPixel(px, py, color)
-                    }
-                }
+    /**
+     * Renders a monochrome image of the world in the camera.
+     *
+     * @param world the world.
+     * @param wavelength the wavelength to capture.
+     * @return the captured canvas.
+     */
+    fun render(world: World, wavelength: Double): Canvas {
+        return Canvas(hSize, vSize).apply {
+            fill { px, py ->
+                val spectralShape = SpectralShape.Default
+                // Shady double comparison but it's OK, this code is temporary
+                val wavelengthIndex = spectralShape.wavelengths.indexOf(wavelength)
+                val intensity = samplingStrategy.sample(this@Camera, world, px, py, wavelength, wavelengthIndex)
+
+                // TODO: Figure out scaling in camera. This value is esoteric
+                val pixelValue = intensity * 1.0e15
+
+                RgbColor(pixelValue, pixelValue, pixelValue)
             }
         }
     }

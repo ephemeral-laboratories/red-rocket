@@ -6,6 +6,7 @@ import garden.ephemeral.rocket.color.Color.Companion.grey
 import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.patterns.Pattern
 import garden.ephemeral.rocket.shapes.Shape
+import garden.ephemeral.rocket.spectra.DoubleSpectrum
 import kotlin.math.pow
 
 data class Material(
@@ -22,6 +23,13 @@ data class Material(
     val dissolve: Double,
     val illuminationModel: Int
 ) {
+    val ambientSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(ambient.toCieXyz()) }
+    val diffuseSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(diffuse.toCieXyz()) }
+    val specularSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(specular.toCieXyz()) }
+    val reflectiveSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(reflective.toCieXyz()) }
+    val emissionSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(emission.toCieXyz()) }
+    val transparencySpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(transparency.toCieXyz()) }
+
     companion object {
         val default = Material(
             white, grey(0.1), grey(0.9), grey(0.9), 200.0,
@@ -94,6 +102,68 @@ data class Material(
         }
 
         result += emission
+
+        return result
+    }
+
+    fun lighting2(
+        wavelength: Double,
+        wavelengthIndex: Int,
+        shape: Shape,
+        light: PointLight,
+        worldPoint: Tuple,
+        worldEyeDirection: Tuple,
+        worldNormal: Tuple,
+        inShadow: Boolean
+    ): Double {
+        // TODO: Push spectrum down into pattern code
+        val surface = DoubleSpectrum.recoverFromCieXyz((pattern?.patternAtShape(shape, worldPoint) ?: color).toCieXyz())
+            .values[wavelengthIndex]
+
+        // Combine the surface color with the light's color/intensity
+        val lightIntensity = light.intensitySpectrum.values[wavelengthIndex]
+        val effectiveColor = surface * lightIntensity
+
+        // Direction to the light source
+        val lightDirection = (light.position - worldPoint).normalize()
+
+        // Ambient contribution
+        var result = effectiveColor * ambientSpectrum.values[wavelengthIndex]
+
+        if (!inShadow) {
+            // lightDotNormal represents the cosine of the angle between the
+            // light vector and the normal vector . A negative number means the
+            // light is on the other side of the surface.
+            val lightDotNormal = lightDirection.dot(worldNormal)
+
+            val diffuseIntensity: Double
+            val specularIntensity: Double
+
+            if (lightDotNormal < 0) {
+                diffuseIntensity = 0.0
+                specularIntensity = 0.0
+            } else {
+                // compute the diffuse contribution
+                diffuseIntensity = effectiveColor * diffuseSpectrum.values[wavelengthIndex] * lightDotNormal
+                // reflect_dot_eye represents the cosine of the angle between the
+                // reflection vector and the eye vector . A negative number means the
+                // light reflects away from the eye .
+                val reflectDirection = (-lightDirection).reflect(worldNormal)
+                val reflectDotEye = reflectDirection.dot(worldEyeDirection)
+
+                specularIntensity = if (reflectDotEye <= 0) {
+                    0.0
+                } else {
+                    // compute the specular contribution
+                    val factor = reflectDotEye.pow(shininess)
+                    lightIntensity * specularSpectrum.values[wavelengthIndex] * factor
+                }
+            }
+
+            result += diffuseIntensity + specularIntensity
+        }
+
+        result += emissionSpectrum.values[wavelengthIndex]
 
         return result
     }

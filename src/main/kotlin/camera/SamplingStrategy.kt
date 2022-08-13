@@ -19,6 +19,17 @@ interface SamplingStrategy {
      */
     fun sample(camera: Camera, world: World, px: Int, py: Int): Color
 
+    /**
+     * Samples the intensity of the wavelength at the given pixel.
+     *
+     * @param camera the camera.
+     * @param world the world.
+     * @param px the pixel's X offset.
+     * @param py the pixel's Y offset.
+     * @param wavelength the wavelength to sample.
+     */
+    fun sample(camera: Camera, world: World, px: Int, py: Int, wavelength: Double, wavelengthIndex: Int): Double
+
     companion object {
         /**
          * Sampling strategy which takes a single sample at the middle of the pixel.
@@ -29,6 +40,12 @@ interface SamplingStrategy {
                 // Always samples at the middle of the pixel
                 val ray = camera.rayForPixelOffset(px + 0.5, py + 0.5)
                 return world.colorAt(ray)
+            }
+
+            override fun sample(camera: Camera, world: World, px: Int, py: Int, wavelength: Double, wavelengthIndex: Int): Double {
+                // Always samples at the middle of the pixel
+                val ray = camera.rayForPixelOffset(px + 0.5, py + 0.5)
+                return world.intensityAt(ray, wavelength, wavelengthIndex)
             }
         }
 
@@ -68,6 +85,17 @@ interface SamplingStrategy {
                         world.colorAt(ray)
                     }
                     .fold(Color.black) { accumulator, sampledColor ->
+                        accumulator + sampledColor * weightPerSample
+                    }
+            }
+
+            override fun sample(camera: Camera, world: World, px: Int, py: Int, wavelength: Double, wavelengthIndex: Int): Double {
+                return sampleOffsets
+                    .map { offset ->
+                        val ray = camera.rayForPixelOffset(px + offset.u, py + offset.v)
+                        world.intensityAt(ray, wavelength, wavelengthIndex)
+                    }
+                    .fold(0.0) { accumulator, sampledColor ->
                         accumulator + sampledColor * weightPerSample
                     }
             }

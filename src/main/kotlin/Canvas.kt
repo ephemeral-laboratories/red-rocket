@@ -2,6 +2,11 @@ package garden.ephemeral.rocket
 
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.runBlocking
 import java.awt.image.BufferedImage
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -36,6 +41,21 @@ class Canvas(val width: Int, val height: Int) {
             (0 until width).forEach { x ->
                 val offset = getOffset(x, y)
                 doubles.copyInto(data, offset, 0, 3)
+            }
+        }
+    }
+
+    fun fill(function: (Int, Int) -> Color) {
+        runBlocking {
+            suspend fun <E> Iterable<E>.parallelForEach(f: suspend (E) -> Unit): Unit = coroutineScope {
+                map { job -> async(Dispatchers.Default) { f(job) } }.joinAll()
+            }
+
+            (0 until height).parallelForEach { py ->
+                (0 until width).forEach { px ->
+                    val color = function(px, py)
+                    setPixel(px, py, color)
+                }
             }
         }
     }
