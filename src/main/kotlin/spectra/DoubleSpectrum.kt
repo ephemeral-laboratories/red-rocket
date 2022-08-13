@@ -24,6 +24,8 @@ class DoubleSpectrum(
         requireSameSize("values", values)
     }
 
+    operator fun get(wavelength: Wavelength): Double = values[wavelength.index]
+
     override fun plus(other: DoubleSpectrum): DoubleSpectrum {
         requireSameShape(other)
         return DoubleSpectrum(shape, values + other.values)
@@ -96,22 +98,6 @@ class DoubleSpectrum(
 
     fun toLinearRgbEmission(): RgbColor = toCieXyzEmission().toLinearRgb()
     fun toLinearRgbReflectance(): RgbColor = toCieXyzReflectance().toLinearRgb()
-
-    /**
-     * Reshapes the spectrum to a different shape.
-     *
-     * Depending on the original shape and the desired shape, this can be a somewhat
-     * costly operation due to interpolation calculations, which you don't want to
-     * be doing frequently, thus most operations between two spectra do not reshape
-     * the spectra automatically.
-     *
-     * @param newShape the shape of the new spectrum.
-     * @return the spectrum in that shape.
-     */
-    fun reshape(newShape: SpectralShape): DoubleSpectrum {
-        // TODO: This is a bit gross now
-        return DoubleSpectralData(newShape.wavelengths.map(Wavelength::inNanometres).zip(values)).createSpectrum(newShape)
-    }
 
     companion object {
 

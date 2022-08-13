@@ -117,18 +117,19 @@ data class Material(
         inShadow: Boolean
     ): Double {
         // TODO: Push spectrum down into pattern code
-        val surface = DoubleSpectrum.recoverFromCieXyz((pattern?.patternAtShape(shape, worldPoint) ?: color).toCieXyz())
-            .values[wavelength.index]
+        val surface = DoubleSpectrum.recoverFromCieXyz(
+            (pattern?.patternAtShape(shape, worldPoint) ?: color).toCieXyz()
+        )[wavelength]
 
         // Combine the surface color with the light's color/intensity
-        val lightIntensity = light.intensitySpectrum.values[wavelength.index]
+        val lightIntensity = light.intensitySpectrum[wavelength]
         val effectiveColor = surface * lightIntensity
 
         // Direction to the light source
         val lightDirection = (light.position - worldPoint).normalize()
 
         // Ambient contribution
-        var result = effectiveColor * ambientSpectrum.values[wavelength.index]
+        var result = effectiveColor * ambientSpectrum[wavelength]
 
         if (!inShadow) {
             // lightDotNormal represents the cosine of the angle between the
@@ -144,7 +145,7 @@ data class Material(
                 specularIntensity = 0.0
             } else {
                 // compute the diffuse contribution
-                diffuseIntensity = effectiveColor * diffuseSpectrum.values[wavelength.index] * lightDotNormal
+                diffuseIntensity = effectiveColor * diffuseSpectrum[wavelength] * lightDotNormal
                 // reflect_dot_eye represents the cosine of the angle between the
                 // reflection vector and the eye vector . A negative number means the
                 // light reflects away from the eye .
@@ -156,14 +157,14 @@ data class Material(
                 } else {
                     // compute the specular contribution
                     val factor = reflectDotEye.pow(shininess)
-                    lightIntensity * specularSpectrum.values[wavelength.index] * factor
+                    lightIntensity * specularSpectrum[wavelength] * factor
                 }
             }
 
             result += diffuseIntensity + specularIntensity
         }
 
-        result += emissionSpectrum.values[wavelength.index]
+        result += emissionSpectrum[wavelength]
 
         return result
     }

@@ -120,7 +120,7 @@ class World {
 
         val reflectRay = Ray(comps.overPoint, comps.reflection)
         val color = intensityAt(reflectRay, comps.wavelength, recursionsAllowed - 1)
-        return color * comps.obj.material.reflectiveSpectrum.values[comps.wavelength.index]
+        return color * comps.obj.material.reflectiveSpectrum[comps.wavelength]
     }
 
     fun refractedColor(comps: Intersection.Precomputed, recursionsAllowed: Int = 5): Color {
@@ -167,6 +167,6 @@ class World {
         // Find the color of the refracted ray, making sure to multiply
         // by the transparency value to account for any opacity
         return intensityAt(refractRay, comps.wavelength, recursionsAllowed - 1) *
-                comps.obj.material.transparencySpectrum.values[comps.wavelength.index]
+                comps.obj.material.transparencySpectrum[comps.wavelength]
     }
 }
