@@ -83,10 +83,10 @@ class DoubleSpectrum(
         val illumCmfY = illuminantSpectrum.values * colorMatchingFunctionSpectrum.yValues
         val illumCmfZ = illuminantSpectrum.values * colorMatchingFunctionSpectrum.zValues
 
-        // XXX: The logic divides by shape.step but later multiplies by it, so there is probably a shortcut
+        // k = 1 / (shape.step * illumCmfY.sum()), but then factor = k * shape.step,
+        // so we can skip some operations here.
 
-        val k = 1.0 / (shape.step * illumCmfY.sum())
-        val factor = k * shape.step
+        val factor = 1.0 / illumCmfY.sum()
 
         val x = values.dotProduct(illumCmfX) * factor
         val y = values.dotProduct(illumCmfY) * factor
@@ -179,6 +179,39 @@ class DoubleSpectrum(
             val factor = 1.0 / (Km * shape.step)
 
             return Burns2020Method1.get(colorMatchingFunction, shape)
+                .recoverSpectrum(color * factor)
+        }
+
+        /**
+         * Recovers a reflectance spectrum from a CIE XYZ color.
+         *
+         * This is essentially the inverse of [toCieXyzReflectance] and the units are the same.
+         *
+         * There is no single correct solution for this operation, so this implementation tries to
+         * produce the result with the lowest possible norm, i.e. a least-squares solution.
+         *
+         * @param color the input color.
+         * @param shape the shape you want for the resulting spectrum.
+         * @param colorMatchingFunction the color matching function to use.
+         * @param illuminant the illuminant to use.
+         * @return the spectrum.
+         */
+        fun recoverFromCieXyzReflectance(
+            color: CieXyzColor,
+            shape: SpectralShape = SpectralShape.Default,
+            colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE,
+            illuminant: Illuminant = Illuminant.D65
+        ): DoubleSpectrum {
+            val colorMatchingFunctionSpectrum = colorMatchingFunction.spectrum(shape)
+            val illuminantSpectrum = illuminant.spectrum(shape)
+
+            // Inverse of factor used when converting in the other direction.
+            // Similar to the case in the opposite direction, we don't need to divide and then re-multiply
+            // by shape.step and can just do the one dot product.
+            // This could be cleaned up further if we moved this calculation into the utility.
+            val factor = illuminantSpectrum.values.dotProduct(colorMatchingFunctionSpectrum.yValues)
+
+            return Burns2020Method1.get(colorMatchingFunction, illuminant, shape)
                 .recoverSpectrum(color * factor)
         }
     }

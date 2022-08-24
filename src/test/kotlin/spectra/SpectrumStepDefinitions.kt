@@ -84,6 +84,10 @@ class SpectrumStepDefinitions : En {
             doubleSpectrum = DoubleSpectrum.recoverFromCieXyzEmission(colors["color"] as CieXyzColor)
         }
 
+        When("a reflectance spectrum is recovered from the color") {
+            doubleSpectrum = DoubleSpectrum.recoverFromCieXyzReflectance(colors["color"] as CieXyzColor)
+        }
+
         Then("the spectral shapes are equal") {
             assertThat(spectralShape).isEqualTo(spectralShape2)
         }

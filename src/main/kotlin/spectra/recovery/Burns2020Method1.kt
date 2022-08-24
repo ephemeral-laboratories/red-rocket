@@ -3,6 +3,7 @@ package garden.ephemeral.rocket.spectra.recovery
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.color.CieXyzColor
 import garden.ephemeral.rocket.color.ColorMatchingFunction
+import garden.ephemeral.rocket.color.Illuminant
 import garden.ephemeral.rocket.spectra.DoubleSpectrum
 import garden.ephemeral.rocket.spectra.SpectralShape
 import garden.ephemeral.rocket.util.ImmutableDoubleArray
@@ -16,29 +17,107 @@ import kotlin.math.abs
  * _Burns, SA. Numerical methods for smoothest reflectance reconstruction.
  * Color Res Appl. 2020; 45: 8–21._ https://doi.org/10.1002/col.22437
  *
- * This implementation does not take the illuminant into account at all
- * as it's currently only used for the emissive case.
- * Accounting for the illuminant requires adjusting the logic slightly,
- * which introduces a new scaling factor that I haven't yet figured out how to
- * compensate for.
+ * This is used for the emissive case (where you have no illuminant) as well
+ * as the reflectance case (where you need an illuminant).
  *
  * The method is relatively fast, requiring only 3 vector-scalar multiplies
  * to compute a spectrum for a single color. The rest of the required calculations
  * are cached between invocations.
  */
 class Burns2020Method1 private constructor(
-    colorMatchingFunction: ColorMatchingFunction,
-    private val shape: SpectralShape
-) {
-    private val rhoX: ImmutableDoubleArray
-    private val rhoY: ImmutableDoubleArray
-    private val rhoZ: ImmutableDoubleArray
+    private val shape: SpectralShape,
+    private val rhoX: ImmutableDoubleArray,
+    private val rhoY: ImmutableDoubleArray,
+    private val rhoZ: ImmutableDoubleArray,
     private val scalingFactor: Double
+) {
+    /**
+     * Recovers a spectrum for an XYZ color.
+     *
+     * @param color the color.
+     * @return the recovered spectrum.
+     */
+    fun recoverSpectrum(color: CieXyzColor): DoubleSpectrum {
+        var values = rhoX * color.x + rhoY * color.y + rhoZ * color.z
+        if (values.any { it < 0 }) {
+            values = values.map { it.coerceAtLeast(0.0) }.toImmutableDoubleArray()
+        }
+        return DoubleSpectrum(shape, values * scalingFactor)
+    }
 
-    init {
-        val colorMatchingFunctionSpectrum = colorMatchingFunction.spectrum(shape)
+    companion object {
+        // Cache is shared for both types because they will never collide
+        private val cache = linkedMapOf<CacheKey, Burns2020Method1>()
 
-        val n = shape.size
+        /**
+         * Gets a cached instance of the spectrum recovery utility for the emissive case.
+         *
+         * @param colorMatchingFunction the color matching function to use.
+         * @param shape the desired spectral shape.
+         */
+        fun get(colorMatchingFunction: ColorMatchingFunction, shape: SpectralShape) =
+            cache.computeIfAbsent(CacheKey(colorMatchingFunction, null, shape)) { (cmf, _, shape) ->
+                val cmfSpectrum = cmf.spectrum(shape)
+                createCommon(
+                    shape,
+                    cmfSpectrum.xValues,
+                    cmfSpectrum.yValues,
+                    cmfSpectrum.zValues
+                )
+            }
+
+        /**
+         * Gets a cached instance of the spectrum recovery utility for the reflectance case.
+         *
+         * @param colorMatchingFunction the color matching function to use.
+         * @param illuminant the illuminant to use.
+         * @param shape the desired spectral shape.
+         */
+        fun get(colorMatchingFunction: ColorMatchingFunction, illuminant: Illuminant, shape: SpectralShape) =
+            cache.computeIfAbsent(CacheKey(colorMatchingFunction, illuminant, shape)) { (cmf, illuminant, shape) ->
+                val cmfSpectrum = cmf.spectrum(shape)
+                val illuminantSpectrum = illuminant!!.spectrum(shape)
+                createCommon(
+                    shape,
+                    cmfSpectrum.xValues * illuminantSpectrum.values,
+                    cmfSpectrum.yValues * illuminantSpectrum.values,
+                    cmfSpectrum.zValues * illuminantSpectrum.values
+                )
+            }
+
+        // Logic for emission and reflectance is quite similar, varying only in which vectors are
+        // passed in for X, Y and Z - so the common logic is handled here.
+        private fun createCommon(
+            shape: SpectralShape,
+            xValues: ImmutableDoubleArray,
+            yValues: ImmutableDoubleArray,
+            zValues: ImmutableDoubleArray,
+        ): Burns2020Method1 {
+            val n = shape.size
+            val d = buildDiagonalMatrix(n)
+
+            val scalingFactor = 1.0 / yValues.sum()
+
+            val awTransposed = Matrix(
+                3,
+                n,
+                buildImmutableDoubleArray {
+                    addAll(xValues * scalingFactor)
+                    addAll(yValues * scalingFactor)
+                    addAll(zValues * scalingFactor)
+                }
+            )
+            val aw = awTransposed.transpose()
+            val bInverse = packMatrix(n, d, aw, awTransposed)
+
+            val b = bInverse.inverse
+
+            val rhoX = extractRho(0, b, n)
+            val rhoY = extractRho(1, b, n)
+            val rhoZ = extractRho(2, b, n)
+
+            return Burns2020Method1(shape, rhoX, rhoY, rhoZ, scalingFactor)
+        }
 
         // Build a diagonal matrix like this:
         // [  2 -2  0 ...  0  0  0 ]
@@ -48,7 +127,7 @@ class Burns2020Method1 private constructor(
         // [  0  0  0 ...  4 -2  0 ]
         // [  0  0  0 ... -2  4 -2 ]
         // [  0  0  0 ...  0 -2  2 ]
-        val d = Matrix(
+        private fun buildDiagonalMatrix(n: Int) = Matrix(
             n,
             n,
             buildImmutableDoubleArray {
@@ -68,23 +147,10 @@ class Burns2020Method1 private constructor(
             }
         )
 
-        scalingFactor = 1.0 / colorMatchingFunctionSpectrum.yValues.sum()
-
-        val awTransposed = Matrix(
-            3,
-            n,
-            buildImmutableDoubleArray {
-                addAll(colorMatchingFunctionSpectrum.xValues * scalingFactor)
-                addAll(colorMatchingFunctionSpectrum.yValues * scalingFactor)
-                addAll(colorMatchingFunctionSpectrum.zValues * scalingFactor)
-            }
-        )
-        val aw = awTransposed.transpose()
-
         // Pack matrix like this:
         // [ d    Aw ]
         // [ Aw'  0  ]
-        val bInverse = Matrix(
+        private fun packMatrix(n: Int, d: Matrix, aw: Matrix, awT: Matrix) = Matrix(
             n + 3,
             n + 3,
             buildImmutableDoubleArray {
@@ -98,7 +164,7 @@ class Burns2020Method1 private constructor(
                 }
                 for (row in 0 until 3) {
                     for (col in 0 until n) {
-                        add(awTransposed[row, col])
+                        add(awT[row, col])
                     }
                     for (col in 0 until 3) {
                         add(0.0)
@@ -107,48 +173,17 @@ class Burns2020Method1 private constructor(
             }
         )
 
-        val b = bInverse.inverse
-
-        // Extract the rho values from the block in the top right.
-        fun extractRho(offset: Int) = buildImmutableDoubleArray {
+        // Extracts the rho values from the block in the top right.
+        private fun extractRho(offset: Int, b: Matrix, n: Int) = buildImmutableDoubleArray {
             for (row in 0 until n) {
                 add(b[row, n + offset])
             }
         }
 
-        rhoX = extractRho(0)
-        rhoY = extractRho(1)
-        rhoZ = extractRho(2)
-    }
-
-    /**
-     * Recovers a spectrum for an XYZ color.
-     *
-     * @param color the color.
-     * @return the recovered spectrum.
-     */
-    fun recoverSpectrum(color: CieXyzColor): DoubleSpectrum {
-        var values = rhoX * color.x + rhoY * color.y + rhoZ * color.z
-        if (values.any { it < 0 }) {
-            values = values.map { it.coerceAtLeast(0.0) }.toImmutableDoubleArray()
-        }
-        return DoubleSpectrum(shape, values * scalingFactor)
-    }
-
-    companion object {
-        private val cache = linkedMapOf<CacheKey, Burns2020Method1>()
-
-        /**
-         * Gets a cached instance of the spectrum recovery utility.
-         *
-         * @param colorMatchingFunction the color matching function to use.
-         * @param shape the desired spectral shape.
-         */
-        fun get(colorMatchingFunction: ColorMatchingFunction, shape: SpectralShape) =
-            cache.computeIfAbsent(CacheKey(colorMatchingFunction, shape)) { (cmf, shape) ->
-                Burns2020Method1(cmf, shape)
-            }
-
-        private data class CacheKey(val colorMatchingFunction: ColorMatchingFunction, val shape: SpectralShape)
+        private data class CacheKey(
+            val colorMatchingFunction: ColorMatchingFunction,
+            val illuminant: Illuminant?,
+            val shape: SpectralShape
+        )
     }
 }

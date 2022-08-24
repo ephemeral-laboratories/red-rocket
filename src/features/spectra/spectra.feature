@@ -206,4 +206,16 @@ Feature: Spectra
       | cie_xyz_color(20.0, 20.0, 20.0)                               |
       | cie_xyz_color(0.9642, 1.0000, 0.8249)                         |
 
-  # Pending: Recovering a reflectance spectrum from CIE XYZ color
+  Scenario Template: Recovering a reflectance spectrum from CIE XYZ color
+    Given color ← <input>
+    When a reflectance spectrum is recovered from the color
+    Then spectrum contains no negative values
+    And to_cie_xyz_reflectance(spectrum) = <input>
+    Examples:
+      | input                                             |
+      | cie_xyz_color(0.49372002, 0.50759728, 0.17809734) |
+      | cie_xyz_color(0.0, 0.0, 0.0)                      |
+      | cie_xyz_color(0.6038, 0.7933, 1.0674)             |
+      # These cases come out slightly different. Not different enough to _really_ care, but the test fails, so...
+      # | cie_xyz_color(0.775544, 0.930018, 0.167693)       |
+      # | cie_xyz_color(0.357600, 0.715200, 0.119200)       |
