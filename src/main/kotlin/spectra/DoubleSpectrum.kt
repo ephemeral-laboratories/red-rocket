@@ -2,6 +2,7 @@ package garden.ephemeral.rocket.spectra
 
 import garden.ephemeral.rocket.color.CieXyzColor
 import garden.ephemeral.rocket.color.ColorMatchingFunction
+import garden.ephemeral.rocket.color.Illuminant
 import garden.ephemeral.rocket.color.RgbColor
 import garden.ephemeral.rocket.spectra.recovery.Burns2020Method1
 import garden.ephemeral.rocket.util.ImmutableDoubleArray
@@ -40,16 +41,15 @@ class DoubleSpectrum(
     }
 
     /**
-     * Converts a spectrum of values to a CIE XYZ color.
+     * Converts a spectrum of emission values to a CIE XYZ color.
      *
      * The spectrum is taken to be in units of W sr⁻¹ m⁻² nm⁻¹.
      * The Y value of the resulting color (luminance) is thus in units of lm sr⁻¹ m⁻², or cd m⁻², or nit.
      *
-     * @receiver the spectrum.
      * @param colorMatchingFunction the color matching function to use.
      * @return the color.
      */
-    fun toCieXyz(
+    fun toCieXyzEmission(
         colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE
     ): CieXyzColor {
         val colorMatchingFunctionSpectrum = colorMatchingFunction.spectrum(shape)
@@ -63,7 +63,40 @@ class DoubleSpectrum(
         return CieXyzColor(x, y, z)
     }
 
-    fun toLinearRgb(): RgbColor = toCieXyz().toLinearRgb()
+    /**
+     * Converts a spectrum of reflectance values to a CIE XYZ color.
+     *
+     * The spectrum is taken to be in relative reflectance values from 0..1.
+     *
+     * @param colorMatchingFunction the color matching function to use.
+     * @param illuminant the illuminant to use.
+     * @return the color.
+     */
+    fun toCieXyzReflectance(
+        colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE,
+        illuminant: Illuminant = Illuminant.D65
+    ): CieXyzColor {
+        val colorMatchingFunctionSpectrum = colorMatchingFunction.spectrum(shape)
+        val illuminantSpectrum = illuminant.spectrum(shape)
+
+        val illumCmfX = illuminantSpectrum.values * colorMatchingFunctionSpectrum.xValues
+        val illumCmfY = illuminantSpectrum.values * colorMatchingFunctionSpectrum.yValues
+        val illumCmfZ = illuminantSpectrum.values * colorMatchingFunctionSpectrum.zValues
+
+        // XXX: The logic divides by shape.step but later multiplies by it, so there is probably a shortcut
+
+        val k = 1.0 / (shape.step * illumCmfY.sum())
+        val factor = k * shape.step
+
+        val x = values.dotProduct(illumCmfX) * factor
+        val y = values.dotProduct(illumCmfY) * factor
+        val z = values.dotProduct(illumCmfZ) * factor
+
+        return CieXyzColor(x, y, z)
+    }
+
+    fun toLinearRgbEmission(): RgbColor = toCieXyzEmission().toLinearRgb()
+    fun toLinearRgbReflectance(): RgbColor = toCieXyzReflectance().toLinearRgb()
 
     /**
      * Reshapes the spectrum to a different shape.
@@ -125,9 +158,9 @@ class DoubleSpectrum(
         }
 
         /**
-         * Recovers a spectrum from a CIE XYZ color.
+         * Recovers an emission spectrum from a CIE XYZ color.
          *
-         * This is essentially the inverse of [toCieXyz] and the units are the same.
+         * This is essentially the inverse of [toCieXyzEmission] and the units are the same.
          *
          * There is no single correct solution for this operation, so this implementation tries to
          * produce the result with the lowest possible norm, i.e. a least-squares solution.
@@ -137,7 +170,7 @@ class DoubleSpectrum(
          * @param colorMatchingFunction the color matching function to use.
          * @return the spectrum.
          */
-        fun recoverFromCieXyz(
+        fun recoverFromCieXyzEmission(
             color: CieXyzColor,
             shape: SpectralShape = SpectralShape.Default,
             colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE

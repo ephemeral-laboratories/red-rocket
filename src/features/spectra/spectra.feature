@@ -99,7 +99,7 @@ Feature: Spectra
     And spectrum[500] = 82861471747495.05
     And spectrum[780] = 55508985788916.53
 
-  Scenario: Converting a spectrum to CIE XYZ color
+  Scenario: Converting an emission spectrum to CIE XYZ color
     Given a spectrum with the following data:
       | wavelength | value    |
       | 380        | 0.00019  |
@@ -143,18 +143,67 @@ Feature: Spectra
       | 760        | 0.000559 |
       | 770        | 0.002787 |
       | 780        | 0.000669 |
-    Then to_cie_xyz(spectrum) = cie_xyz_color(573.5369, 479.4662, 63.2889)
-    And to_linear_rgb(spectrum) = linear_rgb_color(1089.9627, 346.2040, 1.0007)
+    Then to_cie_xyz_emission(spectrum) = cie_xyz_color(573.5369, 479.4662, 63.2889)
+    And to_linear_rgb_emission(spectrum) = linear_rgb_color(1089.9627, 346.2040, 1.0007)
 
-  Scenario Template: Recovering a spectrum from CIE XYZ color
+  Scenario: Converting a reflectance spectrum to CIE XYZ color
+    Given a spectrum with the following data:
+      | wavelength | value      |
+      | 380        | 0.12142267 |
+      | 390        | 0.12142267 |
+      | 400        | 0.12142267 |
+      | 410        | 0.12142267 |
+      | 420        | 0.13415349 |
+      | 430        | 0.14107549 |
+      | 440        | 0.14455311 |
+      | 450        | 0.15570242 |
+      | 460        | 0.15793179 |
+      | 470        | 0.17319627 |
+      | 480        | 0.17625300 |
+      | 490        | 0.18248029 |
+      | 500        | 0.21415237 |
+      | 510        | 0.28556639 |
+      | 520        | 0.39043492 |
+      | 530        | 0.47046355 |
+      | 540        | 0.51299842 |
+      | 550        | 0.54612922 |
+      | 560        | 0.56384951 |
+      | 570        | 0.58202094 |
+      | 580        | 0.59808258 |
+      | 590        | 0.60983875 |
+      | 600        | 0.62561158 |
+      | 610        | 0.63450907 |
+      | 620        | 0.63898517 |
+      | 630        | 0.64850448 |
+      | 640        | 0.65801610 |
+      | 650        | 0.66075356 |
+      | 660        | 0.64988718 |
+      | 670        | 0.63223506 |
+      | 680        | 0.63322121 |
+      | 690        | 0.69249992 |
+      | 700        | 0.75293635 |
+      | 710        | 0.78131515 |
+      | 720        | 0.78940615 |
+      | 730        | 0.78927419 |
+      | 740        | 0.78497163 |
+      | 750        | 0.79003911 |
+      | 760        | 0.79641291 |
+      | 770        | 0.80388942 |
+      | 780        | 0.81081897 |
+    Then to_cie_xyz_reflectance(spectrum) = cie_xyz_color(0.49372002, 0.50759728, 0.17809734)
+    And to_linear_rgb_reflectance(spectrum) = linear_rgb_color(0.73084267, 0.48111297, 0.11219826)
+
+  Scenario Template: Recovering an emission spectrum from CIE XYZ color
     Given color ← <input>
-    When a spectrum is recovered from the color
+    When an emission spectrum is recovered from the color
     Then spectrum contains no negative values
-    And to_cie_xyz(spectrum) = <input>
+    And to_cie_xyz_emission(spectrum) = <input>
     Examples:
-      | input                                      |
-      | cie_xyz_color(573.5369, 479.4662, 63.2889) |
+      | input                                                         |
+      | cie_xyz_color(573.5369, 479.4662, 63.2889)                    |
       | cie_xyz_color(0.000005735369, 0.000004794662, 0.000000632889) |
-      | cie_xyz_color(0.0, 0.0, 0.0)               |
-      | cie_xyz_color(20.0, 20.0, 20.0)            |
-      | cie_xyz_color(0.9642, 1.0000, 0.8249)      |
+      | cie_xyz_color(0.0, 0.0, 0.0)                                  |
+      | cie_xyz_color(20.0, 20.0, 20.0)                               |
+      | cie_xyz_color(0.9642, 1.0000, 0.8249)                         |
+
+  # Pending: Recovering a reflectance spectrum from CIE XYZ color

@@ -80,8 +80,8 @@ class SpectrumStepDefinitions : En {
             }
         }
 
-        When("a spectrum is recovered from the color") {
-            doubleSpectrum = DoubleSpectrum.recoverFromCieXyz(colors["color"] as CieXyzColor)
+        When("an emission spectrum is recovered from the color") {
+            doubleSpectrum = DoubleSpectrum.recoverFromCieXyzEmission(colors["color"] as CieXyzColor)
         }
 
         Then("the spectral shapes are equal") {
@@ -123,12 +123,20 @@ class SpectrumStepDefinitions : En {
             assertThat(failure).isNotNull()
         }
 
-        Then("to_cie_xyz\\(spectrum\\) = {color}") { expected: CieXyzColor ->
-            assertThat(doubleSpectrum.toCieXyz()).isCloseTo(expected, epsilon)
+        Then("to_cie_xyz_emission\\(spectrum) = {color}") { expected: CieXyzColor ->
+            assertThat(doubleSpectrum.toCieXyzEmission()).isCloseTo(expected, epsilon)
         }
 
-        Then("to_linear_rgb\\(spectrum\\) = {color}") { expected: RgbColor ->
-            assertThat(doubleSpectrum.toLinearRgb()).isCloseTo(expected, epsilon)
+        Then("to_cie_xyz_reflectance\\(spectrum) = {color}") { expected: CieXyzColor ->
+            assertThat(doubleSpectrum.toCieXyzReflectance()).isCloseTo(expected, epsilon)
+        }
+
+        Then("to_linear_rgb_emission\\(spectrum) = {color}") { expected: RgbColor ->
+            assertThat(doubleSpectrum.toLinearRgbEmission()).isCloseTo(expected, epsilon)
+        }
+
+        Then("to_linear_rgb_reflectance\\(spectrum) = {color}") { expected: RgbColor ->
+            assertThat(doubleSpectrum.toLinearRgbReflectance()).isCloseTo(expected, epsilon)
         }
 
         Then("spectrum contains no negative values") {
