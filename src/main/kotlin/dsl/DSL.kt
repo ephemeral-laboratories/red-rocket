@@ -53,8 +53,8 @@ class RenderBuilder {
             val wavelength = SpectralShape.Default.wavelengths[20]
 
 //            canvas = camera.render(world)
-            canvas = camera.render2(world, wavelength)
-//            canvas = camera.render(world, SpectralShape.Default)
+//            canvas = camera.render2(world, wavelength)
+            canvas = camera.render(world, SpectralShape.Default)
         }
 
         println("Render time: $time")

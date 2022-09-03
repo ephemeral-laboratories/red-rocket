@@ -51,7 +51,7 @@ class Burns2020Method1 private constructor(
          * @param shape the desired spectral shape.
          */
         fun get(colorMatchingFunction: ColorMatchingFunction, shape: SpectralShape) =
-            cache.computeIfAbsent(CacheKey(colorMatchingFunction, null, shape)) { (cmf, _, shape) ->
+            cache.computeIfAbsentConcurrently(CacheKey(colorMatchingFunction, null, shape)) { (cmf, _, shape) ->
                 val cmfSpectrum = cmf.spectrum(shape)
 
                 // Inverse of factor used when converting in the other direction.
@@ -74,7 +74,7 @@ class Burns2020Method1 private constructor(
          * @param shape the desired spectral shape.
          */
         fun get(colorMatchingFunction: ColorMatchingFunction, illuminant: Illuminant, shape: SpectralShape) =
-            cache.computeIfAbsent(CacheKey(colorMatchingFunction, illuminant, shape)) { (cmf, illuminant, shape) ->
+            cache.computeIfAbsentConcurrently(CacheKey(colorMatchingFunction, illuminant, shape)) { (cmf, illuminant, shape) ->
                 val cmfSpectrum = cmf.spectrum(shape)
                 val illuminantSpectrum = illuminant!!.spectrum(shape)
 
@@ -92,6 +92,16 @@ class Burns2020Method1 private constructor(
                     factor
                 )
             }
+
+        private fun <K, V> MutableMap<K, V>.computeIfAbsentConcurrently(key: K, mappingFunction: (K) -> V): V {
+            // Fast path
+            val value = get(key)
+            if (value != null) return value
+
+            synchronized(this) {
+                return computeIfAbsent(key, mappingFunction)
+            }
+        }
 
         // Logic for emission and reflectance is quite similar, varying only in which vectors are
         // passed in for X, Y and Z - so the common logic is handled here.

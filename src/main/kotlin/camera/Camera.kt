@@ -26,6 +26,10 @@ data class Camera(
     val pixelSize: Double
     var transform: Matrix = identity4x4
 
+    // TODO: Figure out scaling in camera, units are arbitrary right now.
+    private val intensityScale = 1.0
+    // 8e4 too bright
+
     init {
         val halfView = tan(fieldOfView / 2)
         val aspect = hSize / vSize.toDouble()
@@ -79,11 +83,8 @@ data class Camera(
 
     fun render2(world: World, wavelength: Wavelength): Canvas {
         return Canvas(hSize, vSize).applyFill { px, py ->
-            val intensity = samplingStrategy.sample(this@Camera, world, px, py, wavelength)
-
-            // TODO: Figure out scaling in camera, units are arbitrary right now.
-            val scale = 1e15
-            val value = intensity * scale
+            val intensity = intensityAtPixel(world, px, py, wavelength)
+            val value = intensity * intensityScale
 
             Color.grey(value)
         }
@@ -92,15 +93,10 @@ data class Camera(
     fun render(world: World, spectralShape: SpectralShape = SpectralShape.Default): Canvas {
         return Canvas(hSize, vSize).applyFill { px, py ->
             val intensities = spectralShape.wavelengths.map { wavelength ->
-                samplingStrategy.sample(this@Camera, world, px, py, wavelength)
+                intensityAtPixel(world, px, py, wavelength)
             }.toImmutableDoubleArray()
 
-            // TODO: Figure out scaling in camera, units are arbitrary right now.
-            // 1e5 too dim
-            val scale = 1e10
-            // 1e10 too bright
-
-            val spectrum = DoubleSpectrum(spectralShape, intensities * scale)
+            val spectrum = DoubleSpectrum(spectralShape, intensities * intensityScale)
 
             // TODO: Capture done by the camera has its own curves for RGB which we should simulate as well
             spectrum.toCieXyzEmission().toLinearRgb()
@@ -109,5 +105,9 @@ data class Camera(
 
     fun colorAtPixel(world: World, px: Int, py: Int): Color {
         return samplingStrategy.sample(this@Camera, world, px, py)
+    }
+
+    fun intensityAtPixel(world: World, px: Int, py: Int, wavelength: Wavelength): Double {
+        return samplingStrategy.sample(this@Camera, world, px, py, wavelength)
     }
 }
