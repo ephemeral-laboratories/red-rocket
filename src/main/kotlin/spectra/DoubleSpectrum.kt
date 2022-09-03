@@ -7,7 +7,6 @@ import garden.ephemeral.rocket.color.RgbColor
 import garden.ephemeral.rocket.spectra.recovery.Burns2020Method1
 import garden.ephemeral.rocket.util.ImmutableDoubleArray
 import garden.ephemeral.rocket.util.buildImmutableDoubleArray
-import kotlin.math.PI
 import kotlin.math.exp
 import kotlin.math.pow
 
@@ -54,7 +53,7 @@ class DoubleSpectrum(
     ): CieXyzColor {
         val colorMatchingFunctionSpectrum = colorMatchingFunction.spectrum(shape)
 
-        val factor = Km * shape.step
+        val factor = PhysicalConstants.MaximumLuminousEfficacy * shape.step
 
         val x = values.dotProduct(colorMatchingFunctionSpectrum.xValues) * factor
         val y = values.dotProduct(colorMatchingFunctionSpectrum.yValues) * factor
@@ -114,23 +113,6 @@ class DoubleSpectrum(
     }
 
     companion object {
-        // Planck's constant (units: m² kg s⁻¹)
-        private const val h: Double = 6.62607004E-34
-
-        // Speed of light in a vacuum (units: m s⁻¹)
-        private const val c: Double = 299_792_458.0
-
-        // Boltzmann constant (units: m² kg s⁻² K⁻¹)
-        private const val k: Double = 1.38064852E-23
-
-        // Radiation constant c₁ = 2π h c² (units: m⁴ kg s⁻³ = W m²)
-        private const val c1: Double = 2 * PI * h * c * c
-
-        // Radiation constant c₂ = h c / k (units: m K)
-        private const val c2: Double = h * c / k
-
-        // Maximum luminous efficacy constant (units lm W⁻¹)
-        private const val Km = 683.002
 
         /**
          * Constructs a spectrum for black body radiation.
@@ -150,7 +132,7 @@ class DoubleSpectrum(
                     // P_λ dλ = (c₁/λ⁵)/(exp(c₂/λT) - 1) dλ  (units: W m^-3)
                     // Note that c₁ includes a 2π term which takes care of what would normally be
                     // a unit of sr⁻¹
-                    val p = c1 * wavelength.pow(-5) / (exp(c2 / (wavelength * temperature)) - 1)
+                    val p = PhysicalConstants.RadiationC1 * wavelength.pow(-5) / (exp(PhysicalConstants.RadiationC2 / (wavelength * temperature)) - 1)
                     add(p)
                 }
             }
@@ -176,7 +158,7 @@ class DoubleSpectrum(
             colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE
         ): DoubleSpectrum {
             // Inverse of factor used when converting in the other direction.
-            val factor = 1.0 / (Km * shape.step)
+            val factor = 1.0 / (PhysicalConstants.MaximumLuminousEfficacy * shape.step)
 
             return Burns2020Method1.get(colorMatchingFunction, shape)
                 .recoverSpectrum(color * factor)
