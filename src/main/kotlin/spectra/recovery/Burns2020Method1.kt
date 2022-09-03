@@ -5,6 +5,7 @@ import garden.ephemeral.rocket.color.CieXyzColor
 import garden.ephemeral.rocket.color.ColorMatchingFunction
 import garden.ephemeral.rocket.color.Illuminant
 import garden.ephemeral.rocket.spectra.DoubleSpectrum
+import garden.ephemeral.rocket.spectra.PhysicalConstants
 import garden.ephemeral.rocket.spectra.SpectralShape
 import garden.ephemeral.rocket.util.ImmutableDoubleArray
 import garden.ephemeral.rocket.util.buildImmutableDoubleArray
@@ -58,11 +59,16 @@ class Burns2020Method1 private constructor(
         fun get(colorMatchingFunction: ColorMatchingFunction, shape: SpectralShape) =
             cache.computeIfAbsent(CacheKey(colorMatchingFunction, null, shape)) { (cmf, _, shape) ->
                 val cmfSpectrum = cmf.spectrum(shape)
+
+                // Inverse of factor used when converting in the other direction.
+                val factor = 1.0 / (PhysicalConstants.MaximumLuminousEfficacy * shape.step)
+
                 createCommon(
                     shape,
                     cmfSpectrum.xValues,
                     cmfSpectrum.yValues,
-                    cmfSpectrum.zValues
+                    cmfSpectrum.zValues,
+                    factor
                 )
             }
 
@@ -77,11 +83,19 @@ class Burns2020Method1 private constructor(
             cache.computeIfAbsent(CacheKey(colorMatchingFunction, illuminant, shape)) { (cmf, illuminant, shape) ->
                 val cmfSpectrum = cmf.spectrum(shape)
                 val illuminantSpectrum = illuminant!!.spectrum(shape)
+
+                // Inverse of factor used when converting in the other direction.
+                // Similar to the case in the opposite direction, we don't need to divide and then re-multiply
+                // by shape.step and can just do the one dot product.
+                // This could be cleaned up further if we moved this calculation into the utility.
+                val factor = illuminantSpectrum.values.dotProduct(cmfSpectrum.yValues)
+
                 createCommon(
                     shape,
                     cmfSpectrum.xValues * illuminantSpectrum.values,
                     cmfSpectrum.yValues * illuminantSpectrum.values,
-                    cmfSpectrum.zValues * illuminantSpectrum.values
+                    cmfSpectrum.zValues * illuminantSpectrum.values,
+                    factor
                 )
             }
 
@@ -92,6 +106,7 @@ class Burns2020Method1 private constructor(
             xValues: ImmutableDoubleArray,
             yValues: ImmutableDoubleArray,
             zValues: ImmutableDoubleArray,
+            factor: Double
         ): Burns2020Method1 {
             val n = shape.size
             val d = buildDiagonalMatrix(n)
@@ -112,9 +127,9 @@ class Burns2020Method1 private constructor(
 
             val b = bInverse.inverse
 
-            val rhoX = extractRho(0, b, n)
-            val rhoY = extractRho(1, b, n)
-            val rhoZ = extractRho(2, b, n)
+            val rhoX = extractRho(0, b, n) * factor
+            val rhoY = extractRho(1, b, n) * factor
+            val rhoZ = extractRho(2, b, n) * factor
 
             return Burns2020Method1(shape, rhoX, rhoY, rhoZ, scalingFactor)
         }

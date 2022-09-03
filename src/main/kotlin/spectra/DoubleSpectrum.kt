@@ -157,11 +157,8 @@ class DoubleSpectrum(
             shape: SpectralShape = SpectralShape.Default,
             colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE
         ): DoubleSpectrum {
-            // Inverse of factor used when converting in the other direction.
-            val factor = 1.0 / (PhysicalConstants.MaximumLuminousEfficacy * shape.step)
-
             return Burns2020Method1.get(colorMatchingFunction, shape)
-                .recoverSpectrum(color * factor)
+                .recoverSpectrum(color)
         }
 
         /**
@@ -184,17 +181,8 @@ class DoubleSpectrum(
             colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE,
             illuminant: Illuminant = Illuminant.D65
         ): DoubleSpectrum {
-            val colorMatchingFunctionSpectrum = colorMatchingFunction.spectrum(shape)
-            val illuminantSpectrum = illuminant.spectrum(shape)
-
-            // Inverse of factor used when converting in the other direction.
-            // Similar to the case in the opposite direction, we don't need to divide and then re-multiply
-            // by shape.step and can just do the one dot product.
-            // This could be cleaned up further if we moved this calculation into the utility.
-            val factor = illuminantSpectrum.values.dotProduct(colorMatchingFunctionSpectrum.yValues)
-
             return Burns2020Method1.get(colorMatchingFunction, illuminant, shape)
-                .recoverSpectrum(color * factor)
+                .recoverSpectrum(color)
         }
     }
 }
