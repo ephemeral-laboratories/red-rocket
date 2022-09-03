@@ -31,14 +31,8 @@ class Burns2020Method1 private constructor(
     private val rhoY: ImmutableDoubleArray,
     private val rhoZ: ImmutableDoubleArray,
     private val scalingFactor: Double
-) {
-    /**
-     * Recovers a spectrum for an XYZ color.
-     *
-     * @param color the color.
-     * @return the recovered spectrum.
-     */
-    fun recoverSpectrum(color: CieXyzColor): DoubleSpectrum {
+) : RecoveryMethod {
+    override fun recoverSpectrum(color: CieXyzColor): DoubleSpectrum {
         var values = rhoX * color.x + rhoY * color.y + rhoZ * color.z
         if (values.any { it < 0 }) {
             values = values.map { it.coerceAtLeast(0.0) }.toImmutableDoubleArray()
