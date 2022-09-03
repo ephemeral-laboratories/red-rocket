@@ -24,12 +24,14 @@ data class Material(
     val dissolve: Double,
     val illuminationModel: Int
 ) {
-    val ambientSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(ambient.toCieXyz()) }
-    val diffuseSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(diffuse.toCieXyz()) }
-    val specularSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(specular.toCieXyz()) }
-    val reflectiveSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(reflective.toCieXyz()) }
-    val emissionSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(emission.toCieXyz()) }
-    val transparencySpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyz(transparency.toCieXyz()) }
+    val ambientSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzReflectance(ambient.toCieXyz()) }
+    val diffuseSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzReflectance(diffuse.toCieXyz()) }
+    val specularSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzReflectance(specular.toCieXyz()) }
+    val reflectiveSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzReflectance(reflective.toCieXyz()) }
+    val transparencySpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzReflectance(transparency.toCieXyz()) }
+
+    // XXX: Beware of this one, we haven't pinned down units for it, so it isn't going to behave.
+    val emissionSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzEmission(emission.toCieXyz()) }
 
     companion object {
         val default = Material(
@@ -118,7 +120,7 @@ data class Material(
         inShadow: Boolean
     ): Double {
         // TODO: Push spectrum down into pattern code
-        val surface = DoubleSpectrum.recoverFromCieXyz(
+        val surface = DoubleSpectrum.recoverFromCieXyzReflectance(
             (pattern?.patternAtShape(shape, worldPoint) ?: color).toCieXyz()
         )[wavelength]
 

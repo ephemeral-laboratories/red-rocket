@@ -23,6 +23,7 @@ class Space {
     lateinit var light: PointLight
     lateinit var world: World
     lateinit var comps: Intersection.Precomputed
+    lateinit var comps2: Intersection.Precomputed2
     lateinit var intersections: Intersections
     lateinit var canvas: Canvas
 

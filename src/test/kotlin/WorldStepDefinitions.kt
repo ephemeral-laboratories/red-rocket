@@ -2,8 +2,10 @@ package garden.ephemeral.rocket
 
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.isCloseTo
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.Transforms.Companion.scaling
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.color.Color
@@ -61,6 +63,10 @@ class WorldStepDefinitions(space: Space) : En {
         }
         When("{color_var} ← refracted_color\\(world, comps, {int})") { cv: String, i: Int ->
             space.colors[cv] = space.world.refractedColor(space.comps, i)
+        }
+
+        Then("refracted_intensity\\(world, comps, {int}) = {real}") { maxRecursions: Int, expected: Double ->
+            assertThat(space.world.refractedIntensity(space.comps2, maxRecursions)).isCloseTo(expected, epsilon)
         }
 
         Then("world contains no objects") { assertThat(space.world.objects).isEmpty() }

@@ -102,7 +102,8 @@ data class Camera(
 
             val spectrum = DoubleSpectrum(spectralShape, intensities * scale)
 
-            spectrum.toCieXyz().toLinearRgb()
+            // TODO: Capture done by the camera has its own curves for RGB which we should simulate as well
+            spectrum.toCieXyzEmission().toLinearRgb()
         }
     }
 

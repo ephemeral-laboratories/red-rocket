@@ -9,6 +9,7 @@ import assertk.assertions.isLessThan
 import assertk.assertions.isNull
 import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapeVarRegex
+import garden.ephemeral.rocket.spectra.SpectralShape
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.java8.En
@@ -84,6 +85,14 @@ class IntersectionStepDefinitions(space: Space) : En {
         }
         When("comps ← prepare_computations\\(intersections[{int}], {ray_var}, intersections)") { i: Int, rv: String ->
             space.comps = space.intersections[i].prepareComputations(space.rays[rv]!!, space.intersections)
+        }
+        When(
+            "comps ← prepare_computations\\(intersections[{int}], {ray_var}, {int}nm, intersections)"
+        ) { i: Int, rv: String, wavelengthInNanometres: Int ->
+            val wavelength = SpectralShape.Default.wavelengths.first { w ->
+                (w.inNanometres - wavelengthInNanometres) < epsilon
+            }
+            space.comps2 = space.intersections[i].prepareComputations2(space.rays[rv]!!, wavelength, space.intersections)
         }
 
         When("^reflectance ← fresnel\\(comps\\)") {
