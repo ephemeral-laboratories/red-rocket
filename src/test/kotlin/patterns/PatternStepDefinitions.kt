@@ -2,23 +2,19 @@ package garden.ephemeral.rocket.patterns
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import garden.ephemeral.rocket.CanvasStepDefinitions.Companion.canvas
 import garden.ephemeral.rocket.Matrix
-import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
 import garden.ephemeral.rocket.Tuple
-import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
+import garden.ephemeral.rocket.Universe
 import garden.ephemeral.rocket.color.Color
-import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
-import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.java8.En
 
-class PatternStepDefinitions : En {
-    companion object {
-        lateinit var pattern: Pattern
-        val uvPatterns = mutableMapOf<String, UVPattern>()
-        lateinit var uv: UV
-        lateinit var face: CubeMap.Face
-    }
+// Constructed reflectively
+@Suppress("unused")
+class PatternStepDefinitions(universe: Universe) : En {
+    private lateinit var pattern: Pattern
+    private val uvPatterns = mutableMapOf<String, UVPattern>()
+    private lateinit var uv: UV
+    private lateinit var face: CubeMap.Face
 
     init {
         ParameterType("uv_pattern_var", "uv_\\w+") { string -> string }
@@ -26,16 +22,16 @@ class PatternStepDefinitions : En {
         Given("^pattern ← test_pattern\\(\\)") { pattern = TestPattern() }
 
         Given("pattern ← stripe_pattern\\({color_var}, {color_var})") { cv1: String, cv2: String ->
-            pattern = StripePattern(colors[cv1]!!, colors[cv2]!!)
+            pattern = StripePattern(universe.colors[cv1]!!, universe.colors[cv2]!!)
         }
         Given("pattern ← gradient_pattern\\({color_var}, {color_var})") { cv1: String, cv2: String ->
-            pattern = GradientPattern(colors[cv1]!!, colors[cv2]!!)
+            pattern = GradientPattern(universe.colors[cv1]!!, universe.colors[cv2]!!)
         }
         Given("pattern ← ring_pattern\\({color_var}, {color_var})") { cv1: String, cv2: String ->
-            pattern = RingPattern(colors[cv1]!!, colors[cv2]!!)
+            pattern = RingPattern(universe.colors[cv1]!!, universe.colors[cv2]!!)
         }
         Given("pattern ← checkers_pattern\\({color_var}, {color_var})") { cv1: String, cv2: String ->
-            pattern = CheckersPattern(colors[cv1]!!, colors[cv2]!!)
+            pattern = CheckersPattern(universe.colors[cv1]!!, universe.colors[cv2]!!)
         }
         Given("pattern ← texture_map\\({uv_pattern_var}, spherical_map)") { upv: String ->
             pattern = TextureMap(uvPatterns[upv]!!, UVMaps.sphericalMap)
@@ -56,14 +52,20 @@ class PatternStepDefinitions : En {
 
         Given("{uv_pattern_var} ← uv_align_check\\({color_var}, {color_var}, {color_var}, {color_var}, {color_var})") {
                 upv: String, cv1: String, cv2: String, cv3: String, cv4: String, cv5: String ->
-            uvPatterns[upv] = UVAlignCheck(colors[cv1]!!, colors[cv2]!!, colors[cv3]!!, colors[cv4]!!, colors[cv5]!!)
+            uvPatterns[upv] = UVAlignCheck(
+                universe.colors[cv1]!!,
+                universe.colors[cv2]!!,
+                universe.colors[cv3]!!,
+                universe.colors[cv4]!!,
+                universe.colors[cv5]!!
+            )
         }
         Given("{uv_pattern_var} ← uv_checkers\\({int}, {int}, {color_var}, {color_var})") {
                 upv: String, width: Int, height: Int, cv1: String, cv2: String ->
-            uvPatterns[upv] = UVCheckers(width, height, colors[cv1]!!, colors[cv2]!!)
+            uvPatterns[upv] = UVCheckers(width, height, universe.colors[cv1]!!, universe.colors[cv2]!!)
         }
         Given("{uv_pattern_var} ← uv_image\\(canvas)") { upv: String ->
-            uvPatterns[upv] = UVImage(canvas)
+            uvPatterns[upv] = UVImage(universe.canvas)
         }
 
         Given("set_pattern_transform\\(pattern, {transform})") { t: Matrix ->
@@ -71,25 +73,25 @@ class PatternStepDefinitions : En {
         }
 
         When("{color_var} ← stripe_at_object\\(pattern, {shape_var}, {point})") { cv: String, sv: String, p: Tuple ->
-            colors[cv] = pattern.patternAtShape(shapes[sv]!!, p)
+            universe.colors[cv] = pattern.patternAtShape(universe.shapes[sv]!!, p)
         }
         When("{color_var} ← pattern_at_shape\\(pattern, {shape_var}, {point})") { cv: String, sv: String, p: Tuple ->
-            colors[cv] = pattern.patternAtShape(shapes[sv]!!, p)
+            universe.colors[cv] = pattern.patternAtShape(universe.shapes[sv]!!, p)
         }
 
         When("{color_var} ← uv_pattern_at\\({uv_pattern_var}, {real}, {real})") {
                 cv: String, upv: String, u: Double, v: Double ->
-            colors[cv] = uvPatterns[upv]!!.uvPatternAt(u, v)
+            universe.colors[cv] = uvPatterns[upv]!!.uvPatternAt(u, v)
         }
 
         When("\\(u, v) ← spherical_map\\({tuple_var})") { tv: String ->
-            uv = UVMaps.sphericalMap(tuples[tv]!!)
+            uv = UVMaps.sphericalMap(universe.tuples[tv]!!)
         }
         When("\\(u, v) ← planar_map\\({tuple_var})") { tv: String ->
-            uv = UVMaps.planarMap(tuples[tv]!!)
+            uv = UVMaps.planarMap(universe.tuples[tv]!!)
         }
         When("\\(u, v) ← cylindrical_map\\({tuple_var})") { tv: String ->
-            uv = UVMaps.cylindricalMap(tuples[tv]!!)
+            uv = UVMaps.cylindricalMap(universe.tuples[tv]!!)
         }
 
         When("face ← face_from_point\\({point})") { p: Tuple ->
@@ -118,24 +120,24 @@ class PatternStepDefinitions : En {
         Then("pattern.transform = {transform}") { t: Matrix -> assertThat(pattern.transform).isEqualTo(t) }
 
         Then("pattern.transform = {matrix_var}") { mv: String ->
-            assertThat(pattern.transform).isEqualTo(matrices[mv])
+            assertThat(pattern.transform).isEqualTo(universe.matrices[mv])
         }
 
-        Then("pattern.a = {color_var}") { tv: String ->
-            assertThat((pattern as StripePattern).a).isEqualTo(colors[tv]!!)
+        Then("pattern.a = {color_var}") { colorVar: String ->
+            assertThat((pattern as StripePattern).a).isEqualTo(universe.colors[colorVar]!!)
         }
-        Then("pattern.b = {color_var}") { tv: String ->
-            assertThat((pattern as StripePattern).b).isEqualTo(colors[tv]!!)
+        Then("pattern.b = {color_var}") { colorVar: String ->
+            assertThat((pattern as StripePattern).b).isEqualTo(universe.colors[colorVar]!!)
         }
 
-        Then("stripe_at\\(pattern, {point}) = {color_var}") { p: Tuple, tv: String ->
-            assertThat(pattern.patternAt(p)).isEqualTo(colors[tv]!!)
+        Then("stripe_at\\(pattern, {point}) = {color_var}") { p: Tuple, colorVar: String ->
+            assertThat(pattern.patternAt(p)).isEqualTo(universe.colors[colorVar]!!)
         }
         Then("pattern_at\\(pattern, {point}) = {color}") { p: Tuple, e: Color ->
             assertThat(pattern.patternAt(p)).isEqualTo(e)
         }
-        Then("pattern_at\\(pattern, {point}) = {color_var}") { p: Tuple, tv: String ->
-            assertThat(pattern.patternAt(p)).isEqualTo(colors[tv]!!)
+        Then("pattern_at\\(pattern, {point}) = {color_var}") { p: Tuple, colorVar: String ->
+            assertThat(pattern.patternAt(p)).isEqualTo(universe.colors[colorVar]!!)
         }
 
         Then("u = {real}") { e: Double ->

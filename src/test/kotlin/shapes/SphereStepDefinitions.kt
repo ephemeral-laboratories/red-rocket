@@ -1,13 +1,15 @@
 package garden.ephemeral.rocket.shapes
 
 import garden.ephemeral.rocket.Material
+import garden.ephemeral.rocket.Universe
 import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.configureFromDataTable
-import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 
-class SphereStepDefinitions : En {
+// Constructed reflectively
+@Suppress("unused")
+class SphereStepDefinitions(universe: Universe) : En {
     init {
         ParameterType("sphere", "(?:sphere|glass_sphere)\\(\\)") { string ->
             when (string.substring(0, string.indexOf('('))) {
@@ -18,11 +20,11 @@ class SphereStepDefinitions : En {
         }
 
         Given("{shape_var} ← {sphere}") { sv: String, s: Shape ->
-            shapes[sv] = s
+            universe.shapes[sv] = s
         }
 
         Given("{shape_var} ← {sphere} with:") { sv: String, s: Shape, dataTable: DataTable ->
-            shapes[sv] = s.apply {
+            universe.shapes[sv] = s.apply {
                 configureFromDataTable(this, dataTable)
             }
         }

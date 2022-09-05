@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket.shapes
 
-import garden.ephemeral.rocket.Constants.Companion.epsilon
+import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Intersections
 import garden.ephemeral.rocket.Ray

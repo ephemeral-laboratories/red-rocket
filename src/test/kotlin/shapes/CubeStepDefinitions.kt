@@ -1,14 +1,16 @@
 package garden.ephemeral.rocket.shapes
 
-import garden.ephemeral.rocket.shapes.ShapeStepDefinitions.Companion.shapes
+import garden.ephemeral.rocket.Universe
 import io.cucumber.java8.En
 
-class CubeStepDefinitions : En {
+// Constructed reflectively
+@Suppress("unused")
+class CubeStepDefinitions(universe: Universe) : En {
     init {
         ParameterType("cube", "cube\\(\\)") { _ -> Cube() }
 
         Given("{shape_var} ← {cube}") { sv: String, s: Shape ->
-            shapes[sv] = s
+            universe.shapes[sv] = s
         }
     }
 }

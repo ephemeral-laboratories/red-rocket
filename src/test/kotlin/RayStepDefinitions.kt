@@ -1,49 +1,45 @@
 package garden.ephemeral.rocket
 
 import assertk.assertThat
-import garden.ephemeral.rocket.Constants.Companion.epsilon
-import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
-import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
+import garden.ephemeral.rocket.Constants.epsilon
 import io.cucumber.java8.En
 
-class RayStepDefinitions : En {
-    companion object {
-        val rays = mutableMapOf<String, Ray>()
-    }
-
+// Constructed reflectively
+@Suppress("unused")
+class RayStepDefinitions(universe: Universe) : En {
     init {
         ParameterType("ray_var", "ray\\d*") { string -> string }
 
         When("{ray_var} ← ray\\({tuple_var}, {tuple_var})") { rv: String, tv1: String, tv2: String ->
-            rays[rv] = Ray(tuples[tv1]!!, tuples[tv2]!!)
+            universe.rays[rv] = Ray(universe.tuples[tv1]!!, universe.tuples[tv2]!!)
         }
         Given("{ray_var} ← ray\\({point}, {vector})") { rv: String, p: Tuple, v: Tuple ->
-            rays[rv] = Ray(p, v)
+            universe.rays[rv] = Ray(p, v)
         }
         Given("{ray_var} ← ray\\({point}, {tuple_var})") { rv: String, p: Tuple, tv: String ->
-            rays[rv] = Ray(p, tuples[tv]!!)
+            universe.rays[rv] = Ray(p, universe.tuples[tv]!!)
         }
 
         When("{ray_var} ← transform\\({ray_var}, {matrix_var})") { rv1: String, rv2: String, mv: String ->
-            rays[rv1] = rays[rv2]!!.transform(matrices[mv]!!)
+            universe.rays[rv1] = universe.rays[rv2]!!.transform(universe.matrices[mv]!!)
         }
 
         Then("{ray_var}.origin = {tuple_var}") { rv: String, tv: String ->
-            assertThat(rays[rv]!!.origin).isCloseTo(tuples[tv]!!, epsilon)
+            assertThat(universe.rays[rv]!!.origin).isCloseTo(universe.tuples[tv]!!, epsilon)
         }
         Then("{ray_var}.origin = {point}") { rv: String, p: Tuple ->
-            assertThat(rays[rv]!!.origin).isCloseTo(p, epsilon)
+            assertThat(universe.rays[rv]!!.origin).isCloseTo(p, epsilon)
         }
 
         Then("{ray_var}.direction = {tuple_var}") { rv: String, tv: String ->
-            assertThat(rays[rv]!!.direction).isCloseTo(tuples[tv]!!, epsilon)
+            assertThat(universe.rays[rv]!!.direction).isCloseTo(universe.tuples[tv]!!, epsilon)
         }
         Then("{ray_var}.direction = {vector}") { rv: String, v: Tuple ->
-            assertThat(rays[rv]!!.direction).isCloseTo(v, epsilon)
+            assertThat(universe.rays[rv]!!.direction).isCloseTo(v, epsilon)
         }
 
         Then("position\\({ray_var}, {real}) = {point}") { rv: String, t: Double, e: Tuple ->
-            assertThat(rays[rv]!!.position(t)).isCloseTo(e, epsilon)
+            assertThat(universe.rays[rv]!!.position(t)).isCloseTo(e, epsilon)
         }
     }
 }

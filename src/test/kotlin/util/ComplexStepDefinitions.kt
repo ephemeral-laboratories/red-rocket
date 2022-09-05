@@ -3,15 +3,17 @@ package garden.ephemeral.rocket.util
 import assertk.assertThat
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
-import garden.ephemeral.rocket.Constants.Companion.epsilon
+import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.java8.En
 
+// Constructed reflectively
+@Suppress("unused")
 class ComplexStepDefinitions : En {
-    lateinit var z: Complex
-    lateinit var z1: Complex
-    lateinit var z2: Complex
+    private lateinit var z: Complex
+    private lateinit var z1: Complex
+    private lateinit var z2: Complex
 
     init {
         ParameterType(

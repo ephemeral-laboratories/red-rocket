@@ -7,10 +7,10 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.isNotNull
-import garden.ephemeral.rocket.Constants.Companion.epsilon
+import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.Tuple
+import garden.ephemeral.rocket.Universe
 import garden.ephemeral.rocket.color.CieXyzColor
-import garden.ephemeral.rocket.color.ColorStepDefinitions.Companion.colors
 import garden.ephemeral.rocket.color.RgbColor
 import garden.ephemeral.rocket.color.isCloseTo
 import garden.ephemeral.rocket.isCloseTo
@@ -21,14 +21,16 @@ import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import kotlin.math.abs
 
-class SpectrumStepDefinitions : En {
+// Constructed reflectively
+@Suppress("unused")
+class SpectrumStepDefinitions(universe: Universe) : En {
     private lateinit var spectralShape: SpectralShape
     private lateinit var spectralShape2: SpectralShape
     private lateinit var doubleSpectrum: DoubleSpectrum
     private lateinit var doubleSpectrum1: DoubleSpectrum
     private lateinit var doubleSpectrum2: DoubleSpectrum
     private lateinit var tupleSpectrum: TupleSpectrum
-    var failure: IllegalArgumentException? = null
+    private var failure: IllegalArgumentException? = null
 
     init {
         Given("the default spectral shape") {
@@ -81,11 +83,11 @@ class SpectrumStepDefinitions : En {
         }
 
         When("an emission spectrum is recovered from the color") {
-            doubleSpectrum = DoubleSpectrum.recoverFromCieXyzEmission(colors["color"] as CieXyzColor)
+            doubleSpectrum = DoubleSpectrum.recoverFromCieXyzEmission(universe.colors["color"] as CieXyzColor)
         }
 
         When("a reflectance spectrum is recovered from the color") {
-            doubleSpectrum = DoubleSpectrum.recoverFromCieXyzReflectance(colors["color"] as CieXyzColor)
+            doubleSpectrum = DoubleSpectrum.recoverFromCieXyzReflectance(universe.colors["color"] as CieXyzColor)
         }
 
         Then("the spectral shapes are equal") {

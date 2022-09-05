@@ -29,6 +29,7 @@ dependencies {
 
     testImplementation("io.cucumber:cucumber-java8:${project.property("cucumber.version")}")
     testImplementation("io.cucumber:cucumber-junit:${project.property("cucumber.version")}")
+    testImplementation("io.cucumber:cucumber-picocontainer:${project.property("cucumber.version")}")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:${project.property("assertk.version")}")
 }
 

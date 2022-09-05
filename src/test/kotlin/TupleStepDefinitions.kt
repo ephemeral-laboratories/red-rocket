@@ -6,7 +6,7 @@ import assertk.assertions.isCloseTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import assertk.assertions.matchesPredicate
-import garden.ephemeral.rocket.Constants.Companion.epsilon
+import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
@@ -14,11 +14,9 @@ import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.java8.En
 import kotlin.math.abs
 
-class TupleStepDefinitions : En {
-    companion object {
-        val tuples = mutableMapOf<String, Tuple>()
-    }
-
+// Constructed reflectively
+@Suppress("unused")
+class TupleStepDefinitions(universe: Universe) : En {
     init {
         ParameterType(
             "tuple_var",
@@ -50,89 +48,105 @@ class TupleStepDefinitions : En {
             vector(realFromString(s1), realFromString(s2), realFromString(s3))
         }
 
-        Given("{tuple_var} ← {tuple}") { tv: String, v: Tuple -> tuples[tv] = v }
-        Given("{tuple_var} ← {point}") { tv: String, v: Tuple -> tuples[tv] = v }
-        Given("{tuple_var} ← {vector}") { tv: String, v: Tuple -> tuples[tv] = v }
+        Given("{tuple_var} ← {tuple}") { tv: String, v: Tuple -> universe.tuples[tv] = v }
+        Given("{tuple_var} ← {point}") { tv: String, v: Tuple -> universe.tuples[tv] = v }
+        Given("{tuple_var} ← {vector}") { tv: String, v: Tuple -> universe.tuples[tv] = v }
 
-        When("{tuple_var} ← normalize\\({vector})") { tv1: String, v: Tuple -> tuples[tv1] = v.normalize() }
-        When("{tuple_var} ← normalize\\({tuple_var})") { tv1: String, tv2: String -> tuples[tv1] = tuples[tv2]!!.normalize() }
+        When("{tuple_var} ← normalize\\({vector})") { tv1: String, v: Tuple -> universe.tuples[tv1] = v.normalize() }
+        When("{tuple_var} ← normalize\\({tuple_var})") { tv1: String, tv2: String ->
+            universe.tuples[tv1] = universe.tuples[tv2]!!.normalize()
+        }
 
         When("{tuple_var} ← reflect\\({tuple_var}, {tuple_var})") { tv1: String, tv2: String, tv3: String ->
-            tuples[tv1] = tuples[tv2]!!.reflect(tuples[tv3]!!)
+            universe.tuples[tv1] = universe.tuples[tv2]!!.reflect(universe.tuples[tv3]!!)
         }
 
         When("{tuple_var} ← {tuple_var} * {real}") { tupleVar1: String, tupleVar2: String, scale: Double ->
-            tuples[tupleVar1] = tuples[tupleVar2]!! * scale
+            universe.tuples[tupleVar1] = universe.tuples[tupleVar2]!! * scale
         }
 
-        Then("{tuple_var}.x = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.x).isCloseTo(e, epsilon) }
-        Then("{tuple_var}.y = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.y).isCloseTo(e, epsilon) }
-        Then("{tuple_var}.z = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.z).isCloseTo(e, epsilon) }
-        Then("{tuple_var}.w = {real}") { tv: String, e: Double -> assertThat(tuples[tv]!!.w).isCloseTo(e, epsilon) }
+        Then("{tuple_var}.x = {real}") { tv: String, e: Double ->
+            assertThat(universe.tuples[tv]!!.x).isCloseTo(e, epsilon)
+        }
+        Then("{tuple_var}.y = {real}") { tv: String, e: Double ->
+            assertThat(universe.tuples[tv]!!.y).isCloseTo(e, epsilon)
+        }
+        Then("{tuple_var}.z = {real}") { tv: String, e: Double ->
+            assertThat(universe.tuples[tv]!!.z).isCloseTo(e, epsilon)
+        }
+        Then("{tuple_var}.w = {real}") { tv: String, e: Double ->
+            assertThat(universe.tuples[tv]!!.w).isCloseTo(e, epsilon)
+        }
 
-        Then("{tuple_var} is a point") { tv: String -> assertThat(tuples[tv]!!.isPoint).isTrue() }
-        Then("{tuple_var} is not a point") { tv: String -> assertThat(tuples[tv]!!.isPoint).isFalse() }
-        Then("{tuple_var} is a vector") { tv: String -> assertThat(tuples[tv]!!.isVector).isTrue() }
-        Then("{tuple_var} is not a vector") { tv: String -> assertThat(tuples[tv]!!.isVector).isFalse() }
+        Then("{tuple_var} is a point") { tv: String -> assertThat(universe.tuples[tv]!!.isPoint).isTrue() }
+        Then("{tuple_var} is not a point") { tv: String -> assertThat(universe.tuples[tv]!!.isPoint).isFalse() }
+        Then("{tuple_var} is a vector") { tv: String -> assertThat(universe.tuples[tv]!!.isVector).isTrue() }
+        Then("{tuple_var} is not a vector") { tv: String -> assertThat(universe.tuples[tv]!!.isVector).isFalse() }
 
-        Then("{tuple_var} = {tuple}") { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
-        Then("{tuple_var} = {point}") { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
-        Then("{tuple_var} = {vector}") { tv: String, e: Tuple -> assertThat(tuples[tv]!!).isCloseTo(e, epsilon) }
+        Then("{tuple_var} = {tuple}") { tv: String, e: Tuple ->
+            assertThat(universe.tuples[tv]!!).isCloseTo(e, epsilon)
+        }
+        Then("{tuple_var} = {point}") { tv: String, e: Tuple ->
+            assertThat(universe.tuples[tv]!!).isCloseTo(e, epsilon)
+        }
+        Then("{tuple_var} = {vector}") { tv: String, e: Tuple ->
+            assertThat(universe.tuples[tv]!!).isCloseTo(e, epsilon)
+        }
 
         Then("{tuple_var} = {tuple_var}") { tv1: String, tv2: String ->
-            assertThat(tuples[tv1]!!).isCloseTo(tuples[tv2]!!, epsilon)
+            assertThat(universe.tuples[tv1]!!).isCloseTo(universe.tuples[tv2]!!, epsilon)
         }
 
         Then("{tuple_var} + {tuple_var} = {tuple}") { tv1: String, tv2: String, e: Tuple ->
-            assertThat(tuples[tv1]!! + tuples[tv2]!!).isCloseTo(e, epsilon)
+            assertThat(universe.tuples[tv1]!! + universe.tuples[tv2]!!).isCloseTo(e, epsilon)
         }
 
         Then("{tuple_var} - {tuple_var} = {tuple}") { tv1: String, tv2: String, e: Tuple ->
-            assertThat(tuples[tv1]!! - tuples[tv2]!!).isCloseTo(e, epsilon)
+            assertThat(universe.tuples[tv1]!! - universe.tuples[tv2]!!).isCloseTo(e, epsilon)
         }
 
         Then("{tuple_var} - {tuple_var} = {point}") { tv1: String, tv2: String, e: Tuple ->
-            assertThat(tuples[tv1]!! - tuples[tv2]!!).isCloseTo(e, epsilon)
+            assertThat(universe.tuples[tv1]!! - universe.tuples[tv2]!!).isCloseTo(e, epsilon)
         }
 
         Then("{tuple_var} - {tuple_var} = {vector}") { tv1: String, tv2: String, e: Tuple ->
-            assertThat(tuples[tv1]!! - tuples[tv2]!!).isCloseTo(e, epsilon)
+            assertThat(universe.tuples[tv1]!! - universe.tuples[tv2]!!).isCloseTo(e, epsilon)
         }
 
         Then("-{tuple_var} = {tuple}") { tv: String, e: Tuple ->
-            assertThat(-tuples[tv]!!).isCloseTo(e, epsilon)
+            assertThat(-universe.tuples[tv]!!).isCloseTo(e, epsilon)
         }
 
         Then("-{tuple_var} = {vector}") { tv: String, e: Tuple ->
-            assertThat(-tuples[tv]!!).isCloseTo(e, epsilon)
+            assertThat(-universe.tuples[tv]!!).isCloseTo(e, epsilon)
         }
 
         Then("{tuple_var} * {real} = {tuple}") { tv: String, s: Double, t: Tuple ->
-            assertThat(tuples[tv]!! * s).isCloseTo(t, epsilon)
+            assertThat(universe.tuples[tv]!! * s).isCloseTo(t, epsilon)
         }
 
         Then("{tuple_var} \\/ {real} = {tuple}") { tv: String, s: Double, e: Tuple ->
-            assertThat(tuples[tv]!! / s).isCloseTo(e, epsilon)
+            assertThat(universe.tuples[tv]!! / s).isCloseTo(e, epsilon)
         }
 
         Then("magnitude\\({tuple_var}) = {real}") { tv: String, e: Double ->
-            assertThat(tuples[tv]!!.magnitude).isCloseTo(e, epsilon)
+            assertThat(universe.tuples[tv]!!.magnitude).isCloseTo(e, epsilon)
         }
 
         Then("normalize\\({tuple_var}) =( approximately) {vector}") { tv: String, e: Tuple ->
-            assertThat(tuples[tv]!!.normalize()).isCloseTo(e, epsilon)
+            assertThat(universe.tuples[tv]!!.normalize()).isCloseTo(e, epsilon)
         }
 
         Then("dot\\({tuple_var}, {tuple_var}) = {real}") { tv1: String, tv2: String, e: Double ->
-            assertThat(tuples[tv1]!!.dot(tuples[tv2]!!)).isCloseTo(e, epsilon)
+            assertThat(universe.tuples[tv1]!!.dot(universe.tuples[tv2]!!)).isCloseTo(e, epsilon)
         }
 
         Then("cross\\({tuple_var}, {tuple_var}) = {vector}") { tv1: String, tv2: String, e: Tuple ->
-            assertThat(tuples[tv1]!!.cross(tuples[tv2]!!)).isCloseTo(e, epsilon)
+            assertThat(universe.tuples[tv1]!!.cross(universe.tuples[tv2]!!)).isCloseTo(e, epsilon)
         }
 
         Then("{tuple_var} = normalize\\({tuple_var})") { tv1: String, tv2: String ->
-            assertThat(tuples[tv1]!!).isCloseTo(tuples[tv2]!!.normalize(), epsilon)
+            assertThat(universe.tuples[tv1]!!).isCloseTo(universe.tuples[tv2]!!.normalize(), epsilon)
         }
     }
 }

@@ -3,12 +3,8 @@ package garden.ephemeral.rocket
 import assertk.assertThat
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
-import garden.ephemeral.rocket.Constants.Companion.epsilon
-import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
-import garden.ephemeral.rocket.RayStepDefinitions.Companion.rays
+import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
-import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
-import garden.ephemeral.rocket.WorldStepDefinitions.Companion.world
 import garden.ephemeral.rocket.camera.Camera
 import garden.ephemeral.rocket.camera.SamplingStrategy
 import garden.ephemeral.rocket.color.Color
@@ -17,7 +13,9 @@ import garden.ephemeral.rocket.util.Angle
 import garden.ephemeral.rocket.util.rad
 import io.cucumber.java8.En
 
-class CameraStepDefinitions : En {
+// Constructed reflectively
+@Suppress("unused")
+class CameraStepDefinitions(universe: Universe) : En {
     private var hSize: Int = 0
     private var vSize: Int = 0
     private var fieldOfView: Angle = 0.0.rad
@@ -51,18 +49,18 @@ class CameraStepDefinitions : En {
         }
 
         When("{ray_var} ← ray_for_pixel_offset\\(camera, {real}, {real})") { rv: String, x: Double, y: Double ->
-            rays[rv] = camera.rayForPixelOffset(x, y)
+            universe.rays[rv] = camera.rayForPixelOffset(x, y)
         }
 
         When("camera.transform ← {transform} * {transform}") { m1: Matrix, m2: Matrix ->
             camera.transform = m1 * m2
         }
         When("camera.transform ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") { tv1: String, tv2: String, tv3: String ->
-            camera.transform = viewTransform(tuples[tv1]!!, tuples[tv2]!!, tuples[tv3]!!)
+            camera.transform = viewTransform(universe.tuples[tv1]!!, universe.tuples[tv2]!!, universe.tuples[tv3]!!)
         }
 
         When("image ← render\\(camera, world)") {
-            image = camera.render(world)
+            image = camera.render(universe.world)
         }
 
         Then("camera.hsize = {int}") { e: Int -> assertThat(camera.hSize).isEqualTo(e) }
@@ -70,14 +68,14 @@ class CameraStepDefinitions : En {
         Then("camera.field_of_view = {real}") { e: Double -> assertThat(camera.fieldOfView).isEqualTo(e.rad) }
 
         Then("camera.transform = {matrix_var}") { mv: String ->
-            assertThat(camera.transform).isEqualTo(matrices[mv]!!)
+            assertThat(camera.transform).isEqualTo(universe.matrices[mv]!!)
         }
         Then("camera.pixel_size = {real}") { e: Double ->
             assertThat(camera.pixelSize).isCloseTo(e, epsilon)
         }
 
         Then("color_at_pixel\\(camera, world, {int}, {int}) = {color}") { x: Int, y: Int, e: Color ->
-            assertThat(camera.colorAtPixel(world, x, y)).isCloseTo(e, epsilon)
+            assertThat(camera.colorAtPixel(universe.world, x, y)).isCloseTo(e, epsilon)
         }
 
         Then("pixel_at\\(image, {int}, {int}) = {color}") { x: Int, y: Int, e: Color ->

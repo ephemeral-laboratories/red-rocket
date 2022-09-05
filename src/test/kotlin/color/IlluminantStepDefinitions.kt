@@ -2,12 +2,14 @@ package garden.ephemeral.rocket.color
 
 import assertk.assertThat
 import assertk.assertions.isCloseTo
-import garden.ephemeral.rocket.Constants.Companion.epsilon
+import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.spectra.atWavelength
 import io.cucumber.java8.En
 
+// Constructed reflectively
+@Suppress("unused")
 class IlluminantStepDefinitions : En {
-    lateinit var illuminant: Illuminant
+    private lateinit var illuminant: Illuminant
 
     init {
         Given("^(CIE Standard Illuminant [A-Z]+\\d*)$") { humanName: String ->

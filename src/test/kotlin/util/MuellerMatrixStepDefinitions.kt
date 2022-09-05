@@ -1,10 +1,11 @@
 package garden.ephemeral.rocket.util
 
-import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.matrices
-import garden.ephemeral.rocket.TupleStepDefinitions.Companion.tuples
+import garden.ephemeral.rocket.Universe
 import io.cucumber.java8.En
 
-class MuellerMatrixStepDefinitions : En {
+// Constructed reflectively
+@Suppress("unused")
+class MuellerMatrixStepDefinitions(universe: Universe) : En {
     init {
         val mappings = mapOf(
             "linear polarizer \\(horizontal transmission)" to MuellerMatrices.LinearPolarizerHorizontal,
@@ -18,17 +19,17 @@ class MuellerMatrixStepDefinitions : En {
 
         mappings.forEach { (thing, matrix) ->
             When("{matrix_var} is a Mueller matrix for a $thing") { matrixVar: String ->
-                matrices[matrixVar] = matrix
+                universe.matrices[matrixVar] = matrix
             }
 
             When("{tuple_var} passes through a $thing") { tupleVar: String ->
-                tuples[tupleVar] = matrix * tuples[tupleVar]!!
+                universe.tuples[tupleVar] = matrix * universe.tuples[tupleVar]!!
             }
         }
 
         When("{matrix_var} is a Mueller matrix for a reference rotation of {real} degrees") {
                 matrixVar: String, degrees: Double ->
-            matrices[matrixVar] = MuellerMatrices.forReferenceFrameRotation(degrees.deg)
+            universe.matrices[matrixVar] = MuellerMatrices.forReferenceFrameRotation(degrees.deg)
         }
 
         When(
@@ -36,7 +37,8 @@ class MuellerMatrixStepDefinitions : En {
                 "with fast axis {real} degrees " +
                 "and phase difference {real} degrees"
         ) { matrixVar: String, fastAxisDegrees: Double, phaseDifferenceDegrees: Double ->
-            matrices[matrixVar] = MuellerMatrices.forLinearRetarder(fastAxisDegrees.deg, phaseDifferenceDegrees.deg)
+            universe.matrices[matrixVar] =
+                MuellerMatrices.forLinearRetarder(fastAxisDegrees.deg, phaseDifferenceDegrees.deg)
         }
     }
 }

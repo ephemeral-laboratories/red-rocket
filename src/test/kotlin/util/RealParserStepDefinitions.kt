@@ -3,11 +3,13 @@ package garden.ephemeral.rocket.util
 import assertk.assertThat
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
-import garden.ephemeral.rocket.Constants.Companion.epsilon
+import garden.ephemeral.rocket.Constants.epsilon
 import io.cucumber.java8.En
 import kotlin.Double.Companion.NEGATIVE_INFINITY
 import kotlin.Double.Companion.POSITIVE_INFINITY
 
+// Constructed reflectively
+@Suppress("unused")
 class RealParserStepDefinitions : En {
     lateinit var string: String
 

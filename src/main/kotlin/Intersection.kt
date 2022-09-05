@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket
 
-import garden.ephemeral.rocket.Constants.Companion.epsilon
+import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.shapes.Shape
 import kotlin.math.pow
 import kotlin.math.sqrt
