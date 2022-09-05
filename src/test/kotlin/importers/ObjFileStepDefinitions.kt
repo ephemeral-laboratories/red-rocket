@@ -90,7 +90,7 @@ class ObjFileStepDefinitions(space: Space) : En {
         }
 
         Then("{shape_var}.material.diffuse = {color}") { sv: String, e: Color ->
-            assertThat(space.shapes[sv]!!.material.diffuse).isCloseTo(e, epsilon)
+            assertThat(space.shapes[sv]!!.material.diffuseAsColor).isCloseTo(e, epsilon)
         }
     }
 }

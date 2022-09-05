@@ -20,38 +20,38 @@ class MaterialStepDefinitions(space: Space) : En {
 
         Given("material.color ← {color}") { v: Color ->
             space.material = space.material.build {
-                color = v
+                color(v)
             }
         }
         Given("material.ambient ← {real}") { v: Double ->
             space.material = space.material.build {
-                ambient = grey(v)
+                ambient(grey(v))
             }
         }
         Given("material.diffuse ← {real}") { v: Double ->
             space.material = space.material.build {
-                diffuse = grey(v)
+                diffuse(grey(v))
             }
         }
         Given("material.specular ← {real}") { v: Double ->
             space.material = space.material.build {
-                specular = grey(v)
+                specular(grey(v))
             }
         }
         Given("material.shininess ← {real}") { v: Double ->
             space.material = space.material.build {
-                shininess = v
+                shininess(v)
             }
         }
         Given("material.reflective ← {real}") { v: Double ->
             space.material = space.material.build {
-                reflective = grey(v)
+                reflective(grey(v))
             }
         }
 
         Given("material.pattern ← stripe_pattern\\({color}, {color})") { a: Color, b: Color ->
             space.material = space.material.build {
-                pattern = StripePattern(a, b)
+                pattern(StripePattern(a, b))
             }
         }
 

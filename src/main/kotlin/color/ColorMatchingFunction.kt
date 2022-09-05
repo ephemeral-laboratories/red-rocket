@@ -3,6 +3,7 @@ package garden.ephemeral.rocket.color
 import garden.ephemeral.rocket.spectra.CieXyzColorSpectrum
 import garden.ephemeral.rocket.spectra.SpectralDataFiles
 import garden.ephemeral.rocket.spectra.SpectralShape
+import garden.ephemeral.rocket.util.Cache
 
 enum class ColorMatchingFunction(val humanName: String, filename: String) {
     CIE_1931_2_DEGREE("CIE 1931 2 Degree Standard Observer", "/color-matching-functions/cie1931_2.spectrum"),
@@ -13,8 +14,10 @@ enum class ColorMatchingFunction(val humanName: String, filename: String) {
 
     private val spectralData by lazy { SpectralDataFiles.readCieXyzColorSpectralData(filename) }
 
+    private val spectrumCache by lazy { Cache<SpectralShape, CieXyzColorSpectrum>() }
+
     fun spectrum(shape: SpectralShape = SpectralShape.Default): CieXyzColorSpectrum {
-        return spectralData.createSpectrum(shape)
+        return spectrumCache.get(shape, spectralData::createSpectrum)
     }
 
     companion object {

@@ -33,18 +33,16 @@ class MtlFileParser(file: Path) {
                     currentMaterialName = command[1]
                     currentBuilder = Material.builder()
                 }
-                "Ka" -> currentBuilder.ambient = colorFromCommand(command)
-                "Kd" -> currentBuilder.diffuse = colorFromCommand(command)
-                "Ks" -> currentBuilder.specular = colorFromCommand(command)
-                "Ke" -> currentBuilder.emission = colorFromCommand(command)
-                "Ns" -> currentBuilder.shininess = command[1].toDouble()
-                "Tf" -> currentBuilder.transparency = colorFromCommand(command)
-                "Ni" -> currentBuilder.refractiveIndex = command[1].toDouble()
-                "illum" -> currentBuilder.illuminationModel = command[1].toInt()
-                "d" -> currentBuilder.dissolve = command[1].toDouble()
-                else -> {
-                    throw UnsupportedMtlException("Unsupported command. Got: $trimmedLine")
-                }
+                "Ka" -> currentBuilder.ambient(colorFromCommand(command))
+                "Kd" -> currentBuilder.diffuse(colorFromCommand(command))
+                "Ks" -> currentBuilder.specular(colorFromCommand(command))
+                "Ke" -> currentBuilder.emission(colorFromCommand(command))
+                "Ns" -> currentBuilder.shininess(command[1].toDouble())
+                "Tf" -> currentBuilder.transparency(colorFromCommand(command))
+                "Ni" -> currentBuilder.refractiveIndex(command[1].toDouble())
+                "illum" -> currentBuilder.illuminationModel(command[1].toInt())
+                "d" -> currentBuilder.dissolve(command[1].toDouble())
+                else -> throw UnsupportedMtlException("Unsupported command. Got: $trimmedLine")
             }
             firstCommand = false
         }
@@ -52,6 +50,7 @@ class MtlFileParser(file: Path) {
     }
 
     private fun colorFromCommand(command: List<String>): Color {
+        // TODO: RFL files finally I guess LOL
         return when (command[1]) {
             "xyz" -> {
                 if (command.size == 3) {

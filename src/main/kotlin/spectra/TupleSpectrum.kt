@@ -36,6 +36,16 @@ class TupleSpectrum(
         )
     }
 
+    override fun minus(other: TupleSpectrum): TupleSpectrum {
+        return TupleSpectrum(
+            shape,
+            xValues - other.xValues,
+            yValues - other.yValues,
+            zValues - other.zValues,
+            wValues - other.wValues
+        )
+    }
+
     override fun times(other: TupleSpectrum): TupleSpectrum {
         return TupleSpectrum(
             shape,
@@ -44,5 +54,9 @@ class TupleSpectrum(
             zValues * other.zValues,
             wValues * other.wValues
         )
+    }
+
+    override fun times(scalar: Double): TupleSpectrum {
+        return TupleSpectrum(shape, xValues * scalar, yValues * scalar, zValues * scalar, wValues * scalar)
     }
 }

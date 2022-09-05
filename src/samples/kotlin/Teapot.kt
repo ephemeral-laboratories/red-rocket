@@ -20,11 +20,11 @@ fun main() = render {
         Plane {
             name = "Floor"
             material = Material.build {
-                pattern = CheckersPattern(white, black).apply {
+                pattern(CheckersPattern(white, black).apply {
                     transform = scaling(0.25, 0.25, 0.25)
-                }
-                specular = black
-                reflective = grey(0.1)
+                })
+                specular(black)
+                reflective(grey(0.1))
             }
         }
 
@@ -32,7 +32,7 @@ fun main() = render {
             name = "Left Wall"
             transform = translation(0.0, 0.0, 5.0) * rotationX(90.deg)
             material = Material.build {
-                specular = black
+                specular(black)
             }
         }
 
@@ -40,7 +40,7 @@ fun main() = render {
             name = "Right Wall"
             transform = translation(5.0, 0.0, 0.0) * rotationZ(90.deg)
             material = Material.build {
-                specular = black
+                specular(black)
             }
         }
 

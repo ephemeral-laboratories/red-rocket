@@ -22,11 +22,11 @@ fun main() = render {
         Plane {
             name = "Floor"
             material = Material.build {
-                pattern = CheckersPattern(white, black).apply {
+                pattern(CheckersPattern(white, black).apply {
                     transform = scaling(0.25, 0.25, 0.25)
-                }
-                specular = black
-                reflective = grey(0.1)
+                })
+                specular(black)
+                reflective(grey(0.1))
             }
         }
 
@@ -34,7 +34,7 @@ fun main() = render {
             name = "Left Wall"
             transform = translation(0.0, 0.0, 5.0) * rotationX(90.deg)
             material = Material.build {
-                specular = black
+                specular(black)
             }
         }
 
@@ -42,7 +42,7 @@ fun main() = render {
             name = "Right Wall"
             transform = translation(5.0, 0.0, 0.0) * rotationZ(90.deg)
             material = Material.build {
-                specular = black
+                specular(black)
             }
         }
 
@@ -55,16 +55,16 @@ fun main() = render {
 
                     Sphere {
                         transform = translation(0.0, 0.0, -1.0) *
-                            scaling(0.25, 0.25, 0.25)
+                                scaling(0.25, 0.25, 0.25)
                     }
 
                     Cylinder {
                         minimum = 0.0
                         maximum = 1.0
                         transform = translation(0.0, 0.0, -1.0) *
-                            rotationY((-30).deg) *
-                            rotationZ((-90).deg) *
-                            scaling(0.25, 1.0, 0.25)
+                                rotationY((-30).deg) *
+                                rotationZ((-90).deg) *
+                                scaling(0.25, 1.0, 0.25)
                     }
                 }
             }
@@ -73,18 +73,18 @@ fun main() = render {
         Sphere {
             transform = translation(1.0, 0.5, -1.0) * scaling(0.5, 0.5, 0.5)
             material = Material.build {
-                ambient = black
-                diffuse = black
-                reflective = grey(0.1)
-                transparency = grey(1.0)
-                refractiveIndex = 1.5
+                ambient(black)
+                diffuse(black)
+                reflective(grey(0.1))
+                transparency(grey(1.0))
+                refractiveIndex(1.5)
             }
         }
 
         Sphere {
             transform = translation(-1.0, 0.5, -1.0) * scaling(0.5, 0.5, 0.5)
             material = Material.build {
-                reflective = grey(1.0)
+                reflective(grey(1.0))
             }
         }
 

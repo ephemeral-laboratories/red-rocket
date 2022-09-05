@@ -26,7 +26,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
             if (i == this) {
                 val lastContainer = containers.lastOrNull()
                 if (lastContainer != null) {
-                    n1 = lastContainer.material.refractiveIndex
+                    n1 = lastContainer.material.refractiveIndex.values[0]
                 }
             }
             if (!containers.removeByIdentity(i.obj)) {
@@ -35,7 +35,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
             if (i == this) {
                 val lastContainer = containers.lastOrNull()
                 if (lastContainer != null) {
-                    n2 = lastContainer.material.refractiveIndex
+                    n2 = lastContainer.material.refractiveIndex.values[0]
                     break
                 }
             }
@@ -63,7 +63,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
             if (i == this) {
                 val lastContainer = containers.lastOrNull()
                 if (lastContainer != null) {
-                    n1 = lastContainer.material.refractiveIndex
+                    n1 = lastContainer.material.refractiveIndex[wavelength]
                 }
             }
             if (!containers.removeByIdentity(i.obj)) {
@@ -72,7 +72,7 @@ data class Intersection(val t: Double, val obj: Shape, val u: Double = 0.0, val 
             if (i == this) {
                 val lastContainer = containers.lastOrNull()
                 if (lastContainer != null) {
-                    n2 = lastContainer.material.refractiveIndex
+                    n2 = lastContainer.material.refractiveIndex[wavelength]
                     break
                 }
             }

@@ -20,7 +20,7 @@ class LightStepDefinitions(space: Space) : En {
             assertThat(space.light.position).isEqualTo(space.tuples[tv]!!)
         }
         Then("light.intensity = {color_var}") { tv: String ->
-            assertThat(space.light.intensity).isEqualTo(space.colors[tv]!!)
+            assertThat(space.light.intensityAsColor).isEqualTo(space.colors[tv]!!)
         }
     }
 }

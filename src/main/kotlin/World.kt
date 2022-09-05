@@ -4,6 +4,8 @@ import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.black
 import garden.ephemeral.rocket.shapes.Shape
 import garden.ephemeral.rocket.spectra.Wavelength
+import garden.ephemeral.rocket.spectra.isBlack
+import garden.ephemeral.rocket.spectra.isNonBlack
 
 class World {
     var objects = mutableListOf<Shape>()
@@ -71,8 +73,8 @@ class World {
             val refracted = refractedIntensity(precomputed, recursionsAllowed)
 
             // TODO: Can we just look at `reflected` and `refracted` instead?
-            val reflectivityValue = material.reflectiveSpectrum[precomputed.wavelength]
-            val transmissivityValue = material.transparencySpectrum[precomputed.wavelength]
+            val reflectivityValue = material.reflective[precomputed.wavelength]
+            val transmissivityValue = material.transparency[precomputed.wavelength]
 
             val reflectRefract = if (reflectivityValue != 0.0 && transmissivityValue != 0.0) {
                 val reflectance = precomputed.fresnel()
@@ -110,7 +112,7 @@ class World {
 
         val reflectRay = Ray(comps.overPoint, comps.reflection)
         val color = colorAt(reflectRay, recursionsAllowed - 1)
-        return color * comps.obj.material.reflective
+        return color * comps.obj.material.reflectiveAsColor
     }
 
     fun reflectedIntensity(comps: Intersection.Precomputed2, recursionsAllowed: Int = 5): Double {
@@ -118,7 +120,7 @@ class World {
             return 0.0
         }
 
-        val reflectivityValue = comps.obj.material.reflectiveSpectrum[comps.wavelength]
+        val reflectivityValue = comps.obj.material.reflective[comps.wavelength]
         if (reflectivityValue == 0.0) {
             return 0.0
         }
@@ -148,7 +150,7 @@ class World {
         val refractRay = Ray(comps.underPoint, direction)
         // Find the color of the refracted ray, making sure to multiply
         // by the transparency value to account for any opacity
-        return colorAt(refractRay, recursionsAllowed - 1) * comps.obj.material.transparency
+        return colorAt(refractRay, recursionsAllowed - 1) * comps.obj.material.transparencyAsColor
     }
 
     fun refractedIntensity(comps: Intersection.Precomputed2, recursionsAllowed: Int = 5): Double {
@@ -156,7 +158,7 @@ class World {
             return 0.0
         }
 
-        val transmissivityValue = comps.obj.material.transparencySpectrum[comps.wavelength]
+        val transmissivityValue = comps.obj.material.transparency[comps.wavelength]
         if (transmissivityValue == 0.0) {
             return 0.0
         }

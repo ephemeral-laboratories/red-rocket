@@ -28,8 +28,17 @@ class CieXyzColorSpectrum(
         return CieXyzColorSpectrum(shape, xValues + other.xValues, yValues + other.yValues, zValues + other.zValues)
     }
 
+    override fun minus(other: CieXyzColorSpectrum): CieXyzColorSpectrum {
+        requireSameShape(other)
+        return CieXyzColorSpectrum(shape, xValues - other.xValues, yValues - other.yValues, zValues - other.zValues)
+    }
+
     override fun times(other: CieXyzColorSpectrum): CieXyzColorSpectrum {
         requireSameShape(other)
         return CieXyzColorSpectrum(shape, xValues * other.xValues, yValues * other.yValues, zValues * other.zValues)
+    }
+
+    override fun times(scalar: Double): CieXyzColorSpectrum {
+        return CieXyzColorSpectrum(shape, xValues * scalar, yValues * scalar, zValues * scalar)
     }
 }

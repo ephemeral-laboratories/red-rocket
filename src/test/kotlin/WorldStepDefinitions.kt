@@ -94,9 +94,9 @@ class WorldStepDefinitions(space: Space) : En {
             objects.add(
                 Sphere().apply {
                     material = Material.build {
-                        color = linearRgb(0.8, 1.0, 0.6)
-                        diffuse = grey(0.7)
-                        specular = grey(0.2)
+                        color(linearRgb(0.8, 1.0, 0.6))
+                        diffuse(grey(0.7))
+                        specular(grey(0.2))
                     }
                 }
             )

@@ -31,9 +31,18 @@ class DoubleSpectrum(
         return DoubleSpectrum(shape, values + other.values)
     }
 
+    override fun minus(other: DoubleSpectrum): DoubleSpectrum {
+        requireSameShape(other)
+        return DoubleSpectrum(shape, values - other.values)
+    }
+
     override fun times(other: DoubleSpectrum): DoubleSpectrum {
         requireSameShape(other)
         return DoubleSpectrum(shape, values * other.values)
+    }
+
+    override fun times(scalar: Double): DoubleSpectrum {
+        return DoubleSpectrum(shape, values * scalar)
     }
 
     operator fun div(other: DoubleSpectrum): DoubleSpectrum {
@@ -100,6 +109,14 @@ class DoubleSpectrum(
     fun toLinearRgbReflectance(): RgbColor = toCieXyzReflectance().toLinearRgb()
 
     companion object {
+
+        fun ofConstant(value: Double, shape: SpectralShape = SpectralShape.Default): DoubleSpectrum {
+            return DoubleSpectrum(shape, buildImmutableDoubleArray {
+                repeat(shape.size) {
+                    add(value)
+                }
+            })
+        }
 
         /**
          * Constructs a spectrum for black body radiation.

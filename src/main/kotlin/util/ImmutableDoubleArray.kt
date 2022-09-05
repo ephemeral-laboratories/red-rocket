@@ -9,7 +9,7 @@ import kotlin.math.sqrt
 /**
  * Wrapper for a double array to ensure nobody can mutate it.
  */
-class ImmutableDoubleArray(private val array: DoubleArray) : Iterable<Double> {
+class ImmutableDoubleArray private constructor(private val array: DoubleArray) : Iterable<Double> {
     val size: Int
         get() = array.size
     val lastIndex: Int
@@ -334,13 +334,35 @@ class ImmutableDoubleArray(private val array: DoubleArray) : Iterable<Double> {
     override fun hashCode(): Int = array.contentHashCode()
 
     override fun toString(): String = array.contentToString()
+
+    companion object {
+        /**
+         * Creates a new immutable double array by copying the provided array.
+         *
+         * @param values the array to copy.
+         * @return the immutable array.
+         */
+        fun copyOf(values: DoubleArray): ImmutableDoubleArray {
+            return ImmutableDoubleArray(values.copyOf())
+        }
+
+        /**
+         * Creates a new immutable double array by copying the provided collection of double values.
+         *
+         * @param values the array to copy.
+         * @return the immutable array.
+         */
+        fun copyOf(values: Collection<Double>): ImmutableDoubleArray {
+            return ImmutableDoubleArray(values.toDoubleArray())
+        }
+    }
 }
 
 /**
  * Creates a double array.
  */
 fun immutableDoubleArrayOf(vararg values: Double): ImmutableDoubleArray {
-    return ImmutableDoubleArray(doubleArrayOf(*values))
+    return ImmutableDoubleArray.copyOf(values)
 }
 
 /**
@@ -371,5 +393,5 @@ fun buildImmutableDoubleArray(capacity: Int, action: MutableList<Double>.() -> U
  * @return the array.
  */
 fun Collection<Double>.toImmutableDoubleArray(): ImmutableDoubleArray {
-    return ImmutableDoubleArray(toDoubleArray())
+    return ImmutableDoubleArray.copyOf(this)
 }

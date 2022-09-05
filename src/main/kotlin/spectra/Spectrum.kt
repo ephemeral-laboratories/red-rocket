@@ -16,7 +16,11 @@ sealed class Spectrum<T, S : Spectrum<T, S>>(
 
     abstract operator fun plus(other: S): S
 
+    abstract operator fun minus(other: S): S
+
     abstract operator fun times(other: S): S
+
+    abstract operator fun times(scalar: Double): S
 
     /**
      * Utility method for subclasses to use to check the provided values.

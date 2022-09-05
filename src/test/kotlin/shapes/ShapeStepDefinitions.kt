@@ -19,6 +19,7 @@ import io.cucumber.java8.En
 // Constructed reflectively
 @Suppress("unused")
 class ShapeStepDefinitions(space: Space) : En {
+
     init {
         ParameterType("shape_var", shapeVarRegex) { string -> string }
 
@@ -30,7 +31,7 @@ class ShapeStepDefinitions(space: Space) : En {
 
         Given("{shape_var}.material.ambient ← {real}") { sv: String, v: Double ->
             space.shapes[sv]!!.material = space.shapes[sv]!!.material.build {
-                ambient = grey(v)
+                ambient(grey(v))
             }
         }
 
@@ -44,8 +45,7 @@ class ShapeStepDefinitions(space: Space) : En {
         When("{tuple_var} ← normal_at\\({shape_var}, {point})") { tv: String, sv: String, p: Tuple ->
             space.tuples[tv] = space.shapes[sv]!!.worldNormalAt(p, dummyIntersection())
         }
-        When("{tuple_var} ← normal_at\\({shape_var}, {point}, {intersection_var})") {
-                tv: String, sv: String, p: Tuple, iv: String ->
+        When("{tuple_var} ← normal_at\\({shape_var}, {point}, {intersection_var})") { tv: String, sv: String, p: Tuple, iv: String ->
             space.tuples[tv] = space.shapes[sv]!!.worldNormalAt(p, space.namedIntersections[iv]!!)
         }
 
@@ -129,55 +129,68 @@ class ShapeStepDefinitions(space: Space) : En {
                     "material.color" -> {
                         val params = row[1].substring(1, row[1].length - 1).split(", ")
                         shape.material = shape.material.build {
-                            color = linearRgb(
-                                realFromString(params[0]),
-                                realFromString(params[1]),
-                                realFromString(params[2])
+                            color(
+                                linearRgb(
+                                    realFromString(params[0]),
+                                    realFromString(params[1]),
+                                    realFromString(params[2])
+                                )
                             )
                         }
                     }
+
                     "material.pattern" -> {
                         shape.material = shape.material.build {
-                            pattern = if (row[1] == "test_pattern()") {
-                                TestPattern()
-                            } else {
-                                throw IllegalArgumentException("Unrecognised row: $row")
-                            }
+                            pattern(
+                                if (row[1] == "test_pattern()") {
+                                    TestPattern()
+                                } else {
+                                    throw IllegalArgumentException("Unrecognised row: $row")
+                                }
+                            )
                         }
                     }
+
                     "material.ambient" -> {
                         shape.material = shape.material.build {
-                            ambient = grey(realFromString(row[1]))
+                            ambient(grey(realFromString(row[1])))
                         }
                     }
+
                     "material.diffuse" -> {
                         shape.material = shape.material.build {
-                            diffuse = grey(realFromString(row[1]))
+                            diffuse(grey(realFromString(row[1])))
                         }
                     }
+
                     "material.specular" -> {
                         shape.material = shape.material.build {
-                            specular = grey(realFromString(row[1]))
+                            specular(grey(realFromString(row[1])))
                         }
                     }
+
                     "material.reflective" -> {
                         shape.material = shape.material.build {
-                            reflective = grey(realFromString(row[1]))
+                            reflective(grey(realFromString(row[1])))
                         }
                     }
+
                     "material.transparency" -> {
                         shape.material = shape.material.build {
-                            transparency = grey(realFromString(row[1]))
+                            transparency(grey(realFromString(row[1])))
                         }
                     }
+
                     "material.refractive_index" -> {
                         shape.material = shape.material.build {
-                            refractiveIndex = realFromString(row[1])
+                            refractiveIndex(realFromString(row[1]))
                         }
                     }
+
                     "transform" -> {
                         shape.transform = transformFromString(row[1])
                     }
+
                     else -> {
                         throw IllegalArgumentException("Unrecognised row: $row")
                     }

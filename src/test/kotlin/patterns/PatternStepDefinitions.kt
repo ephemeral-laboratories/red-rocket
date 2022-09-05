@@ -73,15 +73,15 @@ class PatternStepDefinitions(space: Space) : En {
         }
 
         When("{color_var} ← stripe_at_object\\(pattern, {shape_var}, {point})") { cv: String, sv: String, p: Tuple ->
-            space.colors[cv] = pattern.patternAtShape(space.shapes[sv]!!, p)
+            space.colors[cv] = pattern.patternAtShape(space.shapes[sv]!!, p).toCieXyzReflectance()
         }
         When("{color_var} ← pattern_at_shape\\(pattern, {shape_var}, {point})") { cv: String, sv: String, p: Tuple ->
-            space.colors[cv] = pattern.patternAtShape(space.shapes[sv]!!, p)
+            space.colors[cv] = pattern.patternAtShape(space.shapes[sv]!!, p).toCieXyzReflectance()
         }
 
         When("{color_var} ← uv_pattern_at\\({uv_pattern_var}, {real}, {real})") {
                 cv: String, upv: String, u: Double, v: Double ->
-            space.colors[cv] = uvPatterns[upv]!!.uvPatternAt(u, v)
+            space.colors[cv] = uvPatterns[upv]!!.uvPatternAt(u, v).toCieXyzReflectance()
         }
 
         When("\\(u, v) ← spherical_map\\({tuple_var})") { tv: String ->

@@ -10,17 +10,17 @@ fun main() = render {
     val materials = object {
         // TODO: Keep spectra instead
         val white = Material.build {
-            color = SpectralDataFiles.readDoubleSpectralData("/garden/ephemeral/rocket/cornell-box-white.txt").createSpectrum().toLinearRgbReflectance()
+            color(SpectralDataFiles.readDoubleSpectralData("/garden/ephemeral/rocket/cornell-box-white.txt").createSpectrum())
         }
         val green = Material.build {
-            color = SpectralDataFiles.readDoubleSpectralData("/garden/ephemeral/rocket/cornell-box-green.txt").createSpectrum().toLinearRgbReflectance()
+            color(SpectralDataFiles.readDoubleSpectralData("/garden/ephemeral/rocket/cornell-box-green.txt").createSpectrum())
         }
         val red = Material.build {
-            color = SpectralDataFiles.readDoubleSpectralData("/garden/ephemeral/rocket/cornell-box-red.txt").createSpectrum().toLinearRgbReflectance()
+            color(SpectralDataFiles.readDoubleSpectralData("/garden/ephemeral/rocket/cornell-box-red.txt").createSpectrum())
         }
         val light = Material.build {
-            color = SpectralDataFiles.readDoubleSpectralData("/garden/ephemeral/rocket/cornell-box-light-reflectance.txt").createSpectrum().toLinearRgbReflectance()
-            emission = SpectralDataFiles.readDoubleSpectralData("/garden/ephemeral/rocket/cornell-box-light-emission.txt").createSpectrum().toLinearRgbEmission()
+            color(SpectralDataFiles.readDoubleSpectralData("/garden/ephemeral/rocket/cornell-box-light-reflectance.txt").createSpectrum())
+            emission(SpectralDataFiles.readDoubleSpectralData("/garden/ephemeral/rocket/cornell-box-light-emission.txt").createSpectrum())
         }
     }
 

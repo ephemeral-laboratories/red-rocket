@@ -33,8 +33,8 @@ class SphereStepDefinitions(space: Space) : En {
     private fun glassSphere(): Sphere {
         return Sphere().apply {
             material = Material.build {
-                transparency = white
-                refractiveIndex = 1.5
+                transparency(white)
+                refractiveIndex(1.5)
             }
         }
     }

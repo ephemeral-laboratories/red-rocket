@@ -17,6 +17,7 @@ import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.Plane
 import garden.ephemeral.rocket.shapes.Shape
 import garden.ephemeral.rocket.shapes.Sphere
+import garden.ephemeral.rocket.spectra.DoubleSpectrum
 import garden.ephemeral.rocket.spectra.SpectralShape
 import garden.ephemeral.rocket.util.Angle
 import kotlin.io.path.Path
@@ -120,7 +121,10 @@ class GroupBuilder : ObjectContainerBuilder() {
 class WorldBuilder : ObjectContainerBuilder() {
     private val lights = mutableListOf<PointLight>()
 
-    fun PointLight(position: Tuple, intensity: Color) {
+    fun PointLight(position: Tuple, intensity: Color) =
+        PointLight(position, DoubleSpectrum.recoverFromCieXyzEmission(intensity.toCieXyz()))
+
+    fun PointLight(position: Tuple, intensity: DoubleSpectrum) {
         lights.add(garden.ephemeral.rocket.PointLight(position, intensity))
     }
 

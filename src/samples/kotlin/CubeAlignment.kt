@@ -31,17 +31,17 @@ fun mappedCube(): Shape {
             val magenta = linearRgb(1.0, 0.0, 1.0)
             val orange = linearRgb(1.0, 0.5, 0.0)
             val yellow = linearRgb(1.0, 1.0, 0.0)
-            pattern = CubeMap(
+            pattern(CubeMap(
                 UVAlignCheck(yellow, cyan, red, blue, orange),
                 UVAlignCheck(cyan, red, yellow, orange, green),
                 UVAlignCheck(red, yellow, magenta, green, white),
                 UVAlignCheck(green, magenta, cyan, white, blue),
                 UVAlignCheck(orange, cyan, magenta, red, yellow),
                 UVAlignCheck(magenta, orange, green, blue, white)
-            )
-            ambient = grey(0.2)
-            specular = black
-            diffuse = grey(0.8)
+            ))
+            ambient(grey(0.2))
+            specular(black)
+            diffuse(grey(0.8))
         }
     }
 }

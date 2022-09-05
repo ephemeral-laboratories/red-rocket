@@ -2,41 +2,49 @@ package garden.ephemeral.rocket
 
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.black
-import garden.ephemeral.rocket.color.Color.Companion.grey
-import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.patterns.Pattern
 import garden.ephemeral.rocket.shapes.Shape
 import garden.ephemeral.rocket.spectra.DoubleSpectrum
+import garden.ephemeral.rocket.spectra.ReflectanceSpectra
 import garden.ephemeral.rocket.spectra.Wavelength
 import kotlin.math.pow
 
 data class Material(
-    val color: Color,
-    val ambient: Color,
-    val diffuse: Color,
-    val specular: Color,
+    val color: DoubleSpectrum,
+    val ambient: DoubleSpectrum,
+    val diffuse: DoubleSpectrum,
+    val specular: DoubleSpectrum,
     val shininess: Double,
-    val reflective: Color,
-    val transparency: Color,
-    val refractiveIndex: Double,
+    val reflective: DoubleSpectrum,
+    val transparency: DoubleSpectrum,
+    val refractiveIndex: DoubleSpectrum,
     val pattern: Pattern?,
-    val emission: Color,
+    val emission: DoubleSpectrum,
     val dissolve: Double,
     val illuminationModel: Int
 ) {
-    val ambientSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzReflectance(ambient.toCieXyz()) }
-    val diffuseSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzReflectance(diffuse.toCieXyz()) }
-    val specularSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzReflectance(specular.toCieXyz()) }
-    val reflectiveSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzReflectance(reflective.toCieXyz()) }
-    val transparencySpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzReflectance(transparency.toCieXyz()) }
-
-    // XXX: Beware of this one, we haven't pinned down units for it, so it isn't going to behave.
-    val emissionSpectrum: DoubleSpectrum by lazy { DoubleSpectrum.recoverFromCieXyzEmission(emission.toCieXyz()) }
+    val colorAsColor by lazy { color.toCieXyzReflectance() }
+    val ambientAsColor by lazy { ambient.toCieXyzReflectance() }
+    val diffuseAsColor by lazy { diffuse.toCieXyzReflectance() }
+    val specularAsColor by lazy { specular.toCieXyzReflectance() }
+    val emissionAsColor by lazy { emission.toCieXyzEmission() }
+    val reflectiveAsColor by lazy { reflective.toCieXyzReflectance() }
+    val transparencyAsColor by lazy { transparency.toCieXyzReflectance() }
 
     companion object {
         val default = Material(
-            white, grey(0.1), grey(0.9), grey(0.9), 200.0,
-            black, black, 1.0, null, black, 1.0, -1
+            color = ReflectanceSpectra.White,
+            ambient = ReflectanceSpectra.grey(0.1),
+            diffuse = ReflectanceSpectra.grey(0.9),
+            specular = ReflectanceSpectra.grey(0.9),
+            shininess = 200.0,
+            reflective = ReflectanceSpectra.Black,
+            transparency = ReflectanceSpectra.Black,
+            refractiveIndex = DoubleSpectrum.ofConstant(1.0),
+            pattern = null,
+            emission = ReflectanceSpectra.Black,
+            dissolve = 1.0,
+            illuminationModel = -1
         )
 
         fun build(callback: Builder.() -> Unit): Material {
@@ -60,16 +68,16 @@ data class Material(
         worldNormal: Tuple,
         inShadow: Boolean
     ): Color {
-        val color = pattern?.patternAtShape(shape, worldPoint) ?: color
+        val color = pattern?.patternAtShape(shape, worldPoint)?.toCieXyzReflectance() ?: colorAsColor
 
         // Combine the surface color with the light's color/intensity
-        val effectiveColor = color * light.intensity
+        val effectiveColor = color * light.intensityAsColor
 
         // Direction to the light source
         val lightDirection = (light.position - worldPoint).normalize()
 
         // Ambient contribution
-        var result = effectiveColor * ambient
+        var result = effectiveColor * ambientAsColor
 
         if (!inShadow) {
             // lightDotNormal represents the cosine of the angle between the
@@ -85,7 +93,7 @@ data class Material(
                 specularColor = black
             } else {
                 // compute the diffuse contribution
-                diffuseColor = effectiveColor * diffuse * lightDotNormal
+                diffuseColor = effectiveColor * diffuseAsColor * lightDotNormal
                 // reflect_dot_eye represents the cosine of the angle between the
                 // reflection vector and the eye vector . A negative number means the
                 // light reflects away from the eye .
@@ -97,7 +105,7 @@ data class Material(
                 } else {
                     // compute the specular contribution
                     val factor = reflectDotEye.pow(shininess)
-                    light.intensity * specular * factor
+                    light.intensityAsColor * specularAsColor * factor
                 }
             }
 
@@ -105,7 +113,7 @@ data class Material(
         }
 
         // FIXME: This should be applied once total, not once per light
-        result += emission
+        result += emissionAsColor
 
         return result
     }
@@ -119,20 +127,17 @@ data class Material(
         worldNormal: Tuple,
         inShadow: Boolean
     ): Double {
-        // TODO: Push spectrum down into pattern code
-        val surface = DoubleSpectrum.recoverFromCieXyzReflectance(
-            (pattern?.patternAtShape(shape, worldPoint) ?: color).toCieXyz()
-        )[wavelength]
+        val surface = (pattern?.patternAtShape(shape, worldPoint) ?: color)[wavelength]
 
         // Combine the surface color with the light's color/intensity
-        val lightIntensity = light.intensitySpectrum[wavelength]
+        val lightIntensity = light.intensity[wavelength]
         val effectiveIntensity = surface * lightIntensity
 
         // Direction to the light source
         val lightDirection = (light.position - worldPoint).normalize()
 
         // Ambient contribution
-        var result = effectiveIntensity * ambientSpectrum[wavelength]
+        var result = effectiveIntensity * ambient[wavelength]
 
         if (!inShadow) {
             // lightDotNormal represents the cosine of the angle between the
@@ -148,7 +153,7 @@ data class Material(
                 specularIntensity = 0.0
             } else {
                 // compute the diffuse contribution
-                diffuseIntensity = effectiveIntensity * diffuseSpectrum[wavelength] * lightDotNormal
+                diffuseIntensity = effectiveIntensity * diffuse[wavelength] * lightDotNormal
                 // reflect_dot_eye represents the cosine of the angle between the
                 // reflection vector and the eye vector . A negative number means the
                 // light reflects away from the eye .
@@ -160,7 +165,7 @@ data class Material(
                 } else {
                     // compute the specular contribution
                     val factor = reflectDotEye.pow(shininess)
-                    lightIntensity * specularSpectrum[wavelength] * factor
+                    lightIntensity * specular[wavelength] * factor
                 }
             }
 
@@ -168,24 +173,125 @@ data class Material(
         }
 
         // FIXME: This should be applied once total, not once per light
-        result += emissionSpectrum[wavelength]
+        result += emission[wavelength]
 
         return result
     }
 
     class Builder(material: Material) {
-        var color: Color = material.color
-        var ambient: Color = material.ambient
-        var diffuse: Color = material.diffuse
-        var specular: Color = material.specular
-        var shininess: Double = material.shininess
-        var reflective: Color = material.reflective
-        var transparency: Color = material.transparency
-        var refractiveIndex: Double = material.refractiveIndex
-        var pattern: Pattern? = material.pattern
-        var emission: Color = material.emission
-        var dissolve: Double = 0.0
-        var illuminationModel: Int = 0
+        private var color: DoubleSpectrum = material.color
+        private var ambient: DoubleSpectrum = material.ambient
+        private var diffuse: DoubleSpectrum = material.diffuse
+        private var specular: DoubleSpectrum = material.specular
+        private var shininess: Double = material.shininess
+        private var reflective: DoubleSpectrum = material.reflective
+        private var transparency: DoubleSpectrum = material.transparency
+        private var refractiveIndex: DoubleSpectrum = material.refractiveIndex
+        private var pattern: Pattern? = material.pattern
+        private var emission: DoubleSpectrum = material.emission
+        private var dissolve: Double = 0.0
+        private var illuminationModel: Int = 0
+
+        fun color(color: Color): Builder {
+            this.color = DoubleSpectrum.recoverFromCieXyzReflectance(color.toCieXyz())
+            return this
+        }
+
+        fun color(spectrum: DoubleSpectrum): Builder {
+            color = spectrum
+            return this
+        }
+
+        fun ambient(color: Color): Builder {
+            ambient = DoubleSpectrum.recoverFromCieXyzReflectance(color.toCieXyz())
+            return this
+        }
+
+        fun ambient(spectrum: DoubleSpectrum): Builder {
+            ambient = spectrum
+            return this
+        }
+
+        fun diffuse(color: Color): Builder {
+            diffuse = DoubleSpectrum.recoverFromCieXyzReflectance(color.toCieXyz())
+            return this
+        }
+
+        fun diffuse(spectrum: DoubleSpectrum): Builder {
+            diffuse = spectrum
+            return this
+        }
+
+        fun specular(color: Color): Builder {
+            specular = DoubleSpectrum.recoverFromCieXyzReflectance(color.toCieXyz())
+            return this
+        }
+
+        fun specular(spectrum: DoubleSpectrum): Builder {
+            specular = spectrum
+            return this
+        }
+
+        fun pattern(pattern: Pattern): Builder {
+            this.pattern = pattern
+            return this
+        }
+
+        fun emission(color: Color): Builder {
+            // XXX: Beware of this one, we haven't pinned down units for it, so it isn't going to behave.
+            emission = DoubleSpectrum.recoverFromCieXyzEmission(color.toCieXyz())
+            return this
+        }
+
+        fun emission(spectrum: DoubleSpectrum): Builder {
+            emission = spectrum
+            return this
+        }
+
+        fun shininess(value: Double): Builder {
+            shininess = value
+            return this
+        }
+
+        fun reflective(color: Color): Builder {
+            reflective = DoubleSpectrum.recoverFromCieXyzReflectance(color.toCieXyz())
+            return this
+        }
+
+        fun reflective(spectrum: DoubleSpectrum): Builder {
+            reflective = spectrum
+            return this
+        }
+
+        fun transparency(color: Color): Builder {
+            transparency = DoubleSpectrum.recoverFromCieXyzReflectance(color.toCieXyz())
+            return this
+        }
+
+        fun transparency(spectrum: DoubleSpectrum): Builder {
+            transparency = spectrum
+            return this
+        }
+
+        fun refractiveIndex(value: Double): Builder {
+            refractiveIndex = DoubleSpectrum.ofConstant(value)
+            return this
+        }
+
+        fun refractiveIndex(spectrum: DoubleSpectrum): Builder {
+            refractiveIndex = spectrum
+            return this
+        }
+
+        fun illuminationModel(value: Int): Builder {
+            illuminationModel = value
+            return this
+        }
+
+        fun dissolve(value: Double): Builder {
+            dissolve = value
+            return this
+        }
 
         fun build(): Material {
             return Material(
