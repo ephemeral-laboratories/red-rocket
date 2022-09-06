@@ -1,0 +1,20 @@
+[versions]
+antlr = "4.9.3"
+assertk = "0.25"
+cucumber = "7.6.0"
+junit-platform-suite = "1.9.0"
+kotlinx-coroutines-core = "1.5.2"
+
+[libraries]
+antlr = { module = "org.antlr:antlr4", version.ref = "antlr" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
+antlr4-runtime = { module = "org.antlr:antlr4-runtime", version.ref = "antlr" }
+junit-platform-suite = { module = "org.junit.platform:junit-platform-suite", version.ref = "junit-platform-suite" }
+cucumber-java8 = { module = "io.cucumber:cucumber-java8", version.ref = "cucumber" }
+cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
+cucumber-picocontainer = { module = "io.cucumber:cucumber-picocontainer", version.ref = "cucumber" }
+assertk-jvm = { module = "com.willowtreeapps.assertk:assertk-jvm", version.ref = "assertk" }
+
+[bundles]
+
+[plugins]

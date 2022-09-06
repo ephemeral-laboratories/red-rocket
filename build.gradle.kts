@@ -21,18 +21,18 @@ facets {
 }
 
 dependencies {
-    antlr("org.antlr:antlr4:${project.property("antlr.version")}")
+    antlr(libs.antlr)
 
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.property("kotlinx-coroutines-core.version")}")
-    implementation("org.antlr:antlr4-runtime:${project.property("antlr.version")}")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.antlr4.runtime)
 
-    testImplementation("org.junit.platform:junit-platform-suite:${project.property("junit-platform-suite.version")}")
-    testImplementation("io.cucumber:cucumber-java8:${project.property("cucumber.version")}")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:${project.property("cucumber.version")}")
-    testImplementation("io.cucumber:cucumber-picocontainer:${project.property("cucumber.version")}")
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:${project.property("assertk.version")}")
+    testImplementation(libs.junit.platform.suite)
+    testImplementation(libs.cucumber.java8)
+    testImplementation(libs.cucumber.junit.platform.engine)
+    testImplementation(libs.cucumber.picocontainer)
+    testImplementation(libs.assertk.jvm)
 }
 
 extensions.configure<JavaPluginExtension> {
