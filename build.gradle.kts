@@ -27,8 +27,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.property("kotlinx-coroutines-core.version")}")
     implementation("org.antlr:antlr4-runtime:${project.property("antlr.version")}")
 
+    testImplementation("org.junit.platform:junit-platform-suite:${project.property("junit-platform-suite.version")}")
     testImplementation("io.cucumber:cucumber-java8:${project.property("cucumber.version")}")
-    testImplementation("io.cucumber:cucumber-junit:${project.property("cucumber.version")}")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:${project.property("cucumber.version")}")
     testImplementation("io.cucumber:cucumber-picocontainer:${project.property("cucumber.version")}")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:${project.property("assertk.version")}")
 }
@@ -42,6 +43,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
+    useJUnitPlatform()
     jvmArgs("--add-modules=jdk.incubator.vector")
 }
 
