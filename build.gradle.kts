@@ -5,6 +5,7 @@ plugins {
     id("com.diffplug.spotless") version "6.9.0"
     antlr
     id("nebula.facet") version "9.4.0"
+    id("utf8-workarounds")
 }
 
 group = "garden.ephemeral.rocket"
@@ -45,12 +46,6 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
     jvmArgs("--add-modules=jdk.incubator.vector")
-    systemProperty("file.encoding", "UTF-8")
-}
-
-tasks.generateGrammarSource {
-    // ANTLR docs say the default encoding is UTF-8 but that appears to be a lie
-    this.arguments.addAll(listOf("-encoding", "UTF-8"))
 }
 
 spotless {
