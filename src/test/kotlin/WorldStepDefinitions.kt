@@ -15,70 +15,70 @@ import io.cucumber.java8.En
 
 // Constructed reflectively
 @Suppress("unused")
-class WorldStepDefinitions(universe: Universe) : En {
+class WorldStepDefinitions(space: Space) : En {
     init {
         Given("^world ← world\\(\\)") {
-            universe.world = World()
+            space.world = World()
         }
         Given("^world ← default_world\\(\\)") {
-            universe.world = defaultWorld()
+            space.world = defaultWorld()
         }
 
         Given("world.light ← point_light\\({point}, {color})") { p: Tuple, c: Color ->
-            universe.world.lights = mutableListOf(PointLight(p, c))
+            space.world.lights = mutableListOf(PointLight(p, c))
         }
 
         Given("{shape_var} is added to world") { sv: String ->
-            universe.world.objects.add(universe.shapes[sv]!!)
+            space.world.objects.add(space.shapes[sv]!!)
         }
         Given("{shape_var} ← the first object in world") { sv: String ->
-            universe.shapes[sv] = universe.world.objects[0]
+            space.shapes[sv] = space.world.objects[0]
         }
         Given("{shape_var} ← the second object in world") { sv: String ->
-            universe.shapes[sv] = universe.world.objects[1]
+            space.shapes[sv] = space.world.objects[1]
         }
 
         When("intersections ← intersect_world\\(world, {ray_var})") { rv: String ->
-            universe.intersections = universe.world.intersect(universe.rays[rv]!!)
+            space.intersections = space.world.intersect(space.rays[rv]!!)
         }
 
         When("{color_var} ← shade_hit\\(world, comps)") { cv: String ->
-            universe.colors[cv] = universe.world.shadeHit(universe.comps)
+            space.colors[cv] = space.world.shadeHit(space.comps)
         }
         When("{color_var} ← shade_hit\\(world, comps, {int})") { cv: String, i: Int ->
-            universe.colors[cv] = universe.world.shadeHit(universe.comps, i)
+            space.colors[cv] = space.world.shadeHit(space.comps, i)
         }
 
         When("{color_var} ← color_at\\(world, {ray_var})") { cv: String, rv: String ->
-            universe.colors[cv] = universe.world.colorAt(universe.rays[rv]!!)
+            space.colors[cv] = space.world.colorAt(space.rays[rv]!!)
         }
 
         When("{color_var} ← reflected_color\\(world, comps)") { cv: String ->
-            universe.colors[cv] = universe.world.reflectedColor(universe.comps)
+            space.colors[cv] = space.world.reflectedColor(space.comps)
         }
         When("{color_var} ← reflected_color\\(world, comps, {int})") { cv: String, i: Int ->
-            universe.colors[cv] = universe.world.reflectedColor(universe.comps, i)
+            space.colors[cv] = space.world.reflectedColor(space.comps, i)
         }
         When("{color_var} ← refracted_color\\(world, comps, {int})") { cv: String, i: Int ->
-            universe.colors[cv] = universe.world.refractedColor(universe.comps, i)
+            space.colors[cv] = space.world.refractedColor(space.comps, i)
         }
 
-        Then("world contains no objects") { assertThat(universe.world.objects).isEmpty() }
+        Then("world contains no objects") { assertThat(space.world.objects).isEmpty() }
         Then("world contains {shape_var}") { sv: String ->
-            assertThat(universe.world.objects).contains(universe.shapes[sv]!!)
+            assertThat(space.world.objects).contains(space.shapes[sv]!!)
         }
 
-        Then("world has no light source") { assertThat(universe.world.lights).isEmpty() }
+        Then("world has no light source") { assertThat(space.world.lights).isEmpty() }
         Then("world.light = light") {
-            assertThat(universe.world.lights).isEqualTo(mutableListOf(universe.light))
+            assertThat(space.world.lights).isEqualTo(mutableListOf(space.light))
         }
 
         Then("is_shadowed\\(world, {tuple_var}) is {boolean}") { tv: String, e: Boolean ->
-            assertThat(universe.world.isShadowed(universe.tuples[tv]!!, universe.world.lights[0])).isEqualTo(e)
+            assertThat(space.world.isShadowed(space.tuples[tv]!!, space.world.lights[0])).isEqualTo(e)
         }
 
         Then("color_at\\(world, {ray_var}) should terminate successfully") { rv: String ->
-            universe.world.colorAt(universe.rays[rv]!!)
+            space.world.colorAt(space.rays[rv]!!)
         }
     }
 

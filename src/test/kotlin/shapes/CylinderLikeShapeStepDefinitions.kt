@@ -2,33 +2,33 @@ package garden.ephemeral.rocket.shapes
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import garden.ephemeral.rocket.Universe
+import garden.ephemeral.rocket.Space
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 
 // Constructed reflectively
 @Suppress("unused")
-class CylinderLikeShapeStepDefinitions(universe: Universe) : En {
+class CylinderLikeShapeStepDefinitions(space: Space) : En {
     init {
         Given("{shape_var}.minimum ← {real}") { sv: String, v: Double ->
-            (universe.shapes[sv]!! as CylinderLikeShape).minimum = v
+            (space.shapes[sv]!! as CylinderLikeShape).minimum = v
         }
         Given("{shape_var}.maximum ← {real}") { sv: String, v: Double ->
-            (universe.shapes[sv]!! as CylinderLikeShape).maximum = v
+            (space.shapes[sv]!! as CylinderLikeShape).maximum = v
         }
         Given("{shape_var}.closed ← {boolean}") { sv: String, v: Boolean ->
-            (universe.shapes[sv]!! as CylinderLikeShape).isClosed = v
+            (space.shapes[sv]!! as CylinderLikeShape).isClosed = v
         }
 
         Then("{shape_var}.minimum = {real}") { sv: String, e: Double ->
-            assertThat((universe.shapes[sv]!! as CylinderLikeShape).minimum).isEqualTo(e)
+            assertThat((space.shapes[sv]!! as CylinderLikeShape).minimum).isEqualTo(e)
         }
         Then("{shape_var}.maximum = {real}") { sv: String, e: Double ->
-            assertThat((universe.shapes[sv]!! as CylinderLikeShape).maximum).isEqualTo(e)
+            assertThat((space.shapes[sv]!! as CylinderLikeShape).maximum).isEqualTo(e)
         }
         Then("{shape_var}.closed = {boolean}") { sv: String, e: Boolean ->
-            assertThat((universe.shapes[sv]!! as CylinderLikeShape).isClosed).isEqualTo(e)
+            assertThat((space.shapes[sv]!! as CylinderLikeShape).isClosed).isEqualTo(e)
         }
     }
 

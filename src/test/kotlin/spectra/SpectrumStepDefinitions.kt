@@ -9,7 +9,7 @@ import assertk.assertions.isNotEqualTo
 import assertk.assertions.isNotNull
 import garden.ephemeral.rocket.Constants.epsilon
 import garden.ephemeral.rocket.Tuple
-import garden.ephemeral.rocket.Universe
+import garden.ephemeral.rocket.Space
 import garden.ephemeral.rocket.color.CieXyzColor
 import garden.ephemeral.rocket.color.RgbColor
 import garden.ephemeral.rocket.color.isCloseTo
@@ -23,7 +23,7 @@ import kotlin.math.abs
 
 // Constructed reflectively
 @Suppress("unused")
-class SpectrumStepDefinitions(universe: Universe) : En {
+class SpectrumStepDefinitions(space: Space) : En {
     private lateinit var spectralShape: SpectralShape
     private lateinit var spectralShape2: SpectralShape
     private lateinit var doubleSpectrum: DoubleSpectrum
@@ -83,11 +83,11 @@ class SpectrumStepDefinitions(universe: Universe) : En {
         }
 
         When("an emission spectrum is recovered from the color") {
-            doubleSpectrum = DoubleSpectrum.recoverFromCieXyzEmission(universe.colors["color"] as CieXyzColor)
+            doubleSpectrum = DoubleSpectrum.recoverFromCieXyzEmission(space.colors["color"] as CieXyzColor)
         }
 
         When("a reflectance spectrum is recovered from the color") {
-            doubleSpectrum = DoubleSpectrum.recoverFromCieXyzReflectance(universe.colors["color"] as CieXyzColor)
+            doubleSpectrum = DoubleSpectrum.recoverFromCieXyzReflectance(space.colors["color"] as CieXyzColor)
         }
 
         Then("the spectral shapes are equal") {

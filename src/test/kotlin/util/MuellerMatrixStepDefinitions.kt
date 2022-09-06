@@ -1,11 +1,11 @@
 package garden.ephemeral.rocket.util
 
-import garden.ephemeral.rocket.Universe
+import garden.ephemeral.rocket.Space
 import io.cucumber.java8.En
 
 // Constructed reflectively
 @Suppress("unused")
-class MuellerMatrixStepDefinitions(universe: Universe) : En {
+class MuellerMatrixStepDefinitions(space: Space) : En {
     init {
         val mappings = mapOf(
             "linear polarizer \\(horizontal transmission)" to MuellerMatrices.LinearPolarizerHorizontal,
@@ -19,17 +19,17 @@ class MuellerMatrixStepDefinitions(universe: Universe) : En {
 
         mappings.forEach { (thing, matrix) ->
             When("{matrix_var} is a Mueller matrix for a $thing") { matrixVar: String ->
-                universe.matrices[matrixVar] = matrix
+                space.matrices[matrixVar] = matrix
             }
 
             When("{tuple_var} passes through a $thing") { tupleVar: String ->
-                universe.tuples[tupleVar] = matrix * universe.tuples[tupleVar]!!
+                space.tuples[tupleVar] = matrix * space.tuples[tupleVar]!!
             }
         }
 
         When("{matrix_var} is a Mueller matrix for a reference rotation of {real} degrees") {
                 matrixVar: String, degrees: Double ->
-            universe.matrices[matrixVar] = MuellerMatrices.forReferenceFrameRotation(degrees.deg)
+            space.matrices[matrixVar] = MuellerMatrices.forReferenceFrameRotation(degrees.deg)
         }
 
         When(
@@ -37,7 +37,7 @@ class MuellerMatrixStepDefinitions(universe: Universe) : En {
                 "with fast axis {real} degrees " +
                 "and phase difference {real} degrees"
         ) { matrixVar: String, fastAxisDegrees: Double, phaseDifferenceDegrees: Double ->
-            universe.matrices[matrixVar] =
+            space.matrices[matrixVar] =
                 MuellerMatrices.forLinearRetarder(fastAxisDegrees.deg, phaseDifferenceDegrees.deg)
         }
     }

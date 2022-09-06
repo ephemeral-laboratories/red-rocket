@@ -10,7 +10,7 @@ import java.nio.file.Path
  * Often this would be called `World` instead, but we have a class with that name
  * in the system and would prefer not to have the clash.
  */
-class Universe {
+class Space {
     val tuples = mutableMapOf<String, Tuple>()
     val matrices = mutableMapOf<String, Matrix>()
     val colors = mutableMapOf<String, Color>()

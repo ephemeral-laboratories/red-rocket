@@ -25,7 +25,7 @@ import kotlin.math.abs
 
 // Constructed reflectively
 @Suppress("unused")
-class MatrixStepDefinitions(universe: Universe) : En {
+class MatrixStepDefinitions(space: Space) : En {
     init {
         ParameterType("matrix_var", "(A|B|C|m|M|t|T|identity_matrix|transform|inv|half_quarter|full_quarter)\\d?") {
                 string ->
@@ -37,107 +37,107 @@ class MatrixStepDefinitions(universe: Universe) : En {
         }
 
         Given("$theFollowingMatrix {matrix_var}:") { mv: String, dataTable: DataTable ->
-            universe.matrices[mv] = matrixFromDataTable(dataTable)
+            space.matrices[mv] = matrixFromDataTable(dataTable)
         }
         Given("{matrix_var} ← {matrix_var} * {matrix_var}") { mv1: String, mv2: String, mv3: String ->
-            universe.matrices[mv1] = universe.matrices[mv2]!! * universe.matrices[mv3]!!
+            space.matrices[mv1] = space.matrices[mv2]!! * space.matrices[mv3]!!
         }
         Given("{tuple_var} ← {matrix_var} * {tuple_var}") { tv1: String, mv: String, tv2: String ->
-            universe.tuples[tv1] = universe.matrices[mv]!! * universe.tuples[tv2]!!
+            space.tuples[tv1] = space.matrices[mv]!! * space.tuples[tv2]!!
         }
         Given("{matrix_var} ← transpose\\({matrix_var})") { mv1: String, mv2: String ->
-            universe.matrices[mv1] = universe.matrices[mv2]!!.transpose()
+            space.matrices[mv1] = space.matrices[mv2]!!.transpose()
         }
         Given("{matrix_var} ← inverse\\({matrix_var})(.)") { mv1: String, mv2: String ->
-            universe.matrices[mv1] = universe.matrices[mv2]!!.inverse
+            space.matrices[mv1] = space.matrices[mv2]!!.inverse
         }
         Given("{matrix_var} ← {transform}") { mv: String, m: Matrix ->
-            universe.matrices[mv] = m
+            space.matrices[mv] = m
         }
         Given("{matrix_var} ← shearing\\({real}, {real}, {real}, {real}, {real}, {real})") {
                 mv: String, xy: Double, xz: Double, yx: Double, yz: Double, zx: Double, zy: Double ->
-            universe.matrices[mv] = shearing(xy, xz, yx, yz, zx, zy)
+            space.matrices[mv] = shearing(xy, xz, yx, yz, zx, zy)
         }
         Given("{matrix_var} ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") {
                 mv: String, tv1: String, tv2: String, tv3: String ->
-            universe.matrices[mv] =
-                viewTransform(universe.tuples[tv1]!!, universe.tuples[tv2]!!, universe.tuples[tv3]!!)
+            space.matrices[mv] =
+                viewTransform(space.tuples[tv1]!!, space.tuples[tv2]!!, space.tuples[tv3]!!)
         }
 
         Given("{matrix_var} ← {transform} * {transform}") { mv: String, m1: Matrix, m2: Matrix ->
-            universe.matrices[mv] = m1 * m2
+            space.matrices[mv] = m1 * m2
         }
 
         When("{matrix_var} ← {matrix_var} * {matrix_var} * {matrix_var}") {
                 mv1: String, mv2: String, mv3: String, mv4: String ->
-            universe.matrices[mv1] = universe.matrices[mv2]!! * universe.matrices[mv3]!! * universe.matrices[mv4]!!
+            space.matrices[mv1] = space.matrices[mv2]!! * space.matrices[mv3]!! * space.matrices[mv4]!!
         }
 
         Then("{matrix_var}[{int}, {int}] = {real}") { v: String, r: Int, c: Int, e: Double ->
-            assertThat(universe.matrices[v]!![r, c]).isCloseTo(e, epsilon)
+            assertThat(space.matrices[v]!![r, c]).isCloseTo(e, epsilon)
         }
 
         Then("transpose\\({matrix_var}) is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->
-            assertThat(universe.matrices[mv]!!.transpose()).isEqualTo(matrixFromDataTable(dataTable))
+            assertThat(space.matrices[mv]!!.transpose()).isEqualTo(matrixFromDataTable(dataTable))
         }
 
         Then("{matrix_var} = {matrix_var}") { mv1: String?, mv2: String? ->
-            assertThat(universe.matrices[mv1]!!).isEqualTo(universe.matrices[mv2]!!)
+            assertThat(space.matrices[mv1]!!).isEqualTo(space.matrices[mv2]!!)
         }
         Then("{matrix_var} != {matrix_var}") { mv1: String?, mv2: String? ->
-            assertThat(universe.matrices[mv1]!!).isNotEqualTo(universe.matrices[mv2]!!)
+            assertThat(space.matrices[mv1]!!).isNotEqualTo(space.matrices[mv2]!!)
         }
 
         Given("{matrix_var} = {transform}") { mv: String, m: Matrix ->
-            assertThat(universe.matrices[mv]!!).isCloseTo(m, epsilon)
+            assertThat(space.matrices[mv]!!).isCloseTo(m, epsilon)
         }
 
         Then("{matrix_var} is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->
-            assertThat(universe.matrices[mv]!!).isCloseTo(matrixFromDataTable(dataTable), epsilon)
+            assertThat(space.matrices[mv]!!).isCloseTo(matrixFromDataTable(dataTable), epsilon)
         }
         Then("{matrix_var} * {real} is $theFollowingMatrix:") { mv: String?, scalar: Double, dataTable: DataTable ->
-            assertThat(universe.matrices[mv]!! * scalar).isCloseTo(matrixFromDataTable(dataTable), epsilon)
+            assertThat(space.matrices[mv]!! * scalar).isCloseTo(matrixFromDataTable(dataTable), epsilon)
         }
         Then("{matrix_var} * {matrix_var} is $theFollowingMatrix:") { mv1: String?, mv2: String, dataTable: DataTable ->
-            assertThat(universe.matrices[mv1]!! * universe.matrices[mv2]!!)
+            assertThat(space.matrices[mv1]!! * space.matrices[mv2]!!)
                 .isCloseTo(matrixFromDataTable(dataTable), epsilon)
         }
 
         Then("{matrix_var} * {matrix_var} = {matrix_var}") { mv1: String, mv2: String, v3: String ->
-            assertThat(universe.matrices[mv1]!! * universe.matrices[mv2]!!).isCloseTo(universe.matrices[v3]!!, epsilon)
+            assertThat(space.matrices[mv1]!! * space.matrices[mv2]!!).isCloseTo(space.matrices[v3]!!, epsilon)
         }
         Then("{matrix_var} * {tuple_var} = {tuple_var}") { mv: String, tv1: String, tv2: String ->
-            assertThat(universe.matrices[mv]!! * universe.tuples[tv1]!!).isCloseTo(universe.tuples[tv2]!!, epsilon)
+            assertThat(space.matrices[mv]!! * space.tuples[tv1]!!).isCloseTo(space.tuples[tv2]!!, epsilon)
         }
         Then("{matrix_var} * {tuple_var} = {tuple}") { mv: String, tv: String, e: Tuple ->
-            assertThat(universe.matrices[mv]!! * universe.tuples[tv]!!).isCloseTo(e, epsilon)
+            assertThat(space.matrices[mv]!! * space.tuples[tv]!!).isCloseTo(e, epsilon)
         }
         Then("{matrix_var} * {tuple_var} = {point}") { mv: String, tv: String, e: Tuple ->
-            assertThat(universe.matrices[mv]!! * universe.tuples[tv]!!).isCloseTo(e, epsilon)
+            assertThat(space.matrices[mv]!! * space.tuples[tv]!!).isCloseTo(e, epsilon)
         }
         Then("{matrix_var} * {tuple_var} = {vector}") { mv: String, tv: String, e: Tuple ->
-            assertThat(universe.matrices[mv]!! * universe.tuples[tv]!!).isCloseTo(e, epsilon)
+            assertThat(space.matrices[mv]!! * space.tuples[tv]!!).isCloseTo(e, epsilon)
         }
 
         Then("determinant\\({matrix_var}) = {real}") { mv: String, e: Double ->
-            assertThat(universe.matrices[mv]!!.determinant).isCloseTo(e, epsilon)
+            assertThat(space.matrices[mv]!!.determinant).isCloseTo(e, epsilon)
         }
 
         Then("{matrix_var} * inverse\\({matrix_var}) = {matrix_var}") { mv1: String, mv2: String, mv3: String ->
-            assertThat(universe.matrices[mv1]!! * universe.matrices[mv2]!!.inverse).isCloseTo(
-                universe.matrices[mv3]!!,
+            assertThat(space.matrices[mv1]!! * space.matrices[mv2]!!.inverse).isCloseTo(
+                space.matrices[mv3]!!,
                 epsilon
             )
         }
 
         Then("{matrix_var} is invertible") { mv: String ->
-            assertThat(universe.matrices[mv]!!.isInvertible).isTrue()
+            assertThat(space.matrices[mv]!!.isInvertible).isTrue()
         }
         Then("{matrix_var} is not invertible") { mv: String ->
-            assertThat(universe.matrices[mv]!!.isInvertible).isFalse()
+            assertThat(space.matrices[mv]!!.isInvertible).isFalse()
         }
         Then("inverse\\({matrix_var}) is $theFollowingMatrix:") { mv: String, dataTable: DataTable ->
-            assertThat(universe.matrices[mv]!!.inverse).isCloseTo(matrixFromDataTable(dataTable), epsilon)
+            assertThat(space.matrices[mv]!!.inverse).isCloseTo(matrixFromDataTable(dataTable), epsilon)
         }
     }
 

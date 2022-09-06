@@ -6,40 +6,40 @@ import io.cucumber.java8.En
 
 // Constructed reflectively
 @Suppress("unused")
-class RayStepDefinitions(universe: Universe) : En {
+class RayStepDefinitions(space: Space) : En {
     init {
         ParameterType("ray_var", "ray\\d*") { string -> string }
 
         When("{ray_var} ← ray\\({tuple_var}, {tuple_var})") { rv: String, tv1: String, tv2: String ->
-            universe.rays[rv] = Ray(universe.tuples[tv1]!!, universe.tuples[tv2]!!)
+            space.rays[rv] = Ray(space.tuples[tv1]!!, space.tuples[tv2]!!)
         }
         Given("{ray_var} ← ray\\({point}, {vector})") { rv: String, p: Tuple, v: Tuple ->
-            universe.rays[rv] = Ray(p, v)
+            space.rays[rv] = Ray(p, v)
         }
         Given("{ray_var} ← ray\\({point}, {tuple_var})") { rv: String, p: Tuple, tv: String ->
-            universe.rays[rv] = Ray(p, universe.tuples[tv]!!)
+            space.rays[rv] = Ray(p, space.tuples[tv]!!)
         }
 
         When("{ray_var} ← transform\\({ray_var}, {matrix_var})") { rv1: String, rv2: String, mv: String ->
-            universe.rays[rv1] = universe.rays[rv2]!!.transform(universe.matrices[mv]!!)
+            space.rays[rv1] = space.rays[rv2]!!.transform(space.matrices[mv]!!)
         }
 
         Then("{ray_var}.origin = {tuple_var}") { rv: String, tv: String ->
-            assertThat(universe.rays[rv]!!.origin).isCloseTo(universe.tuples[tv]!!, epsilon)
+            assertThat(space.rays[rv]!!.origin).isCloseTo(space.tuples[tv]!!, epsilon)
         }
         Then("{ray_var}.origin = {point}") { rv: String, p: Tuple ->
-            assertThat(universe.rays[rv]!!.origin).isCloseTo(p, epsilon)
+            assertThat(space.rays[rv]!!.origin).isCloseTo(p, epsilon)
         }
 
         Then("{ray_var}.direction = {tuple_var}") { rv: String, tv: String ->
-            assertThat(universe.rays[rv]!!.direction).isCloseTo(universe.tuples[tv]!!, epsilon)
+            assertThat(space.rays[rv]!!.direction).isCloseTo(space.tuples[tv]!!, epsilon)
         }
         Then("{ray_var}.direction = {vector}") { rv: String, v: Tuple ->
-            assertThat(universe.rays[rv]!!.direction).isCloseTo(v, epsilon)
+            assertThat(space.rays[rv]!!.direction).isCloseTo(v, epsilon)
         }
 
         Then("position\\({ray_var}, {real}) = {point}") { rv: String, t: Double, e: Tuple ->
-            assertThat(universe.rays[rv]!!.position(t)).isCloseTo(e, epsilon)
+            assertThat(space.rays[rv]!!.position(t)).isCloseTo(e, epsilon)
         }
     }
 }

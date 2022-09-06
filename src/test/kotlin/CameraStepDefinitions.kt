@@ -15,7 +15,7 @@ import io.cucumber.java8.En
 
 // Constructed reflectively
 @Suppress("unused")
-class CameraStepDefinitions(universe: Universe) : En {
+class CameraStepDefinitions(space: Space) : En {
     private var hSize: Int = 0
     private var vSize: Int = 0
     private var fieldOfView: Angle = 0.0.rad
@@ -49,18 +49,18 @@ class CameraStepDefinitions(universe: Universe) : En {
         }
 
         When("{ray_var} ← ray_for_pixel_offset\\(camera, {real}, {real})") { rv: String, x: Double, y: Double ->
-            universe.rays[rv] = camera.rayForPixelOffset(x, y)
+            space.rays[rv] = camera.rayForPixelOffset(x, y)
         }
 
         When("camera.transform ← {transform} * {transform}") { m1: Matrix, m2: Matrix ->
             camera.transform = m1 * m2
         }
         When("camera.transform ← view_transform\\({tuple_var}, {tuple_var}, {tuple_var})") { tv1: String, tv2: String, tv3: String ->
-            camera.transform = viewTransform(universe.tuples[tv1]!!, universe.tuples[tv2]!!, universe.tuples[tv3]!!)
+            camera.transform = viewTransform(space.tuples[tv1]!!, space.tuples[tv2]!!, space.tuples[tv3]!!)
         }
 
         When("image ← render\\(camera, world)") {
-            image = camera.render(universe.world)
+            image = camera.render(space.world)
         }
 
         Then("camera.hsize = {int}") { e: Int -> assertThat(camera.hSize).isEqualTo(e) }
@@ -68,14 +68,14 @@ class CameraStepDefinitions(universe: Universe) : En {
         Then("camera.field_of_view = {real}") { e: Double -> assertThat(camera.fieldOfView).isEqualTo(e.rad) }
 
         Then("camera.transform = {matrix_var}") { mv: String ->
-            assertThat(camera.transform).isEqualTo(universe.matrices[mv]!!)
+            assertThat(camera.transform).isEqualTo(space.matrices[mv]!!)
         }
         Then("camera.pixel_size = {real}") { e: Double ->
             assertThat(camera.pixelSize).isCloseTo(e, epsilon)
         }
 
         Then("color_at_pixel\\(camera, world, {int}, {int}) = {color}") { x: Int, y: Int, e: Color ->
-            assertThat(camera.colorAtPixel(universe.world, x, y)).isCloseTo(e, epsilon)
+            assertThat(camera.colorAtPixel(space.world, x, y)).isCloseTo(e, epsilon)
         }
 
         Then("pixel_at\\(image, {int}, {int}) = {color}") { x: Int, y: Int, e: Color ->
