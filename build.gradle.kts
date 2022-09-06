@@ -45,6 +45,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
     jvmArgs("--add-modules=jdk.incubator.vector")
+    systemProperty("file.encoding", "UTF-8")
 }
 
 tasks.generateGrammarSource {
