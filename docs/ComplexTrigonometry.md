@@ -19,8 +19,10 @@ The term "imaginary numbers" is frequently pointed out to be bad terminology, wi
 If you have two complex numbers:
 
 $$
+\displaylines{
 z_1 = a_1 + i b_1 \\
 z_2 = a_2 + i b_2
+}
 $$
 
 To add them, you just add the real and imaginary parts separately:
@@ -38,9 +40,11 @@ $$
 For multiplication, you can expand the multiplication, then simplify the $i^2$ and regroup:
 
 $$
+\displaylines{
 z_1 z_2 = (a_1 + i b_1) (a_2 + i b_2) \\
 \phantom{z_1 z_2} = a_1 a_2 + i a_1 b_2 + i b_1 a_2 + i^2 b_1 b_2 \\
 \phantom{z_1 z_2} = (a_1 a_2 - b_1 b_2) + i (a_1 b_2 + b_1 a_2)
+}
 $$
 
 There is the notion of a "complex conjugate", where the imaginary part has its sign flipped:
@@ -52,17 +56,21 @@ $$
 When multiplying a complex number by its own conjugate, the imaginary parts drop out, giving you the square of its magnitude:
 
 $$
+\displaylines{
 z_1 \overline{z_1} = (a_1 + i b_1) (a_1 - i b_1) \\
 \phantom{z_1 \overline{z_1}} = a_1^2 + b_1^2
+}
 $$
 
 This then gives you a strategy for division. Simply multiply the top and bottom by the conjugate of the bottom:
 
 $$
+\displaylines{
 {z_1 \over z_2} = {a_1 + i b_1 \over a_2 + i b_2} \\
 \phantom{z_1 \over z_2} = \left({a_1 + i b_1 \over a_2 + i b_2}\right) \left({a_2 - i b_2 \over a_2 - i b_2}\right) \\
 \phantom{z_1 \over z_2}= {a_1 a_2 - i a_1 b_2 + i b_2 a_1 - i^2 b_1 b_2 \over a_2^2 + b_1^2} \\
 \phantom{z_1 \over z_2}= \left({a_1 a_2 + b_1 b_2 \over a_2^2 + b_1^2}\right) + i \left({b_2 a_1 - a_1 b_2 \over a_2^2 + b_1^2}\right)
+}
 $$
 
 ## Exponentials for imaginary numbers
@@ -92,8 +100,10 @@ $$
 Adding this back to Euler's formula:
 
 $$
+\displaylines{
 e^{i\theta} + e^{i(-\theta)} = \cos \theta + i \sin \theta + \cos \theta - i \sin \theta \\
 \phantom{e^{i\theta} + e^{i(-\theta)}} = 2 \cos \theta
+}
 $$
 
 And therefore:
@@ -255,6 +265,7 @@ First we'd like an angle addition formula for $\cosh$.
 This is a less than obvious trick, but if you double both terms and then add some terms which cancel each other out, the sides can then be grouped and factored out, resulting in expressions entirely in terms of $\cosh$ and $\sinh$ again:
 
 $$
+\displaylines{
 \cosh(\alpha + \beta) = {e^{\alpha + \beta} + e^{-\alpha - \beta} \over 2} \\
 \phantom{\cosh(\alpha + \beta)} =
 {e^{\alpha + \beta} + e^{-\alpha - \beta} + e^{\beta − \alpha} + e^{\alpha − \beta} +
@@ -266,6 +277,7 @@ e^{\alpha + \beta} + e^{−\alpha − \beta} − e^{\beta − \alpha} − e^{\al
 {e^\alpha + e^{-\alpha} \over 2} {e^\beta + e^{-\beta} \over 2} +
 {e^\alpha - e^{-\alpha} \over 2} {e^\beta - e^{-\beta} \over 2} \\
 \phantom{\cosh(\alpha + \beta)} = \cosh \alpha \cosh \beta + \sinh \alpha \sinh \beta
+}
 $$
 
 Then substitute in the parts of the complex number:
@@ -283,6 +295,7 @@ $$
 Similarly for $\sinh$:
 
 $$
+\displaylines{
 \sinh(\alpha + \beta) = {e^{\alpha + \beta} - e^{-\alpha - \beta} \over 2} \\
 \phantom{\sinh(\alpha + \beta)} =
 {e^{\alpha + \beta} − e^{−\alpha − \beta} + e^{\beta − \alpha} − e^{\alpha − \beta} +
@@ -294,6 +307,7 @@ e^{\alpha + \beta} − e^{−\alpha − \beta} − e^{\beta − \alpha} + e^{\al
 {e^\alpha + e^{-\alpha} \over 2} {e^\beta - e^{-\beta} \over 2} +
 {e^\alpha - e^{-\alpha} \over 2} {e^\beta + e^{-\beta} \over 2} \\
 \phantom{\sinh(\alpha + \beta)} = \cosh \alpha \sinh \beta + \sinh \alpha \cosh \beta
+}
 $$
 
 Then substitute in the parts of the complex number:
