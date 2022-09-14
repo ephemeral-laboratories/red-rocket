@@ -23,10 +23,10 @@ The derivation will not be given here, as these are relatively well-documented e
 
 $$
 \begin{align}
-r_s &= {n_1 \cos \theta_i - n_2 \cos \theta_t \over n_1 \cos \theta_i + n_2 \cos \theta_t} \\
-r_p &= {n_1 \cos \theta_t - n_2 \cos \theta_i \over n_1 \cos \theta_t + n_2 \cos \theta_i} \\
-t_s &= {2 n_1 \cos \theta_i \over n_1 \cos \theta_i + n_2 \cos \theta_t} \\
-t_p &= {2 n_1 \cos \theta_i \over n_1 \cos \theta_t + n_2 \cos \theta_i}
+r_s &= {n_1 \cos\theta_i - n_2 \cos\theta_t \over n_1 \cos\theta_i + n_2 \cos\theta_t} \\
+r_p &= {n_1 \cos\theta_t - n_2 \cos\theta_i \over n_1 \cos\theta_t + n_2 \cos\theta_i} \\
+t_s &= {2 n_1 \cos\theta_i \over n_1 \cos\theta_i + n_2 \cos\theta_t} \\
+t_p &= {2 n_1 \cos\theta_i \over n_1 \cos\theta_t + n_2 \cos\theta_i}
 \end{align}
 $$
 
@@ -87,10 +87,10 @@ and a $z$ component perpendicular to the interface:
 
 $$
 \begin{align}
-k_{ix} &= k_i \sin \theta_i \\
-k_{iz} &= k_i \cos \theta_i \\
-k_{tx} &= k_t \sin \theta_t \\
-k_{tz} &= k_t \cos \theta_t
+k_{ix} &= k_i \sin\theta_i \\
+k_{iz} &= k_i \cos\theta_i \\
+k_{tx} &= k_t \sin\theta_t \\
+k_{tz} &= k_t \cos\theta_t
 \end{align}
 $$
 
@@ -108,10 +108,10 @@ The strategy taken here is to split it into its real and imaginary components:
 
 $$
 \begin{align}
-\exp(-j(\overrightarrow{k_2} \cdot \overrightarrow{r})) &= \exp(-j(k_{2x}x+k_{2z}z)) \\
-&= \exp(-j(k_2 \sin \theta_t x + k_2 \cos \theta_t z))\\
-&= \exp(-j[\Re(k_2\sin\theta_t)x+\Re(k_2\cos\theta_t)z] + [\Im(k_2 \sin\theta_t)+\Im(k_2\cos\theta_t)]) \\
-&= \exp(-j[\Re(k_2\sin\theta_t)x+\Re(k_2\cos\theta_t)z]) \exp(\Im(k_2 \sin\theta_t)+\Im(k_2\cos\theta_t))
+\exp(-j(\overrightarrow{k_t} \cdot \overrightarrow{r})) &= \exp(-j(k_{tx}x+k_{tz}z)) \\
+&= \exp(-j(k_t \sin\theta_t x + k_t \cos\theta_t z))\\
+&= \exp(-j[\Re(k_t\sin\theta_t)x+\Re(k_t\cos\theta_t)z] + [\Im(k_t \sin\theta_t)+\Im(k_t\cos\theta_t)]) \\
+&= \exp(-j[\Re(k_t\sin\theta_t)x+\Re(k_t\cos\theta_t)z]) \exp(\Im(k_t \sin\theta_t)+\Im(k_t\cos\theta_t))
 \end{align}
 $$
 
@@ -119,40 +119,40 @@ The result is an expression which is the product of two exponential expressions.
 The first factor represents the change in phase (i.e. the oscillation) of the wave:
 
 $$
-\exp(-j[\Re(k_2\sin\theta_t)x+\Re(k_2\cos\theta_t)z])
+\exp(-j[\Re(k_t \sin\theta_t)x+\Re(k_t \cos\theta_t)z])
 $$
 
 While the second factor represents the attenuation (i.e. the decay) of the wave:
 
 $$
-\exp(\Im(k_2 \sin\theta_t)+\Im(k_2\cos\theta_t))
+\exp(\Im(k_t \sin\theta_t)+\Im(k_t \cos\theta_t))
 $$
 
 From this, we can say that the planes of constant phase are:
 
 $$
-\Re(k_2\sin\theta_t)x+\Re(k_2\cos\theta_t)z = const
+\Re(k_t \sin\theta_t)x+\Re(k_t \cos\theta_t)z = const
 $$
 
 While the planes of constant amplitude are:
 
 $$
-\Im(k_2\sin\theta_t)x+\Im(k_2\cos\theta_t)z = const
+\Im(k_t \sin\theta_t)x+\Im(k_t \cos\theta_t)z = const
 $$
 
 Therefore, the angle of the planes of constant phase (i.e., the direction of propagation) is:
 
 $$
-\psi = \tan^{-1}\left[{\Re(k_2 \sin\theta_t) \over \Re(k_2 \cos\theta_t)}\right]
+\psi = \tan^{-1}\left[{\Re(k_t \sin\theta_t) \over \Re(k_t \cos\theta_t)}\right]
 $$
 
 While the angle of the planes of constant amplitude (i.e., the direction of attenuation) is:
 
 $$
-\varphi = \tan^{-1}\left[{\Im(k_2\sin\theta_t) \over \Im(k_2\cos\theta_t)}\right]
+\varphi = \tan^{-1}\left[{\Im(k_t \sin\theta_t) \over \Im(k_t \cos\theta_t)}\right]
 $$
 
-Because of the law of refraction above, we know that $k_2 \sin\theta_t$ is real,
+Because of the law of refraction above, we know that $k_t \sin\theta_t$ is real,
 so these can be further simplified to:
 
 $$
@@ -172,7 +172,7 @@ $$
 In ray tracing, what you actually want for calculating the resulting ray direction is the cosine:
 
 $$
-\cos\psi = \cos \left( \tan^{-1} \left[ {1 \over \Re(\cot \theta_t)} \right] \right)
+\cos\psi = \cos\left( \tan^{-1} \left[ {1 \over \Re(\cot \theta_t)} \right] \right)
 = {1 \over \sqrt{({1 \over \Re(\cot\theta_t)})^2 + 1}}
 $$
 
