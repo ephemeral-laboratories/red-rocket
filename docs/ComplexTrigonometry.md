@@ -1,20 +1,41 @@
 # Complex Trigonometry
 
-Because the Fresnel equations involve an index of refraction which may be a complex number, we will end up having to compute the result of trigonometric functions for complex numbers.
+## Why?
 
-This is not something available out of the box in the standard library, so we are going to have to implement it. The standard library _does_ give us trigonometric functions as well as their hyperbolic counterparts, for double (real) numbers. So we want to implement the complex ones on top of the real ones. (An alternative would be to implement them _from scratch_, which is an approach you might take if the built-in functions were not available, or if it happened to run faster than calling the built-in functions.)
+To calculate the reflection and transmission of light when the light goes from one medium into another,
+the [Fresnel equations](https://en.wikipedia.org/wiki/Fresnel_equations) can be used.
 
-As this is not something which people generally encounter in basic schooling, I thought it was worth refreshing how all of this works.
+The Fresnel equations involve the indices of refraction in the two materials,
+but despite what most people learn in school, the index of refraction for some materials is a complex number.
+Thus, we will end up having to apply trigonometric functions for complex numbers.
+Complex angles don't have a simple geometric intuition, so how this works is also difficult to visualise.
+
+Complex trigonometry is not something available out of the box in the standard library,
+so we are going to have to implement it.
+The standard library _does_ give us trigonometric functions as well as their hyperbolic counterparts,
+for double (real) numbers.
+So we want to implement the complex ones on top of the real ones.
+(An alternative would be to implement them _from scratch_,
+an approach you might take if the built-in functions were not available,
+or if it happened to run faster than calling the built-in functions.)
+
+As this is not something which people generally encounter in basic schooling,
+I thought it was worth refreshing how all of this works.
 
 ## A complex arithmetic refresher
 
 (You can skip this section if you already know how complex numbers work.)
 
-Complex numbers are numbers of the form $z = a + i b$, where $i$ represents $\sqrt{-1}$. They fell out of the desire to compute roots of polynomials which have no real solutions, but ended up being useful all throughout engineering and physics.
+Complex numbers are numbers of the form $z = a + i b$, where $i$ represents $\sqrt{-1}$.
+They fell out of the desire to compute roots of polynomials which have no real solutions,
+but ended up being useful all throughout engineering and physics.
 
 The $a$ component is conventionally called the "real" part,
 while the $i b$ component is conventionally called the "imaginary" part.
-The term "imaginary numbers" is frequently pointed out to be bad terminology, with some people preferring to call them "lateral numbers", as the real and imaginary parts are typically pictured as existing on a 2D plane, with the real part on the x-axis and the imaginary part on the y-axis.
+The term "imaginary numbers" is frequently pointed out to be bad terminology,
+with some people preferring to call them "lateral numbers", as the real and imaginary parts
+are typically pictured as existing on a 2D plane, with the real part on the x-axis
+and the imaginary part on the y-axis.
 
 If you have two complex numbers:
 
@@ -47,17 +68,26 @@ z_1 z_2 &= (a_1 + i b_1) (a_2 + i b_2) \\
 \end{align}
 $$
 
+Complex numbers have a "magnitude" or "norm", which is the same as the distance from the origin
+to the point it represents on the 2D plane. So this can just be computed using Pythagoras' Theorem:
+
+$$
+|z_1| = \sqrt{a_1^2 + b_1^2}
+$$
+
 There is the notion of a "complex conjugate", where the imaginary part has its sign flipped:
 
 $$
 \overline{z_1} = a_1 - i b_1
 $$
 
-When multiplying a complex number by its own conjugate, the imaginary parts drop out, giving you the square of its magnitude:
+If you multiply a complex number by its own conjugate, the imaginary parts cancel out,
+giving you the square of its magnitude:
 
 $$
 \begin{align}
 z_1 \overline{z_1} &= (a_1 + i b_1) (a_1 - i b_1) \\
+    &= a_1^2 - i b_1 a_1 + i b_1 a_1 - (i b_1)^2 \\
     &= a_1^2 + b_1^2
 \end{align}
 $$
@@ -81,7 +111,9 @@ $$
 e^{i\theta} = \cos \theta + i \sin \theta
 $$
 
-It's possible to derive this by looking at the Taylor series expansions for $e^x$, $\cos\theta$ and $\sin\theta$, but I won't bother to include that as this is a fairly fundamental formula already.
+It's possible to derive this by looking at the Taylor series expansions for $e^x$, $\cos\theta$ and $\sin\theta$,
+but I won't bother to include that here, as this is a fairly fundamental formula already
+and Taylor series are a fairly involved topic in their own right.
 
 ## Derivation of $\cos\theta$ and $\sin\theta$ in terms of exponents
 
