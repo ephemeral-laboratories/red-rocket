@@ -82,8 +82,8 @@ Where:
 
 The magnitude of the wave vector is commonly written as $k$.
 For a wave travelling hitting the interface between two media where the second medium is in the $z$ direction,
-you can split the wave vector into two components—an $x$ component parallel to the medium
-and a $z$ component perpendicular to the medium:
+you can split the wave vector into two components—an $x$ component parallel to the interface
+and a $z$ component perpendicular to the interface:
 
 $$
 \begin{align}
@@ -94,7 +94,7 @@ k_{tz} &= k_t \cos \theta_t
 \end{align}
 $$
 
-And the law of refraction (Snell's Law) says that the $x$ components are equal:
+The law of refraction (Snell's Law) says that the $x$ components are equal:
 
 $$
 k_{tx} = k_{ix}
@@ -108,10 +108,10 @@ The strategy taken here is to split it into its real and imaginary components:
 
 $$
 \begin{align}
-exp(-j(\overrightarrow{k_2} \cdot \overrightarrow{r})) &= exp(-j(k_{2x}x+k_{2z}z)) \\
-&= exp(-j(k_2 \sin \theta_t x + k_2 \cos \theta_t z))\\
-&= exp(-j[\Re(k_2\sin\theta_t)x+\Re(k_2\cos\theta_t)z] + [\Im(k_2 \sin\theta_t)+\Im(k_2\cos\theta_t)]) \\
-&= exp(-j[\Re(k_2\sin\theta_t)x+\Re(k_2\cos\theta_t)z]) exp(\Im(k_2 \sin\theta_t)+\Im(k_2\cos\theta_t))
+\exp(-j(\overrightarrow{k_2} \cdot \overrightarrow{r})) &= \exp(-j(k_{2x}x+k_{2z}z)) \\
+&= \exp(-j(k_2 \sin \theta_t x + k_2 \cos \theta_t z))\\
+&= \exp(-j[\Re(k_2\sin\theta_t)x+\Re(k_2\cos\theta_t)z] + [\Im(k_2 \sin\theta_t)+\Im(k_2\cos\theta_t)]) \\
+&= \exp(-j[\Re(k_2\sin\theta_t)x+\Re(k_2\cos\theta_t)z]) \exp(\Im(k_2 \sin\theta_t)+\Im(k_2\cos\theta_t))
 \end{align}
 $$
 
@@ -119,13 +119,13 @@ The result is an expression which is the product of two exponential expressions.
 The first factor represents the change in phase (i.e. the oscillation) of the wave:
 
 $$
-exp(-j[\Re(k_2\sin\theta_t)x+\Re(k_2\cos\theta_t)z])
+\exp(-j[\Re(k_2\sin\theta_t)x+\Re(k_2\cos\theta_t)z])
 $$
 
 While the second factor represents the attenuation (i.e. the decay) of the wave:
 
 $$
-exp(\Im(k_2 \sin\theta_t)+\Im(k_2\cos\theta_t))
+\exp(\Im(k_2 \sin\theta_t)+\Im(k_2\cos\theta_t))
 $$
 
 From this, we can say that the planes of constant phase are:
@@ -176,6 +176,6 @@ $$
 = {1 \over \sqrt{({1 \over \Re(\cot\theta_t)})^2 + 1}}
 $$
 
-This way, you can skip some unnecessary trigonometric operations—$\cot \theta_t$ can be computed cheaply
-because you already have its $\sin$ and $\cos$ from other calculations,
+This way, you can skip some unnecessary trigonometric operations—
+$\cot \theta_t$ can be computed cheaply because you already have its $\sin$ and $\cos$ from other calculations,
 and the rest of the calculations are relatively inexpensive in comparison to $\cos$ and $\tan^{-1}$.
