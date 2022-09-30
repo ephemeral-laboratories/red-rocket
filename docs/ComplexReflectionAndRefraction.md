@@ -16,7 +16,8 @@ See also:
 
 ## The Fresnel equations
 
-The Fresnel equations (or Fresnel coefficients) describe the reflection and transmission of light
+The [Fresnel equations](https://en.wikipedia.org/wiki/Fresnel_equations) (or Fresnel coefficients)
+describe the reflection and transmission of light
 when it hits an interface between different optical media.
 
 The derivation will not be given here, as these are relatively well-documented equations:
@@ -40,6 +41,26 @@ Where:
 * Subscripts $s$ and $p$ represent polarisation perpendicular and parallel to the plane of incidence, respectively.
 
 Because refractive indices are complex values, the four resulting coefficients are also complex values.
+
+## Stokes vectors
+
+The [Stokes parameters](https://en.wikipedia.org/wiki/Stokes_parameters)
+are a set of values that can be used to describe the polarisation of light.
+
+* $I$ - the total intensity of light
+* $Q$
+    * if positive, the intensity of light which is horizontally polarised
+    * if negative, the intensity of light which is vertically polarised
+* $U$
+    * if positive, the intensity of light which is +45° polarised
+    * if negative, the intensity of light which is -45° polarised
+* $V$
+    * if positive, the intensity of light which is right-hand circularly polarised
+    * if negative, the intensity of light which is left-hand circularly polarised
+
+This forms a kind of spherical coordinate space where $I^2 >= Q^2 + U^2 + V^2$.
+
+**TODO: Finish rest of section**
 
 ## Total internal reflection
 
