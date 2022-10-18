@@ -3,8 +3,8 @@ package garden.ephemeral.rocket.shapes
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import garden.ephemeral.rocket.Constants.epsilon
-import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Space
+import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.isCloseTo
 import io.cucumber.java8.En
 

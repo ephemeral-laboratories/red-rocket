@@ -2,8 +2,8 @@ package garden.ephemeral.rocket.util
 
 import assertk.assertThat
 import garden.ephemeral.rocket.Constants.epsilon
-import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Space
+import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.isCloseTo
 import io.cucumber.java8.En
 

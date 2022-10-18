@@ -7,8 +7,8 @@ import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Intersections
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.transformFromString
-import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Space
+import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.color.Color.Companion.grey
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
 import garden.ephemeral.rocket.patterns.TestPattern

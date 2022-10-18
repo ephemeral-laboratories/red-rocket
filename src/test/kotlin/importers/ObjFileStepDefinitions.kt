@@ -5,8 +5,8 @@ import assertk.assertions.contains
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import garden.ephemeral.rocket.Constants.epsilon
-import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Space
+import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.isCloseTo
 import garden.ephemeral.rocket.shapes.BaseTriangle
