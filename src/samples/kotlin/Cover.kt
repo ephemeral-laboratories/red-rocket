@@ -42,8 +42,16 @@ fun main() = render {
         val mediumObject = scaling(3.0, 3.0, 3.0) * standardTransform
         val smallObject = scaling(2.0, 2.0, 2.0) * standardTransform
 
-        PointLight(point(50.0, 100.0, -50.0), white)
-        PointLight(point(-400.0, 50.0, -10.0), linearRgb(0.2, 0.2, 0.2))
+        PointLight {
+            position(point(50.0, 100.0, -50.0))
+            color(white)
+            radiantIntensity(10.0)
+        }
+        PointLight {
+            position(point(-400.0, 50.0, -10.0))
+            color(grey(0.2))
+            radiantIntensity(10.0)
+        }
 
         Plane {
             material = Material.build {
@@ -141,7 +149,7 @@ fun main() = render {
         }
     }
 
-    Camera(800, 800, 45.deg, SamplingStrategy.multi4) {
+    Camera(800, 800, 45.deg, 0.05, SamplingStrategy.multi4) {
         transform = viewTransform(point(-6.0, 6.0, -10.0), point(6.0, 0.0, 6.0), vector(-0.45, 1.0, 0.0))
     }
 }

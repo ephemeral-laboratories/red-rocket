@@ -19,16 +19,13 @@ data class Camera(
     val hSize: Int,
     val vSize: Int,
     val fieldOfView: Angle,
-    val samplingStrategy: SamplingStrategy = SamplingStrategy.center
+    val exposure: Double = 1.0,
+    val samplingStrategy: SamplingStrategy = SamplingStrategy.center,
 ) {
     private val halfWidth: Double
     private val halfHeight: Double
     val pixelSize: Double
     var transform: Matrix = identity4x4
-
-    // TODO: Figure out scaling in camera, units are arbitrary right now.
-    private val intensityScale = 1.0
-    // 8e4 too bright
 
     init {
         val halfView = tan(fieldOfView / 2)
@@ -84,7 +81,7 @@ data class Camera(
     fun render2(world: World, wavelength: Wavelength): Canvas {
         return Canvas(hSize, vSize).applyFill { px, py ->
             val intensity = intensityAtPixel(world, px, py, wavelength)
-            val value = intensity * intensityScale
+            val value = intensity * exposure
 
             Color.grey(value)
         }
@@ -96,7 +93,7 @@ data class Camera(
                 intensityAtPixel(world, px, py, wavelength)
             }.toImmutableDoubleArray()
 
-            val spectrum = DoubleSpectrum(spectralShape, intensities * intensityScale)
+            val spectrum = DoubleSpectrum(spectralShape, intensities * exposure)
 
             // TODO: Capture done by the camera has its own curves for RGB which we should simulate as well
             spectrum.toCieXyzEmission().toLinearRgb()

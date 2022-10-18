@@ -105,6 +105,29 @@ class DoubleSpectrum(
         return CieXyzColor(x, y, z)
     }
 
+    /**
+     * Integrates the spectrum over wavelength.
+     *
+     * @return the result.
+     */
+    fun integrate(): Double {
+        return (values * shape.step).sum()
+    }
+
+    /**
+     * Integrates the spectrum over wavelength.
+     *
+     * The spectrum is taken to be in power units of some sort.
+     * The given color matching function is used to convert to luminosity units.
+     *
+     * @return the result.
+     */
+    fun integrateLuminosity(
+        colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE,
+    ): Double {
+        return ((values * colorMatchingFunction.spectrum(shape).yValues) * shape.step).sum()
+    }
+
     fun toLinearRgbEmission(): RgbColor = toCieXyzEmission().toLinearRgb()
     fun toLinearRgbReflectance(): RgbColor = toCieXyzReflectance().toLinearRgb()
 

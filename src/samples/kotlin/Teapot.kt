@@ -49,10 +49,18 @@ fun main() = render {
             transform = scaling(0.125, 0.125, 0.125) * rotationX((-90).deg)
         }
 
-        PointLight(point(-12.0, 10.0, -10.0), linearRgb(1.0, 0.0, 1.0))
-        PointLight(point(-8.0, 10.0, -10.0), linearRgb(0.0, 1.0, 1.0))
+        PointLight {
+            position(point(-12.0, 10.0, -10.0))
+            color(linearRgb(1.0, 0.0, 1.0))
+            radiantIntensity(10.0)
+        }
+        PointLight {
+            position(point(-8.0, 10.0, -10.0))
+            color(linearRgb(0.0, 1.0, 1.0))
+            radiantIntensity(10.0)
+        }
 
-        Camera(1280, 720, 60.deg) {
+        Camera(1280, 720, 60.deg, 0.05) {
             transform = viewTransform(point(0.0, 1.0, -5.0), point(0.0, 0.75, 0.0), vector(0.0, 1.0, 0.0))
         }
     }

@@ -4,11 +4,9 @@ import garden.ephemeral.rocket.Canvas
 import garden.ephemeral.rocket.Material
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.PointLight
-import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.World
 import garden.ephemeral.rocket.camera.Camera
 import garden.ephemeral.rocket.camera.SamplingStrategy
-import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.importers.ObjFileParser
 import garden.ephemeral.rocket.shapes.Cone
 import garden.ephemeral.rocket.shapes.Cube
@@ -17,7 +15,6 @@ import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.Plane
 import garden.ephemeral.rocket.shapes.Shape
 import garden.ephemeral.rocket.shapes.Sphere
-import garden.ephemeral.rocket.spectra.DoubleSpectrum
 import garden.ephemeral.rocket.spectra.SpectralShape
 import garden.ephemeral.rocket.util.Angle
 import kotlin.io.path.Path
@@ -40,10 +37,11 @@ class RenderBuilder {
         hSize: Int,
         vSize: Int,
         fieldOfView: Angle,
+        exposure: Double,
         samplingStrategy: SamplingStrategy = SamplingStrategy.center,
         block: Camera.() -> Unit
     ) {
-        camera = Camera(hSize, vSize, fieldOfView, samplingStrategy).apply(block)
+        camera = Camera(hSize, vSize, fieldOfView, exposure, samplingStrategy).apply(block)
     }
 
     fun render() {
@@ -51,8 +49,8 @@ class RenderBuilder {
         @OptIn(ExperimentalTime::class)
         val time = measureTime {
 
-            val wavelength = SpectralShape.Default.wavelengths[20]
-
+//            val wavelength = SpectralShape.Default.wavelengths[20]
+//
 //            canvas = camera.render(world)
 //            canvas = camera.render2(world, wavelength)
             canvas = camera.render(world, SpectralShape.Default)
@@ -121,11 +119,8 @@ class GroupBuilder : ObjectContainerBuilder() {
 class WorldBuilder : ObjectContainerBuilder() {
     private val lights = mutableListOf<PointLight>()
 
-    fun PointLight(position: Tuple, intensity: Color) =
-        PointLight(position, DoubleSpectrum.recoverFromCieXyzEmission(intensity.toCieXyz()))
-
-    fun PointLight(position: Tuple, intensity: DoubleSpectrum) {
-        lights.add(garden.ephemeral.rocket.PointLight(position, intensity))
+    fun PointLight(action: PointLight.Builder.() -> Unit) {
+        lights.add(PointLight.build(action))
     }
 
     fun build(): World {

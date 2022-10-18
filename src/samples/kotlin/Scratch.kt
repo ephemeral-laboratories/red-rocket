@@ -88,11 +88,21 @@ fun main() = render {
             }
         }
 
-        PointLight(point(-12.0, 10.0, -10.0), linearRgb(1.0, 0.0, 1.0))
-        PointLight(point(-8.0, 10.0, -10.0), linearRgb(0.0, 1.0, 1.0))
+        PointLight {
+            position(point(-12.0, 10.0, -10.0))
+            color(linearRgb(1.0, 0.0, 1.0))
+            radiantIntensity(250.0)
+        }
+        PointLight {
+            position(point(-8.0, 10.0, -10.0))
+            color(linearRgb(0.0, 1.0, 1.0))
+            radiantIntensity(250.0)
+        }
     }
 
-    Camera(500, 250, 60.deg) {
+    // 0.0005 too bright
+    // 0.000001 too dim
+    Camera(500, 250, 60.deg, 0.00001) {
         transform = viewTransform(point(0.0, 1.0, -5.0), point(0.0, 0.5, 0.0), vector(0.0, 1.0, 0.0))
     }
 }
