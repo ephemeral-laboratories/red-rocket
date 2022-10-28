@@ -3,8 +3,8 @@ package garden.ephemeral.rocket.patterns
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import garden.ephemeral.rocket.Matrix
-import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Space
+import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.color.Color
 import io.cucumber.java8.En
 

@@ -1,1 +1,13 @@
-// Empty file but has to be here or Gradle won't see the `buildSrc` dir.
+dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage")
+    repositories {
+        mavenCentral()
+    }
+
+    @Suppress("UnstableApiUsage")
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
+}

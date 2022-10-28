@@ -4,10 +4,6 @@ plugins {
     `kotlin-dsl`
 }
 
-repositories {
-    mavenCentral()
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_17
 }
