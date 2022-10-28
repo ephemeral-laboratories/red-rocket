@@ -31,6 +31,8 @@ class RealParser {
         }
 
         private fun convert(input: String, context: ParserRuleContext): Double {
+            // Many `!!` within to work around the generated code declaring things as nullable when they are not
+            // https://github.com/Strumenta/antlr-kotlin/issues/84
             return when (context) {
                 is RealExpressionParser.ExpressionContext -> convert(input, context.atom!!)
                 is RealExpressionParser.ParenthesizedExpressionContext -> convert(input, context.nested!!)
@@ -92,6 +94,8 @@ class RealParser {
     ) : RealParserException(input, "Syntax error: line $line:$charPositionInLine $message", cause)
 
     private class BailErrorListener(private val input: String) : BaseErrorListener() {
+        // Want to rename `msg` to `message` but causes a warning because name does not match superclass
+        // https://github.com/Strumenta/antlr-kotlin/issues/83
         override fun syntaxError(
             recognizer: Recognizer<*, *>,
             offendingSymbol: Any?,
