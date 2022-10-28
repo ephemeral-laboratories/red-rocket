@@ -1,0 +1,5 @@
+# Autoconvert line endings on checkout
+*.feature text
+*.g4 text
+*.kt text
+*.kts text
