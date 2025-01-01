@@ -21,6 +21,7 @@ import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import garden.ephemeral.rocket.util.rad
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
+import org.jetbrains.kotlinx.multik.ndarray.operations.toList
 import kotlin.math.abs
 
 // Constructed reflectively
@@ -183,17 +184,11 @@ private fun Assert<Matrix>.isCloseTo(expected: Matrix, delta: Double) {
 }
 
 fun Matrix.isCloseTo(their: Matrix, delta: Double): Boolean {
-    if (their.rowCount != rowCount || their.columnCount != columnCount) {
+    if (!cells.shape.contentEquals(their.cells.shape)) {
         return false
     }
 
-    for (rowIndex in 0 until rowCount) {
-        for (columnIndex in 0 until columnCount) {
-            if (abs(this[rowIndex, columnIndex] - their[rowIndex, columnIndex]) > delta) {
-                return false
-            }
-        }
+    return cells.toList().zip(their.cells.toList()).all { (ourCell, theirCell) ->
+        abs(ourCell - theirCell) <= delta
     }
-
-    return true
 }

@@ -1,21 +1,23 @@
 package garden.ephemeral.rocket.spectra
 
 import garden.ephemeral.rocket.color.CieXyzColor
-import garden.ephemeral.rocket.util.ImmutableDoubleArray
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
+import org.jetbrains.kotlinx.multik.ndarray.operations.plus
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
 
 /**
  * A spectrum of data at different wavelengths, where each value is a [CieXyzColor].
  *
  * @param shape the shape of the spectral data.
- * @param xValues the array of X values for the spectrum.
- * @param yValues the array of Y values for the spectrum.
- * @param zValues the array of Z values for the spectrum.
+ * @property xValues the array of X values for the spectrum.
+ * @property yValues the array of Y values for the spectrum.
+ * @property zValues the array of Z values for the spectrum.
  */
 class CieXyzColorSpectrum(
     shape: SpectralShape,
-    var xValues: ImmutableDoubleArray,
-    var yValues: ImmutableDoubleArray,
-    var zValues: ImmutableDoubleArray
+    val xValues: D1Array<Double>,
+    val yValues: D1Array<Double>,
+    val zValues: D1Array<Double>,
 ) : Spectrum<CieXyzColor, CieXyzColorSpectrum>(shape) {
     init {
         requireSameSize("xValues", xValues)

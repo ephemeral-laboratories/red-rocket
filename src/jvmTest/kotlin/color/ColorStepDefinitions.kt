@@ -12,6 +12,8 @@ import garden.ephemeral.rocket.color.Color.Companion.linearRgb
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
 import garden.ephemeral.rocket.util.RealParser.Companion.realRegex
 import io.cucumber.java8.En
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.operations.toList
 import kotlin.math.abs
 
 // Constructed reflectively
@@ -129,11 +131,7 @@ fun Color.isCloseTo(their: Color, delta: Double): Boolean {
         return false
     }
 
-    rgb.indices.forEach { i ->
-        if (abs(rgb[i] - theirRgb[i]) > delta) {
-            return false
-        }
+    return rgb.toList().zip(theirRgb.toList()).all { (ourCell, theirCell) ->
+        abs(ourCell - theirCell) <= delta
     }
-
-    return true
 }

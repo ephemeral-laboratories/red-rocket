@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket.spectra
 
-import garden.ephemeral.rocket.util.ImmutableDoubleArray
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
 
 /**
  * A spectrum of data at different wavelengths.
@@ -25,7 +25,7 @@ sealed class Spectrum<T, S : Spectrum<T, S>>(
      * @param values the values to check.
      * @throws IllegalArgumentException if the size of the value array does not match the spectral shape.
      */
-    protected fun requireSameSize(name: String, values: ImmutableDoubleArray) {
+    protected fun requireSameSize(name: String, values: D1Array<Double>) {
         require(values.size == shape.size) {
             "$name has wrong size (${values.size}) for shape $shape, expected ${shape.size}"
         }

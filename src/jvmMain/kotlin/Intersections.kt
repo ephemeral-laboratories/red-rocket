@@ -82,8 +82,10 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
  */
 fun Sequence<Intersection>.toIntersections(): Intersections {
     return Intersections(
-        sortedBy(Intersection::t)
-            .toList()
+        buildList {
+            addAll(this@toIntersections)
+            sortBy(Intersection::t)
+        }
     )
 }
 

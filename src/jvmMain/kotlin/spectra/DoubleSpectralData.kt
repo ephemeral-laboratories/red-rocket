@@ -1,6 +1,6 @@
 package garden.ephemeral.rocket.spectra
 
-import garden.ephemeral.rocket.util.buildImmutableDoubleArray
+import org.jetbrains.kotlinx.multik.api.toNDArray
 
 /**
  * Holder for spectral data of type double.
@@ -19,25 +19,29 @@ class DoubleSpectralData(val data: List<Pair<Double, Double>>) : SpectralData<Do
 
     override fun createSpectrum(shape: SpectralShape): DoubleSpectrum {
         var dataIndex = 0
-        val values = buildImmutableDoubleArray {
-            for (w in shape.wavelengths) {
+        val values = shape.wavelengths
+            .map { w ->
                 when {
-                    w == data[dataIndex].first -> add(data[dataIndex].second)
+                    w == data[dataIndex].first -> data[dataIndex].second
+
                     w < data[dataIndex].first -> {
                         // Low extrapolation case handled here by coercing to >= 1
-                        add(interpolate(w, dataIndex.coerceAtLeast(1)))
+                        interpolate(w, dataIndex.coerceAtLeast(1))
                     }
-                    else -> { // w > data[dataIndex].first
+
+                    else -> {
+                        // w > data[dataIndex].first
                         // Move data pointer until we either find a value which is higher, _or_ we hit the end.
                         // Takes care of the high extrapolation case automatically.
                         while (w > data[dataIndex].first && dataIndex < data.lastIndex) {
                             dataIndex++
                         }
-                        add(interpolate(w, dataIndex))
+                        interpolate(w, dataIndex)
                     }
                 }
             }
-        }
+            .toNDArray()
+
         return DoubleSpectrum(shape, values)
     }
 

@@ -14,11 +14,15 @@ import garden.ephemeral.rocket.color.CieXyzColor
 import garden.ephemeral.rocket.color.RgbColor
 import garden.ephemeral.rocket.color.isCloseTo
 import garden.ephemeral.rocket.isCloseTo
-import garden.ephemeral.rocket.util.ImmutableDoubleArray
 import garden.ephemeral.rocket.util.RealParser.Companion.realFromString
-import garden.ephemeral.rocket.util.toImmutableDoubleArray
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.api.toNDArray
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.operations.toList
 import kotlin.math.abs
 
 // Constructed reflectively
@@ -146,7 +150,7 @@ class SpectrumStepDefinitions(space: Space) : En {
         }
 
         Then("spectrum contains no negative values") {
-            assertThat(doubleSpectrum.values).each { a -> a.isGreaterThanOrEqualTo(0.0) }
+            assertThat(doubleSpectrum.values.toList()).each { a -> a.isGreaterThanOrEqualTo(0.0) }
         }
     }
 
@@ -162,11 +166,11 @@ class SpectrumStepDefinitions(space: Space) : En {
         ).createSpectrum()
     }
 
-    private fun valuesFromDataTable(dataTable: DataTable): ImmutableDoubleArray = dataTable.asMaps()
+    private fun valuesFromDataTable(dataTable: DataTable): D1Array<Double> = dataTable.asMaps()
         .map { row ->
             realFromString(row["value"]!!)
         }
-        .toImmutableDoubleArray()
+        .toNDArray()
 
     private fun spectrumFromTupleDataTable(dataTable: DataTable): TupleSpectrum {
         return TupleSpectrum(
@@ -202,7 +206,7 @@ fun TupleSpectrum.atWavelength(wavelength: Double): Tuple {
 }
 fun CieXyzColorSpectrum.atWavelength(wavelength: Double): CieXyzColor {
     val index = findIndex(wavelength)
-    return CieXyzColor(xValues[index], yValues[index], zValues[index])
+    return CieXyzColor(mk.ndarray(mk[xValues[index], yValues[index], zValues[index]]))
 }
 private fun Spectrum<*, *>.findIndex(wavelength: Double): Int {
     val index = wavelengths.indexOfFirst { w -> abs(w - wavelength) < epsilon }

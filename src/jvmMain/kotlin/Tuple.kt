@@ -1,31 +1,35 @@
 package garden.ephemeral.rocket
 
-import garden.ephemeral.rocket.util.minus
-import garden.ephemeral.rocket.util.plus
-import garden.ephemeral.rocket.util.times
-import garden.ephemeral.rocket.util.unaryMinus
 import garden.ephemeral.rocket.util.yzxw
 import garden.ephemeral.rocket.util.zxyw
-import jdk.incubator.vector.DoubleVector
-import jdk.incubator.vector.VectorOperators
+import org.jetbrains.kotlinx.multik.api.linalg.dot
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.operations.div
+import org.jetbrains.kotlinx.multik.ndarray.operations.minus
+import org.jetbrains.kotlinx.multik.ndarray.operations.plus
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
+import org.jetbrains.kotlinx.multik.ndarray.operations.unaryMinus
 import kotlin.math.sqrt
 
-data class Tuple(val cells: DoubleVector) {
+data class Tuple(val cells: D1Array<Double>) {
     constructor(x: Double, y: Double, z: Double, w: Double) : this(doubleArrayOf(x, y, z, w))
-    private constructor(cells: DoubleArray) : this(DoubleVector.fromArray(DoubleVector.SPECIES_256, cells, 0))
+    private constructor(cells: DoubleArray) : this(mk.ndarray(cells))
 
     val isPoint: Boolean
         get() = w == 1.0
     val isVector: Boolean
         get() = w == 0.0
     val x: Double
-        get() = cells.lane(0)
+        get() = cells[0]
     val y: Double
-        get() = cells.lane(1)
+        get() = cells[1]
     val z: Double
-        get() = cells.lane(2)
+        get() = cells[2]
     val w: Double
-        get() = cells.lane(3)
+        get() = cells[3]
 
     val magnitude: Double
         get() = sqrt(dot(this))
@@ -71,7 +75,7 @@ data class Tuple(val cells: DoubleVector) {
     }
 
     fun dot(their: Tuple): Double {
-        return (cells * their.cells).reduceLanes(VectorOperators.ADD)
+        return cells dot their.cells
     }
 
     fun cross(their: Tuple): Tuple {

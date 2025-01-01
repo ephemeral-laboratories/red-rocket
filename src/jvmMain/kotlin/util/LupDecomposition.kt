@@ -51,11 +51,11 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
         get() = solve(Matrix.identityNxN(pivot.size))
 
     init {
-        if (matrix.rowCount != matrix.columnCount) {
+        if (matrix.cells.shape[0] != matrix.cells.shape[1]) {
             throw NotSquareMatrixException("Matrix is not square! Got: $matrix")
         }
 
-        val m = matrix.rowCount
+        val m = matrix.cells.shape[0]
         lu = Array(m) { row -> DoubleArray(m) { col -> matrix[row, col] } }
 
         // Initialize permutation array and parity
@@ -159,14 +159,14 @@ class LupDecomposition(matrix: Matrix, singularityThreshold: Double = DEFAULT_TO
 
     fun solve(b: Matrix): Matrix {
         val m = pivot.size
-        if (b.rowCount != m) {
+        if (b.cells.shape[1] != m) {
             throw WrongSizeException("Required matrix with row count $m! Got: $b")
         }
         if (isSingular) {
             throw SingularMatrixException()
         }
 
-        val nColB = b.columnCount
+        val nColB = b.cells.shape[0]
 
         // Apply permutations to b
         val bp = Array(m) { row ->

@@ -1,22 +1,19 @@
 package garden.ephemeral.rocket
 
-import garden.ephemeral.rocket.util.ImmutableDoubleArray
 import garden.ephemeral.rocket.util.LupDecomposition
-import garden.ephemeral.rocket.util.buildImmutableDoubleArray
-import garden.ephemeral.rocket.util.toImmutableDoubleArray
-import jdk.incubator.vector.DoubleVector
-import jdk.incubator.vector.VectorOperators
-import java.util.*
+import org.jetbrains.kotlinx.multik.api.identity
+import org.jetbrains.kotlinx.multik.api.linalg.dot
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.ndarray.data.D1
+import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
+import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.operations.minus
+import org.jetbrains.kotlinx.multik.ndarray.operations.plus
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
 
-data class Matrix(val rowCount: Int, val columnCount: Int, val cells: ImmutableDoubleArray) {
-    init {
-        if (cells.size != rowCount * columnCount) {
-            throw IllegalArgumentException(
-                "Wrong cell count ${cells.size} for matrix of size $rowCount x $columnCount"
-            )
-        }
-    }
-
+data class Matrix(val cells: D2Array<Double>) {
     private val lupDecomposition by lazy { LupDecomposition(this) }
 
     val determinant: Double by lazy { lupDecomposition.determinant }
@@ -30,138 +27,75 @@ data class Matrix(val rowCount: Int, val columnCount: Int, val cells: ImmutableD
         val identity3x3 = identityNxN(3)
         val identity4x4 = identityNxN(4)
 
-        fun identityNxN(size: Int): Matrix {
-            val cells = buildImmutableDoubleArray(size * size) {
-                for (rowIndex in 0 until size) {
-                    for (columnIndex in 0 until size) {
-                        add(if (rowIndex == columnIndex) 1.0 else 0.0)
-                    }
-                }
-            }
-            return Matrix(size, size, cells)
-        }
+        fun identityNxN(size: Int) = Matrix(mk.identity<Double>(size))
 
-        fun fromLists(cells: List<List<Double>>): Matrix {
-            return Matrix(cells.size, cells[0].size, cells.flatten().toImmutableDoubleArray())
-        }
+        fun fromLists(cells: List<List<Double>>) = Matrix(mk.ndarray(cells))
 
-        fun fromArrays(cells: Array<DoubleArray>): Matrix {
-            return fromLists(cells.map { row -> row.toList() })
-        }
+        fun fromArrays(cells: Array<DoubleArray>) = Matrix(mk.ndarray(cells))
     }
 
     operator fun get(rowIndex: Int, columnIndex: Int): Double {
-        return cells[rowIndex * columnCount + columnIndex]
+        return cells[rowIndex, columnIndex]
     }
 
-    fun getRow(rowIndex: Int): ImmutableDoubleArray {
-        val start = rowIndex * columnCount
-        val end = start + columnCount - 1
-        return cells.slice(start..end)
+    fun getRow(rowIndex: Int): MultiArray<Double, D1> {
+        return cells[0..cells.shape[0], rowIndex]
     }
 
-    fun getRows(): List<ImmutableDoubleArray> {
-        return (0 until rowCount).map { rowIndex -> getRow(rowIndex) }
+    fun getRows(): List<MultiArray<Double, D1>> {
+        return (0 until cells.shape[0]).map { rowIndex -> getRow(rowIndex) }
     }
 
-    fun getColumn(columnIndex: Int): ImmutableDoubleArray {
-        val progression = columnIndex..cells.lastIndex step columnCount
-        return cells.slice(progression.toList())
+    fun getColumn(columnIndex: Int): MultiArray<Double, D1> {
+        return cells[columnIndex, 0..cells.shape[1]]
     }
 
-    fun getColumns(): List<ImmutableDoubleArray> {
-        return (0 until columnCount).map { columnIndex -> getColumn(columnIndex) }
+    fun getColumns(): List<MultiArray<Double, D1>> {
+        return (0 until cells.shape[1]).map { columnIndex -> getColumn(columnIndex) }
     }
 
     fun transpose(): Matrix {
-        val transposedCells = buildImmutableDoubleArray(cells.size) {
-            for (columnIndex in 0 until columnCount) {
-                for (rowIndex in 0 until rowCount) {
-                    add(this@Matrix[rowIndex, columnIndex])
-                }
-            }
-        }
-        return Matrix(columnCount, rowCount, transposedCells)
+        return Matrix(cells.transpose(1, 0))
     }
 
     operator fun plus(other: Matrix): Matrix {
         requireSameSize(other)
-        return Matrix(rowCount, columnCount, cells + other.cells)
+        return Matrix(cells + other.cells)
     }
 
     operator fun minus(other: Matrix): Matrix {
         requireSameSize(other)
-        return Matrix(rowCount, columnCount, cells - other.cells)
+        return Matrix(cells - other.cells)
     }
 
     operator fun times(scalar: Double): Matrix {
-        return Matrix(rowCount, columnCount, cells * scalar)
+        return Matrix(cells * scalar)
     }
 
     operator fun times(their: Matrix): Matrix {
-        if (columnCount != their.rowCount) {
-            throw IllegalArgumentException("Incompatible column count $columnCount with your row count ${their.rowCount}")
-        }
-
-        val resultCells = buildImmutableDoubleArray(rowCount * their.columnCount) {
-            val ourRows = getRows()
-            val theirColumns = their.getColumns()
-            ourRows.forEach { ourRow ->
-                theirColumns.forEach { theirColumn ->
-                    add(ourRow.dotProduct(theirColumn))
-                }
-            }
-        }
-        return Matrix(rowCount, their.columnCount, resultCells)
+        return Matrix(cells dot their.cells)
     }
 
     operator fun times(their: Tuple): Tuple {
-        return Tuple(times(their.cells))
-    }
-
-    operator fun times(their: ImmutableDoubleArray): ImmutableDoubleArray {
-        if (columnCount != their.size) {
-            throw IllegalArgumentException("Incompatible column count $columnCount with your row count ${their.size}")
-        }
-
-        return buildImmutableDoubleArray(rowCount) {
-            getRows().forEach { ourRow ->
-                add(ourRow.dotProduct(their))
-            }
-        }
-    }
-
-    operator fun times(their: DoubleVector): DoubleVector {
-        if (columnCount != their.length()) {
-            throw IllegalArgumentException("Incompatible column count $columnCount with your row count ${their.length()}")
-        }
-
-        val result = DoubleArray(rowCount)
-        for (rowIndex in 0 until rowCount) {
-            result[rowIndex] = cells.sliceAsDoubleVector(rowIndex * columnCount)
-                .mul(their).reduceLanes(VectorOperators.ADD)
-        }
-        return DoubleVector.fromArray(DoubleVector.SPECIES_256, result, 0)
+        return Tuple(cells dot their.cells)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Matrix) return false
 
-        return rowCount == other.rowCount &&
-            columnCount == other.columnCount &&
-            cells == other.cells
+        return cells == other.cells
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(rowCount, columnCount, cells)
+        return cells.hashCode()
     }
 
     private fun requireSameSize(other: Matrix) {
-        require(rowCount == other.rowCount && columnCount == other.columnCount) {
+        require(cells.shape.contentEquals(other.cells.shape)) {
             "Other matrix does not match the size of this matrix: " +
-                "our size = $rowCount x $columnCount, " +
-                "other size = ${other.rowCount} x ${other.columnCount}"
+                "our shape = ${cells.shape.contentToString()}, " +
+                "other shape = ${other.cells.shape.contentToString()}"
         }
     }
 }

@@ -1,7 +1,9 @@
 package garden.ephemeral.rocket.spectra
 
 import garden.ephemeral.rocket.Tuple
-import garden.ephemeral.rocket.util.ImmutableDoubleArray
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
+import org.jetbrains.kotlinx.multik.ndarray.operations.plus
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
 
 /**
  * A spectrum of data at different wavelengths, where each value is a [Tuple].
@@ -14,10 +16,10 @@ import garden.ephemeral.rocket.util.ImmutableDoubleArray
  */
 class TupleSpectrum(
     shape: SpectralShape,
-    val xValues: ImmutableDoubleArray,
-    val yValues: ImmutableDoubleArray,
-    val zValues: ImmutableDoubleArray,
-    val wValues: ImmutableDoubleArray
+    val xValues: D1Array<Double>,
+    val yValues: D1Array<Double>,
+    val zValues: D1Array<Double>,
+    val wValues: D1Array<Double>,
 ) : Spectrum<Tuple, TupleSpectrum>(shape) {
     init {
         requireSameSize("xValues", xValues)

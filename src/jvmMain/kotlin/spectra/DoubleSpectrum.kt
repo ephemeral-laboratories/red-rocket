@@ -5,8 +5,19 @@ import garden.ephemeral.rocket.color.ColorMatchingFunction
 import garden.ephemeral.rocket.color.Illuminant
 import garden.ephemeral.rocket.color.RgbColor
 import garden.ephemeral.rocket.spectra.recovery.Burns2020Method1
-import garden.ephemeral.rocket.util.ImmutableDoubleArray
-import garden.ephemeral.rocket.util.buildImmutableDoubleArray
+import garden.ephemeral.rocket.util.stack
+import garden.ephemeral.rocket.util.stackNCopies
+import org.jetbrains.kotlinx.multik.api.linalg.dot
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.api.toNDArray
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.operations.div
+import org.jetbrains.kotlinx.multik.ndarray.operations.plus
+import org.jetbrains.kotlinx.multik.ndarray.operations.sum
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
+import org.jetbrains.kotlinx.multik.ndarray.operations.toList
 import kotlin.math.exp
 import kotlin.math.pow
 
@@ -18,7 +29,7 @@ import kotlin.math.pow
  */
 class DoubleSpectrum(
     shape: SpectralShape,
-    val values: ImmutableDoubleArray
+    val values: D1Array<Double>,
 ) : Spectrum<Double, DoubleSpectrum>(shape) {
     init {
         requireSameSize("values", values)
@@ -55,11 +66,13 @@ class DoubleSpectrum(
 
         val factor = PhysicalConstants.MaximumLuminousEfficacy * shape.step
 
-        val x = values.dotProduct(colorMatchingFunctionSpectrum.xValues) * factor
-        val y = values.dotProduct(colorMatchingFunctionSpectrum.yValues) * factor
-        val z = values.dotProduct(colorMatchingFunctionSpectrum.zValues) * factor
+        val x = values dot colorMatchingFunctionSpectrum.xValues
+        val y = values dot colorMatchingFunctionSpectrum.yValues
+        val z = values dot colorMatchingFunctionSpectrum.zValues
 
-        return CieXyzColor(x, y, z)
+        val xyz = mk.ndarray(mk[x, y, z]) * factor
+
+        return CieXyzColor(xyz)
     }
 
     /**
@@ -75,23 +88,19 @@ class DoubleSpectrum(
         colorMatchingFunction: ColorMatchingFunction = ColorMatchingFunction.CIE_1931_2_DEGREE,
         illuminant: Illuminant = Illuminant.D65
     ): CieXyzColor {
-        val colorMatchingFunctionSpectrum = colorMatchingFunction.spectrum(shape)
+        val cmfSpectrum = colorMatchingFunction.spectrum(shape)
+        val plainCmf = mk.stack(
+            arrays = listOf(cmfSpectrum.xValues, cmfSpectrum.yValues, cmfSpectrum.zValues),
+            axis = 1,
+        ).transpose(1, 0)
+
         val illuminantSpectrum = illuminant.spectrum(shape)
+        val illuminatedCmf = plainCmf * mk.stackNCopies(array = illuminantSpectrum.values, copies = 3, axis = 0)
+        val factor = 1.0 / illuminatedCmf[1].sum()
 
-        val illumCmfX = illuminantSpectrum.values * colorMatchingFunctionSpectrum.xValues
-        val illumCmfY = illuminantSpectrum.values * colorMatchingFunctionSpectrum.yValues
-        val illumCmfZ = illuminantSpectrum.values * colorMatchingFunctionSpectrum.zValues
+        val xyz = (illuminatedCmf dot values) * factor
 
-        // k = 1 / (shape.step * illumCmfY.sum()), but then factor = k * shape.step,
-        // so we can skip some operations here.
-
-        val factor = 1.0 / illumCmfY.sum()
-
-        val x = values.dotProduct(illumCmfX) * factor
-        val y = values.dotProduct(illumCmfY) * factor
-        val z = values.dotProduct(illumCmfZ) * factor
-
-        return CieXyzColor(x, y, z)
+        return CieXyzColor(xyz)
     }
 
     fun toLinearRgbEmission(): RgbColor = toCieXyzEmission().toLinearRgb()
@@ -109,7 +118,7 @@ class DoubleSpectrum(
      * @return the spectrum in that shape.
      */
     fun reshape(newShape: SpectralShape): DoubleSpectrum {
-        return DoubleSpectralData(newShape.wavelengths.zip(values)).createSpectrum(newShape)
+        return DoubleSpectralData(newShape.wavelengths.zip(values.toList())).createSpectrum(newShape)
     }
 
     companion object {
@@ -124,18 +133,18 @@ class DoubleSpectrum(
             temperature: Double,
             shape: SpectralShape = SpectralShape.Default
         ): DoubleSpectrum {
-            val values = buildImmutableDoubleArray {
-                shape.wavelengths.forEach { w ->
+            val values = shape.wavelengths
+                .map { w ->
                     val wavelength = w * 1E-9
 
                     // Planck's Law of radiation
                     // P_λ dλ = (c₁/λ⁵)/(exp(c₂/λT) - 1) dλ  (units: W m^-3)
                     // Note that c₁ includes a 2π term which takes care of what would normally be
                     // a unit of sr⁻¹
-                    val p = PhysicalConstants.RadiationC1 * wavelength.pow(-5) / (exp(PhysicalConstants.RadiationC2 / (wavelength * temperature)) - 1)
-                    add(p)
+                    PhysicalConstants.RadiationC1 * wavelength.pow(-5) / (exp(PhysicalConstants.RadiationC2 / (wavelength * temperature)) - 1)
                 }
-            }
+                .toNDArray()
+
             return DoubleSpectrum(shape, values)
         }
 

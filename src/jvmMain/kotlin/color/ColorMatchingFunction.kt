@@ -19,7 +19,7 @@ enum class ColorMatchingFunction(val humanName: String, filename: String) {
 
     companion object {
         fun forHumanName(humanName: String): ColorMatchingFunction {
-            return values().find { i -> i.humanName == humanName }
+            return entries.find { i -> i.humanName == humanName }
                 ?: throw IllegalArgumentException("Color matching function with name \"$humanName\" not found")
         }
     }

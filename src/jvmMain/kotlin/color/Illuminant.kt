@@ -44,7 +44,7 @@ enum class Illuminant(val humanName: String, filename: String) {
 
     companion object {
         fun forHumanName(humanName: String): Illuminant {
-            return values().find { i -> i.humanName == humanName }
+            return entries.find { i -> i.humanName == humanName }
                 ?: throw IllegalArgumentException("Illuminant with name \"$humanName\" not found")
         }
     }
