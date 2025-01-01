@@ -1,5 +1,7 @@
 [versions]
-antlr-kotlin = "ebf3caf7ff"
+kotlin = "2.1.0"
+antlr-kotlin = "1.0.0"
+antlr-kotlin-target = "0.0.4"
 assertk = "0.25"
 cucumber = "7.6.0"
 junit-platform-suite = "1.9.0"
@@ -7,20 +9,24 @@ kotlinx-coroutines-core = "1.5.2"
 ktlint = "0.46.1"
 nebula-facet = "9.4.0"
 spotless = "6.9.0"
+multik = "0.2.3"
 
 [libraries]
-antlr-kotlin-runtime = { module = "com.strumenta.antlr-kotlin:antlr-kotlin-runtime-jvm", version.ref = "antlr-kotlin" }
-antlr-kotlin-target = { module = "com.strumenta.antlr-kotlin:antlr-kotlin-target", version.ref = "antlr-kotlin" }
+antlr-kotlin-runtime = { module = "com.strumenta:antlr-kotlin-runtime", version.ref = "antlr-kotlin" }
+antlr-kotlin-target = { module = "com.strumenta.antlr-kotlin:antlr-kotlin-target", version.ref = "antlr-kotlin-target" }
 assertk-jvm = { module = "com.willowtreeapps.assertk:assertk-jvm", version.ref = "assertk" }
 cucumber-java8 = { module = "io.cucumber:cucumber-java8", version.ref = "cucumber" }
 cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
 cucumber-picocontainer = { module = "io.cucumber:cucumber-picocontainer", version.ref = "cucumber" }
 junit-platform-suite = { module = "org.junit.platform:junit-platform-suite", version.ref = "junit-platform-suite" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
+multik-core = { module = "org.jetbrains.kotlinx:multik-core", version.ref = "multik" }
+multik-default = { module = "org.jetbrains.kotlinx:multik-default", version.ref = "multik" }
 
 [bundles]
 
 [plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 antlr-kotlin = { id = "com.strumenta.antlr-kotlin", version.ref = "antlr-kotlin" }
 nebula-facet = { id = "nebula.facet", version.ref = "nebula-facet" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

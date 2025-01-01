@@ -1,10 +1,6 @@
 
 grammar RealExpression;
 
-@header {
-package garden.ephemeral.rocket.util;
-}
-
 start: expression;
 
 parenthesizedExpression

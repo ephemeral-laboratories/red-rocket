@@ -1,8 +1,9 @@
-import com.strumenta.antlrkotlin.gradleplugin.AntlrKotlinTask
+import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.0"
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.spotless)
     alias(libs.plugins.antlr.kotlin) apply false
     alias(libs.plugins.nebula.facet)
@@ -13,37 +14,41 @@ group = "garden.ephemeral.rocket"
 version = "0.1.0"
 
 facets {
-    @Suppress("UNUSED_VARIABLE")
     val samples by registering
 }
 
+@Suppress("UnstableApiUsage")
 configurations {
-    @Suppress("UNUSED_VARIABLE")
     val antlr by registering
 }
 
-dependencies {
-    @Suppress("UnstableApiUsage")
-    "antlr"(libs.antlr.kotlin.target)
-
-    implementation(kotlin("stdlib-jdk8"))
-    implementation(kotlin("reflect"))
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.antlr.kotlin.runtime)
-
-    testImplementation(libs.junit.platform.suite)
-    testImplementation(libs.cucumber.java8)
-    testImplementation(libs.cucumber.junit.platform.engine)
-    testImplementation(libs.cucumber.picocontainer)
-    testImplementation(libs.assertk.jvm)
+kotlin {
+    jvm()
+    sourceSets {
+        commonMain.dependencies {
+            implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("reflect"))
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.antlr.kotlin.runtime)
+            implementation(libs.multik.core)
+            implementation(libs.multik.default)
+        }
+        jvmTest.dependencies {
+            implementation(libs.junit.platform.suite)
+            implementation(libs.cucumber.java8)
+            implementation(libs.cucumber.junit.platform.engine)
+            implementation(libs.cucumber.picocontainer)
+            implementation(libs.assertk.jvm)
+        }
+    }
 }
 
-extensions.configure<JavaPluginExtension> {
+java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
 }
 
 tasks.withType<Test> {
@@ -66,7 +71,7 @@ spotless {
 
 // Then a bunch of stuff that the antlr-kotlin plugin should be doing for us, but is not yet doing...
 
-val generatedGrammarSourceDir = file("$buildDir/generated-src/antlr/main/kotlin")
+val generatedGrammarSourceDir = layout.buildDirectory.file("generated-src/antlr/commonMain/kotlin")
 val generateKotlinGrammarSource by tasks.registering(AntlrKotlinTask::class) {
     // Works around default encoding not being UTF-8
     // https://github.com/Strumenta/antlr-kotlin/issues/85
@@ -76,15 +81,16 @@ val generateKotlinGrammarSource by tasks.registering(AntlrKotlinTask::class) {
 
     source = project.objects
         .sourceDirectorySet("antlr", "antlr")
-        .srcDir("src/main/antlr").apply {
+        .srcDir("src/commonMain/antlr").apply {
             include("**/*.g4")
         }
-    outputDirectory = generatedGrammarSourceDir
+    outputDirectory = generatedGrammarSourceDir.get().asFile
+    packageName = "garden.ephemeral.rocket.util"
 
     doLast {
         // Workaround for generated code containing warnings
         // https://github.com/Strumenta/antlr-kotlin/issues/82
-        generatedGrammarSourceDir.walk()
+        outputDirectory!!.walk()
             .filter(File::isFile)
             .filter { f -> f.extension == "kt" }
             .forEach { file ->
@@ -94,10 +100,10 @@ val generateKotlinGrammarSource by tasks.registering(AntlrKotlinTask::class) {
     }
 }
 
-kotlin.sourceSets.main {
+kotlin.sourceSets.commonMain {
     kotlin.srcDir(generatedGrammarSourceDir)
 }
 
-tasks.compileKotlin {
+tasks.withType<KotlinCompile> {
     dependsOn(generateKotlinGrammarSource)
 }

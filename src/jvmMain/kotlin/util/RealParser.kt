@@ -67,10 +67,10 @@ class RealParser {
 
         private fun convert(input: String, token: Token): Double {
             return when (token.type) {
-                RealExpressionLexer.Tokens.INTEGER.id -> token.text!!.toInt().toDouble()
-                RealExpressionLexer.Tokens.FLOAT.id -> token.text!!.toDouble()
-                RealExpressionLexer.Tokens.PI.id -> PI
-                RealExpressionLexer.Tokens.INFINITY.id -> Double.POSITIVE_INFINITY
+                RealExpressionLexer.Tokens.INTEGER -> token.text!!.toInt().toDouble()
+                RealExpressionLexer.Tokens.FLOAT -> token.text!!.toDouble()
+                RealExpressionLexer.Tokens.PI -> PI
+                RealExpressionLexer.Tokens.INFINITY -> Double.POSITIVE_INFINITY
                 else -> throw UnsupportedTokenException(input, token)
             }
         }
