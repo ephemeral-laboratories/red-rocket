@@ -9,6 +9,8 @@ import garden.ephemeral.rocket.Tuple.Companion.vector
 import kotlin.Double.Companion.POSITIVE_INFINITY
 import kotlin.math.abs
 
+private data class AxisCheckResult(val tMin: Double, val tMax: Double)
+
 class Cube : Shape() {
     override fun localIntersect(localRay: Ray): Intersections {
         val (xtMin, xtMax) = checkAxis(localRay.origin.x, localRay.direction.x)
@@ -19,21 +21,25 @@ class Cube : Shape() {
         if (tMin > tMax) {
             return Intersections.None
         }
-        return Intersections(Intersection(tMin, this), Intersection(tMax, this))
+        return Intersections.build {
+            add(Intersection(tMin, this@Cube))
+            add(Intersection(tMax, this@Cube))
+        }
     }
 
-    private fun checkAxis(origin: Double, direction: Double): Pair<Double, Double> {
+    private fun checkAxis(origin: Double, direction: Double): AxisCheckResult {
         val tMinNumerator = (-1 - origin)
         val tMaxNumerator = (1 - origin)
-        var tMinMax = if (abs(direction) >= epsilon) {
-            Pair(tMinNumerator / direction, tMaxNumerator / direction)
+        return if (abs(direction) >= epsilon) {
+            val temp = AxisCheckResult(tMinNumerator / direction, tMaxNumerator / direction)
+            if (temp.tMin > temp.tMax) {
+                AxisCheckResult(temp.tMax, temp.tMin)
+            } else {
+                temp
+            }
         } else {
-            Pair(tMinNumerator * POSITIVE_INFINITY, tMaxNumerator * POSITIVE_INFINITY)
+            AxisCheckResult(tMinNumerator * POSITIVE_INFINITY, tMaxNumerator * POSITIVE_INFINITY)
         }
-        if (tMinMax.first > tMinMax.second) {
-            tMinMax = Pair(tMinMax.second, tMinMax.first)
-        }
-        return tMinMax
     }
 
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {

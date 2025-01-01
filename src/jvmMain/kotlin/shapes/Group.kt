@@ -4,13 +4,12 @@ import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Intersections
 import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.Tuple
-import garden.ephemeral.rocket.merge
 
 class Group : Shape() {
     val children = mutableListOf<Shape>()
 
     override fun localIntersect(localRay: Ray): Intersections {
-        return merge(
+        return Intersections.merge(
             children
                 .asSequence()
                 .map { child -> child.intersect(localRay) }

@@ -22,10 +22,10 @@ class Sphere : Shape() {
 
         val t1 = (-b - sqrt(discriminant)) / (2 * a)
         val t2 = (-b + sqrt(discriminant)) / (2 * a)
-        return Intersections(
-            Intersection(t1, this),
-            Intersection(t2, this)
-        )
+        return Intersections.build {
+            add(Intersection(t1, this@Sphere))
+            add(Intersection(t2, this@Sphere))
+        }
     }
 
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {

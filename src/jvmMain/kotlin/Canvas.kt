@@ -2,7 +2,7 @@ package garden.ephemeral.rocket
 
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
-import org.jetbrains.kotlinx.multik.ndarray.operations.toDoubleArray
+import org.jetbrains.kotlinx.multik.ndarray.data.MemoryViewDoubleArray
 import java.awt.image.BufferedImage
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -18,6 +18,7 @@ import kotlin.io.path.outputStream
 
 class Canvas(val width: Int, val height: Int) {
     private val data = DoubleArray(width * height * 3)
+    private val dataView = MemoryViewDoubleArray(data)
 
     private fun getOffset(x: Int, y: Int): Int = (y * width + x) * 3
 
@@ -27,18 +28,17 @@ class Canvas(val width: Int, val height: Int) {
     }
 
     fun setPixel(x: Int, y: Int, color: Color) {
-        val offset = getOffset(x, y)
-        // XXX: I hate that I can't tell the array to copy itself directly
-        color.toLinearRgbDoubles().toDoubleArray().copyInto(data, offset, 0, 3)
+        val destinationOffset = getOffset(x, y)
+        val source = color.toLinearRgbDoubles().data
+        source.copyInto(dataView, destinationOffset)
     }
 
     fun fill(color: Color) {
-        val doubles = color.toLinearRgbDoubles()
+        val source = color.toLinearRgbDoubles().data
         (0 until height).forEach { y ->
             (0 until width).forEach { x ->
-                val offset = getOffset(x, y)
-                // XXX: I hate that I can't tell the array to copy itself directly
-                doubles.toDoubleArray().copyInto(data, offset, 0, 3)
+                val destinationOffset = getOffset(x, y)
+                source.copyInto(dataView, destinationOffset)
             }
         }
     }

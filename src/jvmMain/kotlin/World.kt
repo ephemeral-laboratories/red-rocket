@@ -9,10 +9,12 @@ class World {
     var lights = mutableListOf<PointLight>()
 
     fun intersect(ray: Ray): Intersections {
-        return objects
-            .asSequence()
-            .flatMap { obj -> obj.intersect(ray) }
-            .toIntersections()
+        return Intersections.build {
+            objects
+                .asSequence()
+                .flatMap { obj -> obj.intersect(ray) }
+                .forEach(::add)
+        }
     }
 
     fun isShadowed(point: Tuple, light: PointLight): Boolean {
@@ -26,30 +28,32 @@ class World {
     }
 
     fun shadeHit(precomputed: Intersection.Precomputed, recursionsAllowed: Int = 5): Color {
-        return lights.fold(black) { color, light ->
-            val material = precomputed.obj.material
-            val shadowed = isShadowed(precomputed.overPoint, light)
-            val surface = material.lighting(
-                precomputed.obj,
-                light,
-                precomputed.overPoint,
-                precomputed.eyeline,
-                precomputed.normal,
-                shadowed
-            )
+        return lights
+            .map { light ->
+                val material = precomputed.obj.material
+                val shadowed = isShadowed(precomputed.overPoint, light)
+                val surface = material.lighting(
+                    precomputed.obj,
+                    light,
+                    precomputed.overPoint,
+                    precomputed.eyeline,
+                    precomputed.normal,
+                    shadowed
+                )
 
-            val reflected = reflectedColor(precomputed, recursionsAllowed)
-            val refracted = refractedColor(precomputed, recursionsAllowed)
+                val reflected = reflectedColor(precomputed, recursionsAllowed)
+                val refracted = refractedColor(precomputed, recursionsAllowed)
 
-            val reflectRefract = if (material.reflective.isNonBlack && material.transparency.isNonBlack) {
-                val reflectance = precomputed.fresnel()
-                reflected * reflectance + refracted * (1.0 - reflectance)
-            } else {
-                reflected + refracted
+                val reflectRefract = if (material.reflective.isNonBlack && material.transparency.isNonBlack) {
+                    val reflectance = precomputed.fresnel()
+                    reflected * reflectance + refracted * (1.0 - reflectance)
+                } else {
+                    reflected + refracted
+                }
+
+                surface + reflectRefract
             }
-
-            color + surface + reflectRefract
-        }
+            .fold(black) { acc, color -> acc + color }
     }
 
     fun colorAt(ray: Ray, recursionsAllowed: Int = 5): Color {

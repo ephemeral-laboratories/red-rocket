@@ -4,7 +4,6 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import garden.ephemeral.rocket.Intersection
-import garden.ephemeral.rocket.Intersections
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.MatrixStepDefinitions.Companion.transformFromString
 import garden.ephemeral.rocket.Space
@@ -57,7 +56,7 @@ class ShapeStepDefinitions(space: Space) : En {
         }
 
         When("intersections ← local_intersect\\({shape_var}, {ray_var})") { sv: String, rv: String ->
-            space.intersections = Intersections(space.shapes[sv]!!.localIntersect(space.rays[rv]!!))
+            space.intersections = space.shapes[sv]!!.localIntersect(space.rays[rv]!!)
         }
         When("{tuple_var} ← local_normal_at\\({shape_var}, {point})") { tv: String, sv: String, p: Tuple ->
             space.tuples[tv] = space.shapes[sv]!!.localNormalAt(p, dummyIntersection())

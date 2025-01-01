@@ -17,7 +17,7 @@ class Plane : Shape() {
 
         // Intersecting from above, or from below
         val t = -localRay.origin.y / localRay.direction.y
-        return Intersections(Intersection(t, this))
+        return Intersections.single(Intersection(t, this))
     }
 
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {

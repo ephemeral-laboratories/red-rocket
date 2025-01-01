@@ -43,26 +43,29 @@ class IntersectionStepDefinitions(space: Space) : En {
         }
 
         When("intersections ← intersect\\({shape_var}, {ray_var})") { sv: String, rv: String ->
-            space.intersections = Intersections(space.shapes[sv]!!.intersect(space.rays[rv]!!))
+            space.intersections = space.shapes[sv]!!.intersect(space.rays[rv]!!)
         }
         When("intersections ← intersections\\({intersection_var})") { iv: String ->
-            space.intersections = Intersections(space.namedIntersections[iv]!!)
+            space.intersections = Intersections.single(space.namedIntersections[iv]!!)
         }
         When("intersections ← intersections\\({intersection_var}, {intersection_var})") { iv1: String, iv2: String ->
-            space.intersections = sequenceOf(space.namedIntersections[iv1]!!, space.namedIntersections[iv2]!!)
-                .toIntersections()
+            space.intersections = Intersections.build {
+                add(space.namedIntersections[iv1]!!)
+                add(space.namedIntersections[iv2]!!)
+            }
         }
         When("intersections ← intersections\\({intersection_var}, {intersection_var}, {intersection_var}, {intersection_var})") { iv1: String, iv2: String, iv3: String, iv4: String ->
-            space.intersections = sequenceOf(
-                space.namedIntersections[iv1]!!,
-                space.namedIntersections[iv2]!!,
-                space.namedIntersections[iv3]!!,
-                space.namedIntersections[iv4]!!
-            )
-                .toIntersections()
+            space.intersections = Intersections.build {
+                add(space.namedIntersections[iv1]!!)
+                add(space.namedIntersections[iv2]!!)
+                add(space.namedIntersections[iv3]!!)
+                add(space.namedIntersections[iv4]!!)
+            }
         }
         When("intersections ← {compact_intersections}") { cxs: List<Intersection> ->
-            space.intersections = Intersections(cxs)
+            space.intersections = Intersections.build {
+                cxs.forEach(::add)
+            }
         }
 
         When("{intersection_var} ← hit\\(intersections)") { iv: String ->
@@ -76,7 +79,7 @@ class IntersectionStepDefinitions(space: Space) : En {
 
         When("comps ← prepare_computations\\({intersection_var}, {ray_var})") { iv: String, rv: String ->
             space.comps = space.namedIntersections[iv]!!
-                .prepareComputations(space.rays[rv]!!, Intersections(space.namedIntersections[iv]!!))
+                .prepareComputations(space.rays[rv]!!, Intersections.single(space.namedIntersections[iv]!!))
         }
         When("comps ← prepare_computations\\({intersection_var}, {ray_var}, intersections)") { iv: String, rv: String ->
             space.comps = space.namedIntersections[iv]!!

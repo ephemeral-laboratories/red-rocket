@@ -4,8 +4,6 @@ import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Intersections
 import garden.ephemeral.rocket.Ray
 import garden.ephemeral.rocket.Tuple
-import garden.ephemeral.rocket.merge
-import garden.ephemeral.rocket.toIntersections
 import garden.ephemeral.rocket.util.ToStringBuilder
 
 class CSG(val operation: Operation, val left: Shape, val right: Shape) : Shape() {
@@ -15,25 +13,23 @@ class CSG(val operation: Operation, val left: Shape, val right: Shape) : Shape()
     }
 
     override fun localIntersect(localRay: Ray): Intersections {
-        val intersections = merge(left.intersect(localRay), right.intersect(localRay))
+        val intersections = Intersections.merge(left.intersect(localRay), right.intersect(localRay))
 
         // XXX: For some reason we have to do this as a `List`. When I make an equivalent
         //      method for `Sequence` the wrong number of results comes out somehow.
         return filterIntersections(intersections)
-            .asSequence()
-            .toIntersections()
     }
 
     override fun localNormalAt(localPoint: Tuple, hit: Intersection): Tuple {
         throw IllegalStateException("should not be asking a CSG for a normal!")
     }
 
-    fun filterIntersections(intersections: List<Intersection>): List<Intersection> {
+    fun filterIntersections(intersections: List<Intersection>): Intersections {
         // begin outside both children
         var inL = false
         var inR = false
 
-        return buildList {
+        return Intersections.build {
             intersections.forEach { intersection ->
                 val lHit = left.includes(intersection.obj)
                 if (operation.intersectionAllowed(lHit, inL, inR)) {

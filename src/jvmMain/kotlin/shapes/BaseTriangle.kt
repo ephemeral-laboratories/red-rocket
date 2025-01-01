@@ -41,7 +41,7 @@ abstract class BaseTriangle(
         }
 
         val t = f * edge2.dot(originCrossE1)
-        return Intersections(Intersection(t, this, u, v))
+        return Intersections.single(Intersection(t, this, u, v))
     }
 
     override fun toStringImpl(builder: ToStringBuilder) {

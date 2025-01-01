@@ -4,7 +4,6 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import garden.ephemeral.rocket.Intersection
 import garden.ephemeral.rocket.Space
-import garden.ephemeral.rocket.toIntersections
 import io.cucumber.java8.En
 
 // Constructed reflectively
@@ -29,8 +28,6 @@ class CSGStepDefinitions(space: Space) : En {
 
         When("result ← filter_intersections\\({shape_var}, intersections)") { sv: String ->
             resultIntersections = (space.shapes[sv] as CSG).filterIntersections(space.intersections)
-                .asSequence()
-                .toIntersections()
         }
 
         Then("{shape_var}.operation = {string}") { sv: String, string: String ->

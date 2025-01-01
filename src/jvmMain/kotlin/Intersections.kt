@@ -6,12 +6,12 @@ package garden.ephemeral.rocket
  * @constructor constructs the collection of intersections. The intersections must
  *              already be sorted!
  */
-class Intersections(private val intersections: List<Intersection>) : List<Intersection> {
+class Intersections private constructor(private val intersections: List<Intersection>) : List<Intersection> {
     /**
      * Convenience constructor to construct the collection of intersections from varargs.
      * The intersections must already be sorted!
      */
-    constructor(vararg intersections: Intersection) : this(listOf(*intersections))
+    private constructor(vararg intersections: Intersection) : this(listOf(*intersections))
 
     /**
      * Gets the first hit in the intersections.
@@ -39,6 +39,8 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
 
     override fun iterator(): Iterator<Intersection> = intersections.iterator()
 
+    override fun toString() = intersections.toString()
+
     companion object {
         /**
          * Convenience constant to use for the case of no intersections.
@@ -46,6 +48,72 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
         val None = Intersections()
 
         val ordering: Comparator<Intersection> = Comparator.comparing(Intersection::t)
+
+        /**
+         * Factory method to create a single intersection.
+         */
+        fun single(intersection: Intersection): Intersections {
+            return Intersections(listOf(intersection))
+        }
+
+        /**
+         * Merges multiple lists of intersections.
+         *
+         * Uses the fact that both lists are already in order to optimise the number of
+         * elements which need to be checked.
+         *
+         * @param multiple the lists of intersections to merge.
+         * @return the merged list of intersections.
+         */
+        fun merge(multiple: Sequence<Intersections>): Intersections {
+            class Candidate(val iterator: Iterator<Intersection>, var current: Intersection) : Comparable<Candidate> {
+                fun next(): Boolean {
+                    return if (iterator.hasNext()) {
+                        current = iterator.next()
+                        true
+                    } else {
+                        false
+                    }
+                }
+
+                override fun compareTo(other: Candidate): Int {
+                    return ordering.compare(current, other.current)
+                }
+            }
+
+            val candidates = sortedSetOf<Candidate>()
+
+            multiple.forEach { intersections ->
+                val iterator = intersections.iterator()
+                if (iterator.hasNext()) {
+                    candidates.add(Candidate(iterator, iterator.next()))
+                }
+            }
+
+            return build {
+                while (candidates.isNotEmpty()) {
+                    val nextCandidate = candidates.first()
+                    candidates.remove(nextCandidate)
+                    add(nextCandidate.current)
+                    if (nextCandidate.next()) {
+                        candidates.add(nextCandidate)
+                    }
+                }
+            }
+        }
+
+        /**
+         * Merges multiple lists of intersections.
+         *
+         * Uses the fact that both lists are already in order to optimise the number of
+         * elements which need to be checked.
+         *
+         * @param multiple the lists of intersections to merge.
+         * @return the merged list of intersections.
+         */
+        fun merge(vararg multiple: Intersections): Intersections {
+            return merge(sequenceOf(*multiple))
+        }
 
         /**
          * Factory method to build a list of intersections.
@@ -73,79 +141,3 @@ class Intersections(private val intersections: List<Intersection>) : List<Inters
     }
 }
 
-/**
- * Extension to a sequence of intersections to collect the sequence into an `Intersections`.
- * Takes care of sorting the sequence first.
- *
- * @receiver the sequence of intersections.
- * @return the intersections.
- */
-fun Sequence<Intersection>.toIntersections(): Intersections {
-    return Intersections(
-        buildList {
-            addAll(this@toIntersections)
-            sortBy(Intersection::t)
-        }
-    )
-}
-
-/**
- * Merges multiple lists of intersections.
- *
- * Uses the fact that both lists are already in order to optimise the number of
- * elements which need to be checked.
- *
- * @param multiple the lists of intersections to merge.
- * @return the merged list of intersections.
- */
-fun merge(vararg multiple: Intersections): Intersections {
-    return merge(sequenceOf(*multiple))
-}
-
-/**
- * Merges multiple lists of intersections.
- *
- * Uses the fact that both lists are already in order to optimise the number of
- * elements which need to be checked.
- *
- * @param multiple the lists of intersections to merge.
- * @return the merged list of intersections.
- */
-fun merge(multiple: Sequence<Intersections>): Intersections {
-    class Candidate(val iterator: Iterator<Intersection>, var current: Intersection) : Comparable<Candidate> {
-        fun next(): Boolean {
-            return if (iterator.hasNext()) {
-                current = iterator.next()
-                true
-            } else {
-                false
-            }
-        }
-
-        override fun compareTo(other: Candidate): Int {
-            return Intersections.ordering.compare(current, other.current)
-        }
-    }
-
-    val candidates = sortedSetOf<Candidate>()
-
-    multiple.forEach { intersections ->
-        val iterator = intersections.iterator()
-        if (iterator.hasNext()) {
-            candidates.add(Candidate(iterator, iterator.next()))
-        }
-    }
-
-    return Intersections(
-        buildList {
-            while (candidates.isNotEmpty()) {
-                val nextCandidate = candidates.first()
-                candidates.remove(nextCandidate)
-                add(nextCandidate.current)
-                if (nextCandidate.next()) {
-                    candidates.add(nextCandidate)
-                }
-            }
-        }
-    )
-}
