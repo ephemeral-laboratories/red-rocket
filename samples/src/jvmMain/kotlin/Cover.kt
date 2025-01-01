@@ -6,6 +6,7 @@ import garden.ephemeral.rocket.Transforms.Companion.translation
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
+import garden.ephemeral.rocket.camera.SamplingStrategy
 import garden.ephemeral.rocket.color.Color.Companion.black
 import garden.ephemeral.rocket.color.Color.Companion.grey
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
@@ -139,7 +140,7 @@ fun main() = render {
         }
     }
 
-    Camera(800, 800, 45.deg) {
+    Camera(800, 800, 45.deg, SamplingStrategy.multi4) {
         transform = viewTransform(point(-6.0, 6.0, -10.0), point(6.0, 0.0, 6.0), vector(-0.45, 1.0, 0.0))
     }
 }

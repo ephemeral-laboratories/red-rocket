@@ -6,8 +6,9 @@ out/
 
 # Gradle
 .gradle/
+.kotlin/
 build/
 
 # My own test output files
-/*.ppm
-/*.png
+**/*.ppm
+**/*.png

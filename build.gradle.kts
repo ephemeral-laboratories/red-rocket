@@ -6,18 +6,12 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.spotless)
     alias(libs.plugins.antlr.kotlin) apply false
-    alias(libs.plugins.nebula.facet)
     id("utf8-workarounds")
 }
 
 group = "garden.ephemeral.rocket"
 version = "0.1.0"
 
-facets {
-    val samples by registering
-}
-
-@Suppress("UnstableApiUsage")
 configurations {
     val antlr by registering
 }
@@ -32,6 +26,8 @@ kotlin {
             implementation(libs.antlr.kotlin.runtime)
             implementation(libs.multik.core)
             implementation(libs.multik.default)
+        }
+        jvmMain {
         }
         jvmTest.dependencies {
             implementation(libs.junit.platform.suite)
@@ -48,7 +44,10 @@ java {
 }
 
 tasks.withType<KotlinCompile> {
-    compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+        freeCompilerArgs.add("-Xadd-modules=jdk.incubator.vector")
+    }
 }
 
 tasks.withType<Test> {

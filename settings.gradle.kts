@@ -6,9 +6,11 @@ pluginManagement {
     }
 }
 
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-    @Suppress("UnstableApiUsage")
     repositories {
         mavenCentral()
     }
 }
+
+include(":samples")
