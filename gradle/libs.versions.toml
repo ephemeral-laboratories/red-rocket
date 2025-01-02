@@ -4,7 +4,8 @@ antlr-kotlin = "1.0.0"
 assertk = "0.25"
 cucumber = "7.6.0"
 junit-platform-suite = "1.9.0"
-kotlinx-coroutines-core = "1.5.2"
+kotlinx-coroutines = "1.5.2"
+kotlinx-io = "0.6.0"
 ktlint = "0.46.1"
 spotless = "6.9.0"
 multik = "0.2.3"
@@ -16,9 +17,13 @@ cucumber-java8 = { module = "io.cucumber:cucumber-java8", version.ref = "cucumbe
 cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
 cucumber-picocontainer = { module = "io.cucumber:cucumber-picocontainer", version.ref = "cucumber" }
 junit-platform-suite = { module = "org.junit.platform:junit-platform-suite", version.ref = "junit-platform-suite" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 multik-core = { module = "org.jetbrains.kotlinx:multik-core", version.ref = "multik" }
 multik-default = { module = "org.jetbrains.kotlinx:multik-default", version.ref = "multik" }
+multik-kotlin = { module = "org.jetbrains.kotlinx:multik-kotlin", version.ref = "multik" }
+multik-openblas = { module = "org.jetbrains.kotlinx:multik-openblas", version.ref = "multik" }
+multik-openblas-mingwx64 = { module = "org.jetbrains.kotlinx:multik-openblas-mingwx64", version.ref = "multik" }
 
 [bundles]
 

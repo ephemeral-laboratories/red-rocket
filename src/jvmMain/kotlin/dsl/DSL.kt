@@ -5,10 +5,12 @@ import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.PointLight
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.World
+import garden.ephemeral.rocket.bootstrapMultik
 import garden.ephemeral.rocket.camera.Camera
 import garden.ephemeral.rocket.camera.SamplingStrategy
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.importers.ObjFileParser
+import garden.ephemeral.rocket.io.FileSystemSiblingFileLocator
 import garden.ephemeral.rocket.shapes.Cone
 import garden.ephemeral.rocket.shapes.Cube
 import garden.ephemeral.rocket.shapes.Cylinder
@@ -17,11 +19,14 @@ import garden.ephemeral.rocket.shapes.Plane
 import garden.ephemeral.rocket.shapes.Shape
 import garden.ephemeral.rocket.shapes.Sphere
 import garden.ephemeral.rocket.util.Angle
-import java.time.Duration
-import java.time.Instant
-import kotlin.io.path.Path
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlin.time.measureTimedValue
 
 fun render(block: RenderBuilder.() -> Unit) {
+    bootstrapMultik()
+
     RenderBuilder().apply(block).render()
 }
 
@@ -44,10 +49,11 @@ class RenderBuilder {
     }
 
     fun render() {
-        val t0 = Instant.now()
-        val canvas = camera.render(world)
-        val t1 = Instant.now()
-        println("Render time: ${Duration.between(t0, t1)}")
+        println("Render starting...")
+        val (canvas, renderTime) = measureTimedValue {
+            camera.render(world)
+        }
+        println("Render time: $renderTime")
 
         canvas.toPPM(Path("out.ppm"))
         canvas.toPNG(Path("out.png"))
@@ -88,7 +94,13 @@ abstract class ObjectContainerBuilder {
     // fun Triangle(block: Triangle.() -> Unit): Triangle = Triangle().apply(block)
 
     fun ObjFile(path: String, block: Group.() -> Unit) {
-        children.add(ObjFileParser(Path(path)).objToGroup().apply(block))
+        val filePath = Path(path)
+        val group = SystemFileSystem.source(filePath).use { source ->
+            ObjFileParser(source.buffered(), FileSystemSiblingFileLocator(SystemFileSystem, filePath.parent!!))
+                .objToGroup()
+        }
+        group.block()
+        children.add(group)
     }
 }
 

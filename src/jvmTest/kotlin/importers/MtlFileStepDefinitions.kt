@@ -6,6 +6,8 @@ import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
 import garden.ephemeral.rocket.Space
 import io.cucumber.java8.En
+import kotlinx.io.buffered
+import kotlinx.io.files.SystemFileSystem
 
 // Constructed reflectively
 @Suppress("unused")
@@ -14,14 +16,20 @@ class MtlFileStepDefinitions(space: Space) : En {
 
     init {
         When("parser ← parse_mtl_file\\({file_var})") { fv: String ->
-            parser = MtlFileParser(space.files[fv]!!)
+            parser = SystemFileSystem.source(space.files[fv]!!).use { source ->
+                MtlFileParser(source.buffered())
+            }
 
             // Define material so that subsequent steps can use existing definitions for materials
             space.material = parser.materials.values.iterator().next()
         }
 
         Then("parse_mtl_file\\({file_var}) should fail") { fv: String ->
-            assertThat { MtlFileParser(space.files[fv]!!) }.isFailure()
+            assertThat {
+                SystemFileSystem.source(space.files[fv]!!).use { source ->
+                    MtlFileParser(source.buffered())
+                }
+            }.isFailure()
                 .isInstanceOf(MtlFileParser.InvalidMtlException::class.java)
         }
 

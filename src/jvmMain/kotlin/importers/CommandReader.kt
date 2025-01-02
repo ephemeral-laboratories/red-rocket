@@ -1,14 +1,14 @@
 package garden.ephemeral.rocket.importers
 
-import java.nio.file.Path
-import kotlin.io.path.forEachLine
+import garden.ephemeral.rocket.util.forEachLine
+import kotlinx.io.Source
 
 /**
  * Utility to read OBJ style commands from a plain-text file.
  *
- * @param file the file.
+ * @param source the source to read from.
  */
-internal class CommandReader(private val file: Path) {
+internal class CommandReader(private val source: Source) {
     private val whitespace = Regex("\\s+")
 
     /**
@@ -20,7 +20,8 @@ internal class CommandReader(private val file: Path) {
     fun forEachCommand(action: (Command) -> Unit) {
         var lineNumber = 0
         var partialLine: String? = null
-        file.forEachLine { line ->
+
+        source.forEachLine { line ->
             lineNumber++
 
             // Line coalescing logic

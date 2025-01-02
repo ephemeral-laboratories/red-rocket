@@ -128,10 +128,6 @@ class Burns2020Method1 private constructor(
             val bInverse = packMatrix(n, d, aw, awTransposed)
 
             val b = bInverse.inverse
-            println("b = $b")
-
-            val rhoXYZRaw = extractRho2D(b, n)
-            println("rhoXYZRaw = $rhoXYZRaw")
 
             val rhoXYZ = extractRho2D(b, n) * factor
 

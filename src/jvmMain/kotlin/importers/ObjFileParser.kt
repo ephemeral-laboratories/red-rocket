@@ -4,12 +4,14 @@ import garden.ephemeral.rocket.Material
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.Tuple.Companion.vector
+import garden.ephemeral.rocket.io.SiblingFileLocator
 import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.SmoothTriangle
 import garden.ephemeral.rocket.shapes.Triangle
-import java.nio.file.Path
+import kotlinx.io.Source
+import kotlinx.io.buffered
 
-class ObjFileParser(file: Path, lenient: Boolean = false) {
+class ObjFileParser(source: Source, siblingFileLocator: SiblingFileLocator, lenient: Boolean = false) {
     val defaultGroup: Group = Group()
     private val namedGroups = mutableMapOf<String, Group>()
     private var currentGroup: Group = defaultGroup
@@ -21,12 +23,14 @@ class ObjFileParser(file: Path, lenient: Boolean = false) {
     private var currentMaterial: Material = Material.default
 
     init {
-        CommandReader(file).forEachCommand { command ->
+        CommandReader(source).forEachCommand { command ->
             when (command.name) {
                 "mtllib" -> {
                     // mtllib $filename
                     val (mtlFilename) = command.args
-                    materialLibrary = MtlFileParser(file.resolveSibling(mtlFilename)).materials
+                    siblingFileLocator.resolveSibling(mtlFilename).use { source ->
+                        materialLibrary = MtlFileParser(source.buffered()).materials
+                    }
                 }
                 "usemtl" -> {
                     // usemtl $name

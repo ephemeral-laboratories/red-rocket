@@ -9,10 +9,13 @@ import garden.ephemeral.rocket.Space
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.isCloseTo
+import garden.ephemeral.rocket.io.FileSystemSiblingFileLocator
 import garden.ephemeral.rocket.shapes.BaseTriangle
 import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.SmoothTriangle
 import io.cucumber.java8.En
+import kotlinx.io.buffered
+import kotlinx.io.files.SystemFileSystem
 
 // Constructed reflectively
 @Suppress("unused")
@@ -21,11 +24,21 @@ class ObjFileStepDefinitions(space: Space) : En {
 
     init {
         When("parser ← parse_obj_file\\({file_var})") { fv: String ->
-            parser = ObjFileParser(space.files[fv]!!)
+            val filePath = space.files[fv]!!
+            parser = SystemFileSystem.source(filePath).use { source ->
+                ObjFileParser(source.buffered(), FileSystemSiblingFileLocator(SystemFileSystem, filePath.parent!!))
+            }
         }
 
         When("parser ← parse_obj_file_leniently\\({file_var})") { fv: String ->
-            parser = ObjFileParser(space.files[fv]!!, lenient = true)
+            val filePath = space.files[fv]!!
+            parser = SystemFileSystem.source(filePath).use { source ->
+                ObjFileParser(
+                    source = source.buffered(),
+                    siblingFileLocator = FileSystemSiblingFileLocator(SystemFileSystem, filePath.parent!!),
+                    lenient = true
+                )
+            }
         }
 
         When("{shape_var} ← parser.default_group") { sv: String ->

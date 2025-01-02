@@ -2,7 +2,7 @@ package garden.ephemeral.rocket
 
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.shapes.Shape
-import java.nio.file.Path
+import kotlinx.io.files.Path
 
 /**
  * State object to share global state between multiple step definition classes.

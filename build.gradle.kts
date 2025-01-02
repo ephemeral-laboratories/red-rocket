@@ -23,11 +23,14 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.io.core)
             implementation(libs.antlr.kotlin.runtime)
             implementation(libs.multik.core)
-            implementation(libs.multik.default)
+            runtimeOnly(libs.multik.kotlin)
         }
-        jvmMain {
+        jvmMain.dependencies {
+            runtimeOnly(libs.multik.default)
+            runtimeOnly(libs.multik.openblas)
         }
         jvmTest.dependencies {
             implementation(libs.junit.platform.suite)

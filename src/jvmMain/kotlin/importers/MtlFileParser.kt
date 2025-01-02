@@ -5,10 +5,10 @@ import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.cieXyz
 import garden.ephemeral.rocket.color.Color.Companion.grey
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
-import java.nio.file.Path
-import kotlin.io.path.forEachLine
+import garden.ephemeral.rocket.util.forEachLine
+import kotlinx.io.Source
 
-class MtlFileParser(file: Path) {
+class MtlFileParser(source: Source) {
     val materials = mutableMapOf<String, Material>()
     private val whitespace = Regex("\\s+")
     private var currentMaterialName = ""
@@ -16,7 +16,7 @@ class MtlFileParser(file: Path) {
 
     init {
         var firstCommand = true
-        file.forEachLine line@{ line ->
+        source.forEachLine line@{ line ->
             val trimmedLine = line.trim()
             if (trimmedLine.isEmpty() || trimmedLine.startsWith("#")) {
                 return@line

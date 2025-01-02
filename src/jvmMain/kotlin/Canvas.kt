@@ -2,19 +2,20 @@ package garden.ephemeral.rocket
 
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
+import kotlinx.io.Buffer
+import kotlinx.io.Sink
+import kotlinx.io.Source
+import kotlinx.io.asInputStream
+import kotlinx.io.asOutputStream
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.readLine
+import kotlinx.io.readString
+import kotlinx.io.writeString
 import org.jetbrains.kotlinx.multik.ndarray.data.MemoryViewDoubleArray
 import java.awt.image.BufferedImage
-import java.io.PrintWriter
-import java.io.StringWriter
-import java.nio.file.Path
-import java.util.Scanner
-import java.util.regex.Pattern
-import java.util.stream.Stream
 import javax.imageio.ImageIO
-import kotlin.io.path.bufferedReader
-import kotlin.io.path.bufferedWriter
-import kotlin.io.path.inputStream
-import kotlin.io.path.outputStream
 
 class Canvas(val width: Int, val height: Int) {
     private val data = DoubleArray(width * height * 3)
@@ -43,7 +44,7 @@ class Canvas(val width: Int, val height: Int) {
         }
     }
 
-    fun toPNG(file: Path) {
+    fun toPNG(sink: Sink) {
         val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
         (0 until height).forEach { y ->
             (0 until width).forEach { x ->
@@ -51,36 +52,35 @@ class Canvas(val width: Int, val height: Int) {
                 image.setRGB(x, y, 0xff000000.toInt() + r.shl(16) + g.shl(8) + b)
             }
         }
-        file.outputStream().use { stream ->
-            if (!ImageIO.write(image, "PNG", stream)) {
-                throw IllegalStateException("Couldn't find a suitable writer")
-            }
+
+        if (!ImageIO.write(image, "PNG", sink.asOutputStream())) {
+            throw IllegalStateException("Couldn't find a suitable writer")
         }
     }
 
-    fun toPPM(file: Path) {
-        PrintWriter(file.bufferedWriter()).use(this@Canvas::toPPM)
+    fun toPNG(filePath: Path) {
+        SystemFileSystem.sink(filePath).use { rawSink ->
+            val sink = rawSink.buffered()
+            toPNG(sink)
+            sink.flush()
+        }
     }
 
-    fun toPPM(): String {
-        val stringWriter = StringWriter()
-        PrintWriter(stringWriter).use(this@Canvas::toPPM)
-        return stringWriter.toString()
-    }
-
-    private fun toPPM(writer: PrintWriter) {
+    private fun toPPM(sink: Sink) {
         val maximumLineLength = 70
         val lineBuffer = StringBuilder(80)
-        writer.println("P3")
-        writer.println("$width $height")
-        writer.println("255")
+
+        fun Sink.writeLine(line: CharSequence) = writeString("$line\n")
+
+        sink.writeLine("P3")
+        sink.writeLine("$width $height")
+        sink.writeLine("255")
         (0 until height).forEach { y: Int ->
-            lineBuffer.clear()
             (0 until width).forEach { x: Int ->
                 getPixel(x, y).toSRgbInts().forEach { i: Int ->
                     val nextValue = i.toString()
                     if (lineBuffer.length + 1 + nextValue.length >= maximumLineLength) {
-                        writer.println(lineBuffer)
+                        sink.writeLine(lineBuffer)
                         lineBuffer.clear()
                     }
                     if (lineBuffer.isNotEmpty()) {
@@ -90,22 +90,34 @@ class Canvas(val width: Int, val height: Int) {
                 }
             }
             if (lineBuffer.isNotEmpty()) {
-                writer.println(lineBuffer)
+                sink.writeLine(lineBuffer)
+                lineBuffer.clear()
             }
         }
     }
 
-    val pixels: Stream<Color>
-        get() {
-            return IntRange(0, width - 1)
-                .zip(IntRange(0, height - 1))
-                .stream()
-                .map { (x: Int, y: Int) -> getPixel(x, y) }
+    fun toPPM(filePath: Path) {
+        SystemFileSystem.sink(filePath).use { rawSink ->
+            val sink = rawSink.buffered()
+            toPPM(sink)
+            sink.flush()
         }
+    }
+
+    fun toPPM(): String {
+        val buffer = Buffer()
+        toPPM(buffer)
+        return buffer.readString()
+    }
+
+    val pixels: Sequence<Color>
+        get() = IntRange(0, width - 1).asSequence()
+            .zip(IntRange(0, height - 1).asSequence())
+            .map { (x: Int, y: Int) -> getPixel(x, y) }
 
     companion object {
-        fun fromPNG(file: Path): Canvas {
-            val image = file.inputStream().use(ImageIO::read)
+        fun fromPNG(source: Source): Canvas {
+            val image = source.asInputStream().use(ImageIO::read)
             return Canvas(image.width, image.height).apply {
                 (0 until height).forEach { y: Int ->
                     (0 until width).forEach { x: Int ->
@@ -124,37 +136,53 @@ class Canvas(val width: Int, val height: Int) {
             }
         }
 
-        fun fromPPM(file: Path): Canvas {
-            return Scanner(file.bufferedReader()).use { scanner ->
-                val comments = Pattern.compile("\\s*(#.*\n)*")
+        fun fromPNG(filePath: Path) = SystemFileSystem.source(filePath).use { source ->
+            fromPNG(source.buffered())
+        }
 
-                scanner.skip(comments)
-                val header = scanner.nextLine()
-                if (header != "P3") {
-                    throw IllegalArgumentException("Unexpected file header: $header")
-                }
+        fun fromPPM(source: Source): Canvas {
+            val whitespaceRegex = Regex("""\s""")
+            val commentRegex = Regex("""#.*$""")
+            val leftoverTokens = mutableListOf<String>()
 
-                scanner.skip(comments)
-                val width = scanner.nextInt()
-                scanner.skip(comments)
-                val height = scanner.nextInt()
-                scanner.skip(comments)
-                val scale = scanner.nextInt()
+            fun nextToken(): String {
+                while (true) {
+                    if (leftoverTokens.isNotEmpty()) {
+                        return leftoverTokens.removeFirst()
+                    }
 
-                Canvas(width, height).apply {
-                    (0 until height).forEach { y ->
-                        (0 until width).forEach { x ->
-                            scanner.skip(comments)
-                            val r = scanner.nextInt()
-                            scanner.skip(comments)
-                            val g = scanner.nextInt()
-                            scanner.skip(comments)
-                            val b = scanner.nextInt()
-                            setPixel(x, y, Color.fromSRgbInts(r, g, b, scale))
-                        }
+                    val line = (source.readLine() ?: throw IllegalArgumentException("Expected more data"))
+                        .replace(commentRegex, "")
+                        .trim()
+                    if (line.isNotEmpty()) {
+                        leftoverTokens.addAll(line.split(whitespaceRegex).filter { it.isNotEmpty() })
                     }
                 }
             }
+
+            fun nextInt() = nextToken().toInt()
+
+            val header = nextToken()
+            require(header == "P3") { "Unexpected file header: $header" }
+
+            val width = nextInt()
+            val height = nextInt()
+            val scale = nextInt()
+
+            return Canvas(width, height).apply {
+                (0 until height).forEach { y ->
+                    (0 until width).forEach { x ->
+                        val r = nextInt()
+                        val g = nextInt()
+                        val b = nextInt()
+                        setPixel(x, y, Color.fromSRgbInts(r, g, b, scale))
+                    }
+                }
+            }
+        }
+
+        fun fromPPM(filePath: Path) = SystemFileSystem.source(filePath).use { source ->
+            fromPPM(source.buffered())
         }
     }
 }
