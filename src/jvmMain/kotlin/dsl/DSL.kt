@@ -5,7 +5,6 @@ import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.PointLight
 import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.World
-import garden.ephemeral.rocket.bootstrapMultik
 import garden.ephemeral.rocket.camera.Camera
 import garden.ephemeral.rocket.camera.SamplingStrategy
 import garden.ephemeral.rocket.color.Color
@@ -25,8 +24,6 @@ import kotlinx.io.files.SystemFileSystem
 import kotlin.time.measureTimedValue
 
 fun render(block: RenderBuilder.() -> Unit) {
-    bootstrapMultik()
-
     RenderBuilder().apply(block).render()
 }
 

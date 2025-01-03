@@ -1,3 +1,4 @@
+
 import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -18,6 +19,11 @@ configurations {
 
 kotlin {
     jvm()
+//    @OptIn(ExperimentalWasmDsl::class)
+//    wasmJs {
+//        nodejs()
+//    }
+    mingwX64()
     sourceSets {
         commonMain.dependencies {
             implementation(kotlin("stdlib-jdk8"))
@@ -26,11 +32,15 @@ kotlin {
             implementation(libs.kotlinx.io.core)
             implementation(libs.antlr.kotlin.runtime)
             implementation(libs.multik.core)
-            runtimeOnly(libs.multik.kotlin)
+            implementation(libs.multik.kotlin)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotest.assertions.core)
+            implementation(libs.kotest.framework.datatest)
         }
         jvmMain.dependencies {
-            runtimeOnly(libs.multik.default)
-            runtimeOnly(libs.multik.openblas)
+            implementation(libs.multik.default)
+            implementation(libs.multik.openblas)
         }
         jvmTest.dependencies {
             implementation(libs.junit.platform.suite)

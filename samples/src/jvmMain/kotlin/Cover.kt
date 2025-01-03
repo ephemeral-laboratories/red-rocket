@@ -1,5 +1,6 @@
-package garden.ephemeral.rocket
+package garden.ephemeral.rocket.samples
 
+import garden.ephemeral.rocket.Material
 import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.scaling
 import garden.ephemeral.rocket.Transforms.Companion.translation
@@ -14,7 +15,9 @@ import garden.ephemeral.rocket.color.Color.Companion.white
 import garden.ephemeral.rocket.dsl.render
 import garden.ephemeral.rocket.util.deg
 
-fun main() = render {
+fun main() = renderCoverImage(800, 800)
+
+fun renderCoverImage(hSize: Int, vSize: Int) = render {
     World {
         val whiteMaterial = Material.build {
             color = white
@@ -140,7 +143,7 @@ fun main() = render {
         }
     }
 
-    Camera(800, 800, 45.deg, SamplingStrategy.multi4) {
+    Camera(hSize, vSize, 45.deg, SamplingStrategy.multi4) {
         transform = viewTransform(point(-6.0, 6.0, -10.0), point(6.0, 0.0, 6.0), vector(-0.45, 1.0, 0.0))
     }
 }

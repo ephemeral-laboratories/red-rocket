@@ -1,5 +1,6 @@
-package garden.ephemeral.rocket
+package garden.ephemeral.rocket.samples
 
+import garden.ephemeral.rocket.Material
 import garden.ephemeral.rocket.Tuple.Companion.point
 import garden.ephemeral.rocket.dsl.WorldBuilder
 import garden.ephemeral.rocket.dsl.render

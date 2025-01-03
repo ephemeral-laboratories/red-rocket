@@ -1,10 +1,13 @@
 
+import kotlinx.benchmark.gradle.benchmark
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlinx.benchmark)
+    alias(libs.plugins.kotlin.plugin.allopen)
     id("utf8-workarounds")
 }
 
@@ -13,11 +16,32 @@ version = "0.1.0"
 
 kotlin {
     jvm()
+    mingwX64 {
+        compilerOptions {
+
+        }
+    }
     sourceSets {
+        commonMain.dependencies {
+            implementation(libs.kotlinx.benchmark.runtime)
+            implementation(libs.multik.core)
+        }
         jvmMain.dependencies {
             implementation(rootProject)
         }
     }
+}
+
+benchmark {
+    targets {
+        register("jvm")
+//        register("wasmJs")
+        register("mingwX64")
+    }
+}
+
+allOpen {
+    annotation("org.openjdk.jmh.annotations.State")
 }
 
 java {

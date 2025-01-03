@@ -1,6 +1,7 @@
 [versions]
 kotlin = "2.1.0"
 antlr-kotlin = "1.0.0"
+kotest = "5.9.1"
 assertk = "0.25"
 cucumber = "7.6.0"
 junit-platform-suite = "1.9.0"
@@ -9,9 +10,15 @@ kotlinx-io = "0.6.0"
 ktlint = "0.46.1"
 spotless = "6.9.0"
 multik = "0.2.3"
+kotlinx-benchmark = "0.4.13"
+kotlin-plugin-allopen = "2.0.20"
 
 [libraries]
 antlr-kotlin-runtime = { module = "com.strumenta:antlr-kotlin-runtime", version.ref = "antlr-kotlin" }
+kotest-runner-junit5 = {module = "io.kotest:kotest-runner-junit5", version.ref = "kotest"}
+kotest-assertions-core = {module = "io.kotest:kotest-assertions-core", version.ref = "kotest"}
+kotest-framework-datatest = {module = "io.kotest:kotest-framework-datatest", version.ref = "kotest"}
+kotest-property = {module = "io.kotest:kotest-property", version.ref = "kotest"}
 assertk-jvm = { module = "com.willowtreeapps.assertk:assertk-jvm", version.ref = "assertk" }
 cucumber-java8 = { module = "io.cucumber:cucumber-java8", version.ref = "cucumber" }
 cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
@@ -24,6 +31,7 @@ multik-default = { module = "org.jetbrains.kotlinx:multik-default", version.ref 
 multik-kotlin = { module = "org.jetbrains.kotlinx:multik-kotlin", version.ref = "multik" }
 multik-openblas = { module = "org.jetbrains.kotlinx:multik-openblas", version.ref = "multik" }
 multik-openblas-mingwx64 = { module = "org.jetbrains.kotlinx:multik-openblas-mingwx64", version.ref = "multik" }
+kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark" }
 
 [bundles]
 
@@ -31,3 +39,5 @@ multik-openblas-mingwx64 = { module = "org.jetbrains.kotlinx:multik-openblas-min
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 antlr-kotlin = { id = "com.strumenta.antlr-kotlin", version.ref = "antlr-kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+kotlinx-benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinx-benchmark" }
+kotlin-plugin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin-plugin-allopen" }

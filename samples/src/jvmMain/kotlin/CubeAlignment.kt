@@ -1,5 +1,6 @@
-package garden.ephemeral.rocket
+package garden.ephemeral.rocket.samples
 
+import garden.ephemeral.rocket.Material
 import garden.ephemeral.rocket.Transforms.Companion.rotationX
 import garden.ephemeral.rocket.Transforms.Companion.rotationY
 import garden.ephemeral.rocket.Transforms.Companion.translation
