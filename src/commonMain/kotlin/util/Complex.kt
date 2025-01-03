@@ -1,13 +1,9 @@
 package garden.ephemeral.rocket.util
 
-import kotlin.math.PI
+import kotlin.experimental.ExperimentalNativeApi
 import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.cosh
 import kotlin.math.pow
 import kotlin.math.sign
-import kotlin.math.sin
-import kotlin.math.sinh
 import kotlin.math.sqrt
 
 data class Complex(val real: Double, val imaginary: Double = 0.0) {
@@ -20,9 +16,11 @@ data class Complex(val real: Double, val imaginary: Double = 0.0) {
 
     operator fun plus(addend: Complex): Complex = Complex(real + addend.real, imaginary + addend.imaginary)
     operator fun plus(addend: Double): Complex = Complex(real + addend, imaginary)
+    operator fun plus(addend: Number): Complex = plus(addend.toDouble())
 
     operator fun minus(subtrahend: Complex): Complex = Complex(real - subtrahend.real, imaginary - subtrahend.imaginary)
     operator fun minus(subtrahend: Double): Complex = Complex(real - subtrahend, imaginary)
+    operator fun minus(subtrahend: Number): Complex = minus(subtrahend.toDouble())
 
     operator fun times(multiplier: Complex): Complex = Complex(
         real * multiplier.real - imaginary * multiplier.imaginary,
@@ -30,7 +28,9 @@ data class Complex(val real: Double, val imaginary: Double = 0.0) {
     )
 
     operator fun times(multiplier: Double): Complex = Complex(real * multiplier, imaginary * multiplier)
+    operator fun times(multiplier: Number): Complex = times(multiplier.toDouble())
 
+    @OptIn(ExperimentalNativeApi::class)
     operator fun div(divisor: Complex): Complex {
         if (divisor.isZero) {
             throw IllegalArgumentException("Not handling dividing by zero right now, let me know what it should do")
@@ -51,6 +51,7 @@ data class Complex(val real: Double, val imaginary: Double = 0.0) {
     }
 
     operator fun div(divisor: Double): Complex = Complex(real / divisor, imaginary / divisor)
+    operator fun div(divisor: Number): Complex = div(divisor.toDouble())
 
     operator fun unaryMinus(): Complex = Complex(-real, -imaginary)
 
@@ -58,7 +59,7 @@ data class Complex(val real: Double, val imaginary: Double = 0.0) {
         return times(this)
     }
 
-    fun pow(value: Double): Complex {
+    infix fun pow(value: Double): Complex {
         // Complex number (a + bi) rewritten in polar form, {r = magnitude, θ = argument}
         // is equivalent to the exponential form, a + bi = r e^(iθ)
         // Then we take that to the power n, getting
@@ -70,7 +71,7 @@ data class Complex(val real: Double, val imaginary: Double = 0.0) {
         return fromPolar(resultR, resultTheta)
     }
 
-    fun pow(value: Int): Complex {
+    infix fun pow(value: Int): Complex {
         return when (value) {
             0 -> Unit
             1 -> this
@@ -138,63 +139,3 @@ data class Complex(val real: Double, val imaginary: Double = 0.0) {
         }
     }
 }
-
-/**
- * Complex square root for value which may be negative.
- * Considerably faster than creating a `Complex` just to square root it.
- *
- * @param value the input value.
- * @return the square root.
- */
-fun complexSqrt(value: Double): Complex {
-    return if (value >= 0.0) {
-        Complex(sqrt(value), 0.0)
-    } else {
-        Complex(0.0, sqrt(-value))
-    }
-}
-
-operator fun Double.plus(other: Complex): Complex = Complex(this) + other
-operator fun Double.minus(other: Complex): Complex = Complex(this) - other
-operator fun Double.times(other: Complex): Complex = Complex(this) * other
-operator fun Double.div(other: Complex): Complex = Complex(this) / other
-
-fun sin(value: Complex): Complex = Complex(
-    sin(value.real) * cosh(value.imaginary),
-    cos(value.real) * sinh(value.imaginary)
-)
-
-fun cos(value: Complex): Complex = Complex(
-    cos(value.real) * cosh(value.imaginary),
-    -sin(value.real) * sinh(value.imaginary)
-)
-
-fun tan(value: Complex): Complex {
-    // Just sin(value) / cos(value) but we can compute the individual parts once instead of twice
-    val cosR = cos(value.real)
-    val sinR = sin(value.real)
-    val coshI = cosh(value.imaginary)
-    val sinhI = sinh(value.imaginary)
-    return Complex(sinR * coshI, cosR * sinhI) / Complex(cosR * coshI, -sinR * sinhI)
-}
-
-fun sqrt(value: Complex): Complex = value.pow(0.5)
-
-fun ln(value: Complex): Complex {
-    var result = Complex(kotlin.math.ln(value.magnitude), atan2(value.imaginary, value.real))
-    while (result.imaginary > PI) result -= 2 * PI
-    while (result.imaginary <= -PI) result += 2 * PI
-    return result
-}
-
-fun arcsin(value: Complex): Complex =
-    -Complex.ImaginaryUnit * ln(sqrt(1.0 - value.pow(2)) + Complex.ImaginaryUnit * value)
-
-fun arccos(value: Complex): Complex =
-    (PI / 2) + Complex.ImaginaryUnit * ln(sqrt(1.0 - value.pow(2)) + Complex.ImaginaryUnit * value)
-
-fun arctan(value: Complex): Complex =
-    0.5 * Complex.ImaginaryUnit * ln(1.0 - Complex.ImaginaryUnit * value) -
-        0.5 * Complex.ImaginaryUnit * ln(1.0 + Complex.ImaginaryUnit * value)
-
-val Double.i: Complex get() = Complex(0.0, this)

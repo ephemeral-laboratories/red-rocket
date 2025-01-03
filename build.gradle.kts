@@ -1,9 +1,12 @@
+
 import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotest.multiplatform)
     alias(libs.plugins.spotless)
     alias(libs.plugins.antlr.kotlin) apply false
     id("utf8-workarounds")
@@ -18,6 +21,9 @@ configurations {
 
 kotlin {
     jvm()
+    linuxX64()
+    macosX64()
+    mingwX64()
     sourceSets {
         commonMain.dependencies {
             implementation(kotlin("stdlib-jdk8"))
@@ -25,32 +31,36 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.antlr.kotlin.runtime)
             implementation(libs.multik.core)
-            implementation(libs.multik.default)
         }
-        jvmMain {
+        commonTest.dependencies {
+            implementation(libs.kotest.assertions.core)
+            implementation(libs.kotest.framework.engine)
+            implementation(libs.kotest.property)
+            implementation(kotlin("test-common"))
+            implementation(kotlin("test-annotations-common"))
+        }
+        jvmMain.dependencies {
+            implementation(libs.multik.default)
         }
         jvmTest.dependencies {
             implementation(libs.junit.platform.suite)
             implementation(libs.cucumber.java8)
             implementation(libs.cucumber.junit.platform.engine)
             implementation(libs.cucumber.picocontainer)
+            implementation(libs.kotest.runner.junit5)
             implementation(libs.assertk.jvm)
         }
     }
 }
 
-java {
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
-tasks.withType<KotlinCompile> {
+tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
         freeCompilerArgs.add("-Xadd-modules=jdk.incubator.vector")
     }
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     jvmArgs("--add-modules=jdk.incubator.vector")
 }
@@ -87,9 +97,14 @@ val generateKotlinGrammarSource by tasks.registering(AntlrKotlinTask::class) {
     packageName = "garden.ephemeral.rocket.util"
 
     doLast {
+        val outputDirectory = outputDirectory!!
+
+        // Flatten the directory structure. The new version seems to create package directories for us.
+        outputDirectory.resolve("garden/ephemeral/rocket/util").renameTo(outputDirectory.resolve("util"))
+
         // Workaround for generated code containing warnings
         // https://github.com/Strumenta/antlr-kotlin/issues/82
-        outputDirectory!!.walk()
+        outputDirectory.walk()
             .filter(File::isFile)
             .filter { f -> f.extension == "kt" }
             .forEach { file ->
@@ -103,6 +118,9 @@ kotlin.sourceSets.commonMain {
     kotlin.srcDir(generatedGrammarSourceDir)
 }
 
-tasks.withType<KotlinCompile> {
+tasks.withType<KotlinCompile>().configureEach {
+    dependsOn(generateKotlinGrammarSource)
+}
+tasks.withType<KotlinNativeCompile>().configureEach {
     dependsOn(generateKotlinGrammarSource)
 }

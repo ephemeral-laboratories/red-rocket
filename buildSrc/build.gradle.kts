@@ -4,10 +4,6 @@ plugins {
     `kotlin-dsl`
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-}
-
-tasks.withType<KotlinCompile> {
+tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions.jvmTarget = "17"
 }

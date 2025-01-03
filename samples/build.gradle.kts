@@ -13,25 +13,24 @@ version = "0.1.0"
 
 kotlin {
     jvm()
+    linuxX64()
+    macosX64()
+    mingwX64()
     sourceSets {
-        jvmMain.dependencies {
+        commonMain.dependencies {
             implementation(rootProject)
         }
     }
 }
 
-java {
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
-tasks.withType<KotlinCompile> {
+tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
         freeCompilerArgs.add("-Xadd-modules=jdk.incubator.vector")
     }
 }
 
-tasks.withType<JavaExec> {
+tasks.withType<JavaExec>().configureEach {
     jvmArgs("--add-modules=jdk.incubator.vector")
 }
 

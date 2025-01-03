@@ -4,8 +4,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
 
-@JvmInline
-value class Angle(val radians: Double) {
+@Suppress("INLINE_CLASS_DEPRECATED")
+inline class Angle(val radians: Double) {
     operator fun plus(addend: Angle): Angle = Angle(radians + addend.radians)
 
     operator fun minus(subtrahend: Angle): Angle = Angle(radians - subtrahend.radians)
@@ -17,7 +17,9 @@ value class Angle(val radians: Double) {
     operator fun div(divisor: Number): Angle = div(divisor.toDouble())
 }
 
-val Double.deg get() = Angle(Math.toRadians(this))
+private const val DEGREES_TO_RADIANS = 0.017453292519943295
+
+val Double.deg get() = Angle(this * DEGREES_TO_RADIANS)
 val Number.deg get() = toDouble().deg
 
 val Double.rad get() = Angle(this)

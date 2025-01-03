@@ -1,6 +1,7 @@
 [versions]
 kotlin = "2.1.0"
 antlr-kotlin = "1.0.0"
+kotest = "6.0.0.M1"
 assertk = "0.25"
 cucumber = "7.6.0"
 junit-platform-suite = "1.9.0"
@@ -11,6 +12,10 @@ multik = "0.2.3"
 
 [libraries]
 antlr-kotlin-runtime = { module = "com.strumenta:antlr-kotlin-runtime", version.ref = "antlr-kotlin" }
+kotest-runner-junit5 = {module = "io.kotest:kotest-runner-junit5", version.ref = "kotest"}
+kotest-assertions-core = {module = "io.kotest:kotest-assertions-core", version.ref = "kotest"}
+kotest-framework-engine = {module = "io.kotest:kotest-framework-engine", version.ref = "kotest"}
+kotest-property = {module = "io.kotest:kotest-property", version.ref = "kotest"}
 assertk-jvm = { module = "com.willowtreeapps.assertk:assertk-jvm", version.ref = "assertk" }
 cucumber-java8 = { module = "io.cucumber:cucumber-java8", version.ref = "cucumber" }
 cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
@@ -24,5 +29,6 @@ multik-default = { module = "org.jetbrains.kotlinx:multik-default", version.ref 
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 antlr-kotlin = { id = "com.strumenta.antlr-kotlin", version.ref = "antlr-kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

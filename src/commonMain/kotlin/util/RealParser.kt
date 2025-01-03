@@ -80,7 +80,7 @@ class RealParser {
         UnsupportedOperationException("$message, input: <$input>", cause)
 
     class UnsupportedNodeException(input: String, context: ParserRuleContext) :
-        RealParserException(input, "Unsupported node: <${context.text}> (${context.javaClass})")
+        RealParserException(input, "Unsupported node: <${context.text}> (${context::class})")
 
     class UnsupportedTokenException(input: String, token: Token) :
         RealParserException(input, "Unsupported token: <${token.text}> (${token.type})")
