@@ -29,6 +29,7 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.io.core)
             implementation(libs.antlr.kotlin.runtime)
             implementation(libs.multik.core)
         }

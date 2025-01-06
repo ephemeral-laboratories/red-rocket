@@ -1,6 +1,5 @@
 package garden.ephemeral.rocket.camera
 
-import garden.ephemeral.rocket.Canvas
 import garden.ephemeral.rocket.Matrix
 import garden.ephemeral.rocket.Matrix.Companion.identity4x4
 import garden.ephemeral.rocket.Ray

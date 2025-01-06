@@ -1,20 +1,41 @@
 package garden.ephemeral.rocket
 
 import io.cucumber.java8.En
-import java.nio.file.Files
-import java.nio.file.Path
-import kotlin.io.path.Path
-import kotlin.io.path.writeText
+import kotlinx.io.IOException
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.files.SystemTemporaryDirectory
+import kotlinx.io.writeString
 
 // Constructed reflectively
 @Suppress("unused")
 class FileStepDefinitions(space: Space) : En {
+    private var nextTempDirNumber = 1
+    private fun nextTempDirName() = "FileStepDefinitions-temp-$nextTempDirNumber".also { nextTempDirNumber++ }
+
     private val tempDir: Path by lazy {
-        // Safe Path.toFile call because Files.createTempDirectory is guaranteed to produce
-        // a path on the default filesystem.
-        Files.createTempDirectory("temp").also { t ->
+        var tempDir: Path
+        while (true) {
+            tempDir = Path(SystemTemporaryDirectory, nextTempDirName())
+            try {
+                SystemFileSystem.createDirectories(tempDir, mustCreate = true)
+                break
+            } catch (e: IOException) {
+                // try again
+            }
+        }
+        tempDir.also { dir ->
             After { _ ->
-                Files.deleteIfExists(t)
+                SystemFileSystem.delete(dir, mustExist = false)
+            }
+        }
+    }
+
+    private fun writeStringToFile(file: Path, string: String) {
+        SystemFileSystem.sink(file).use { rawSink ->
+            rawSink.buffered().use { sink ->
+                sink.writeString(string)
             }
         }
     }
@@ -23,14 +44,14 @@ class FileStepDefinitions(space: Space) : En {
         ParameterType("file_var", "file|obj_file|mtl_file|gibberish|ppm") { string -> string }
 
         Given("{file_var} ← a file containing:") { fv: String, docString: String ->
-            space.files[fv] = tempDir.resolve("file.dat").apply {
-                writeText(docString)
+            space.files[fv] = Path(tempDir, "file.dat").apply {
+                writeStringToFile(this, docString)
             }
         }
 
         Given("{file_var} ← a file named {string} containing:") { fv: String, fileName: String, docString: String ->
-            space.files[fv] = tempDir.resolve(fileName).apply {
-                writeText(docString)
+            space.files[fv] = Path(tempDir, fileName).apply {
+                writeStringToFile(this, docString)
             }
         }
 

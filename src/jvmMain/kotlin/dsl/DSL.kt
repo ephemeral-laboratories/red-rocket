@@ -7,6 +7,8 @@ import garden.ephemeral.rocket.Tuple
 import garden.ephemeral.rocket.World
 import garden.ephemeral.rocket.camera.Camera
 import garden.ephemeral.rocket.camera.SamplingStrategy
+import garden.ephemeral.rocket.camera.toPNG
+import garden.ephemeral.rocket.camera.toPPM
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.importers.ObjFileParser
 import garden.ephemeral.rocket.shapes.Cone
@@ -17,9 +19,9 @@ import garden.ephemeral.rocket.shapes.Plane
 import garden.ephemeral.rocket.shapes.Shape
 import garden.ephemeral.rocket.shapes.Sphere
 import garden.ephemeral.rocket.util.Angle
+import kotlinx.io.files.Path
 import java.time.Duration
 import java.time.Instant
-import kotlin.io.path.Path
 
 fun render(block: RenderBuilder.() -> Unit) {
     RenderBuilder().apply(block).render()

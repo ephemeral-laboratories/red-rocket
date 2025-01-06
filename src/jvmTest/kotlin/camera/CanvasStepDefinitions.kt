@@ -1,10 +1,11 @@
-package garden.ephemeral.rocket
+package garden.ephemeral.rocket.camera
 
 import assertk.assertThat
 import assertk.assertions.endsWith
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import garden.ephemeral.rocket.Constants.epsilon
+import garden.ephemeral.rocket.Space
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.isCloseTo
 import io.cucumber.java8.En

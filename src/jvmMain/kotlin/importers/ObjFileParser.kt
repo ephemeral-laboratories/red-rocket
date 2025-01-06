@@ -7,7 +7,7 @@ import garden.ephemeral.rocket.Tuple.Companion.vector
 import garden.ephemeral.rocket.shapes.Group
 import garden.ephemeral.rocket.shapes.SmoothTriangle
 import garden.ephemeral.rocket.shapes.Triangle
-import java.nio.file.Path
+import kotlinx.io.files.Path
 
 class ObjFileParser(file: Path, lenient: Boolean = false) {
     val defaultGroup: Group = Group()
@@ -26,7 +26,7 @@ class ObjFileParser(file: Path, lenient: Boolean = false) {
                 "mtllib" -> {
                     // mtllib $filename
                     val (mtlFilename) = command.args
-                    materialLibrary = MtlFileParser(file.resolveSibling(mtlFilename)).materials
+                    materialLibrary = MtlFileParser(Path(file.parent!!, mtlFilename)).materials
                 }
                 "usemtl" -> {
                     // usemtl $name

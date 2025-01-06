@@ -1,12 +1,12 @@
-package garden.ephemeral.rocket
+package garden.ephemeral.rocket.camera
 
 import assertk.assertThat
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
 import garden.ephemeral.rocket.Constants.epsilon
+import garden.ephemeral.rocket.Matrix
+import garden.ephemeral.rocket.Space
 import garden.ephemeral.rocket.Transforms.Companion.viewTransform
-import garden.ephemeral.rocket.camera.Camera
-import garden.ephemeral.rocket.camera.SamplingStrategy
 import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.isCloseTo
 import garden.ephemeral.rocket.util.Angle

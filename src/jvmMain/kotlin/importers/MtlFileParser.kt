@@ -5,45 +5,39 @@ import garden.ephemeral.rocket.color.Color
 import garden.ephemeral.rocket.color.Color.Companion.cieXyz
 import garden.ephemeral.rocket.color.Color.Companion.grey
 import garden.ephemeral.rocket.color.Color.Companion.linearRgb
-import java.nio.file.Path
-import kotlin.io.path.forEachLine
+import kotlinx.io.files.Path
 
 class MtlFileParser(file: Path) {
     val materials = mutableMapOf<String, Material>()
-    private val whitespace = Regex("\\s+")
     private var currentMaterialName = ""
     private var currentBuilder = Material.builder()
 
     init {
         var firstCommand = true
-        file.forEachLine line@{ line ->
-            val trimmedLine = line.trim()
-            if (trimmedLine.isEmpty() || trimmedLine.startsWith("#")) {
-                return@line
-            }
-            val command = trimmedLine.split(whitespace)
-            when (command[0]) {
+        CommandReader(file).forEachCommand { command ->
+            when (command.name) {
                 "newmtl" -> {
-                    if (command.size > 2) {
-                        throw InvalidMtlException("Name cannot contain blanks. Got: $trimmedLine")
+                    if (command.args.size > 1) {
+                        throw InvalidMtlException("Name cannot contain blanks. Got: ${command.args}")
                     }
                     if (!firstCommand) {
                         finishCurrentMaterial()
                     }
-                    currentMaterialName = command[1]
+                    currentMaterialName = command.args[0]
                     currentBuilder = Material.builder()
                 }
-                "Ka" -> currentBuilder.ambient = colorFromCommand(command)
-                "Kd" -> currentBuilder.diffuse = colorFromCommand(command)
-                "Ks" -> currentBuilder.specular = colorFromCommand(command)
-                "Ke" -> currentBuilder.emission = colorFromCommand(command)
-                "Ns" -> currentBuilder.shininess = command[1].toDouble()
-                "Tf" -> currentBuilder.transparency = colorFromCommand(command)
-                "Ni" -> currentBuilder.refractiveIndex = command[1].toDouble()
-                "illum" -> currentBuilder.illuminationModel = command[1].toInt()
-                "d" -> currentBuilder.dissolve = command[1].toDouble()
+
+                "Ka" -> currentBuilder.ambient = colorFromArgs(command.args)
+                "Kd" -> currentBuilder.diffuse = colorFromArgs(command.args)
+                "Ks" -> currentBuilder.specular = colorFromArgs(command.args)
+                "Ke" -> currentBuilder.emission = colorFromArgs(command.args)
+                "Ns" -> currentBuilder.shininess = command.args[0].toDouble()
+                "Tf" -> currentBuilder.transparency = colorFromArgs(command.args)
+                "Ni" -> currentBuilder.refractiveIndex = command.args[0].toDouble()
+                "illum" -> currentBuilder.illuminationModel = command.args[0].toInt()
+                "d" -> currentBuilder.dissolve = command.args[0].toDouble()
                 else -> {
-                    throw UnsupportedMtlException("Unsupported command. Got: $trimmedLine")
+                    throw UnsupportedMtlException("Unsupported command. Got: $command")
                 }
             }
             firstCommand = false
@@ -51,24 +45,24 @@ class MtlFileParser(file: Path) {
         finishCurrentMaterial()
     }
 
-    private fun colorFromCommand(command: List<String>): Color {
-        return when (command[1]) {
+    private fun colorFromArgs(args: List<String>): Color {
+        return when (args[0]) {
             "xyz" -> {
-                if (command.size == 3) {
-                    val value = command[2].toDouble()
+                if (args.size == 2) {
+                    val value = args[1].toDouble()
                     cieXyz(value, value, value)
                 } else {
-                    cieXyz(command[2].toDouble(), command[3].toDouble(), command[4].toDouble())
+                    cieXyz(args[1].toDouble(), args[2].toDouble(), args[3].toDouble())
                 }
             }
             else -> {
-                if (command[1].toDoubleOrNull() == null) {
-                    throw UnsupportedMtlException("Unsupported colour specifier: ${command[1]}")
+                if (args[0].toDoubleOrNull() == null) {
+                    throw UnsupportedMtlException("Unsupported colour specifier: ${args[0]}")
                 }
-                if (command.size == 2) {
-                    grey(command[1].toDouble())
+                if (args.size == 1) {
+                    grey(args[0].toDouble())
                 } else {
-                    linearRgb(command[1].toDouble(), command[2].toDouble(), command[3].toDouble())
+                    linearRgb(args[0].toDouble(), args[1].toDouble(), args[2].toDouble())
                 }
             }
         }
